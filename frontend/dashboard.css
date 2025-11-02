@@ -132,12 +132,14 @@
 #dashboard-footer .footer-brand h1 {
   font-size: 64px;
   font-weight: 700;
+  text-align: left;
   margin: 0;
 }
 
 #dashboard-footer .footer-brand p {
   opacity: .85;
   font-size: 15px;
+  text-align: left;
   margin-top: 4px;
 }
 
