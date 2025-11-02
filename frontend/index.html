@@ -192,17 +192,15 @@
     </p>
   </section>
 
-  <!-- ======================= START CTA ======================= -->
-  <section class="start-cta">
-    <h2>Start your analysis today!</h2>
-    <a href="upload.html" class="btn primary big">START ANALYSIS</a>
-  </section>
+
 
   <!-- ======================= FOOTER ======================= -->
+
 <footer>
   <div class="footer-container">
     <div class="footer-brand">
-      <h1>Enjoy Writing!</h1>
+      <h2>Start your analysis today!</h2>
+      <a href="upload.html" class="btn primary big">START ANALYSIS</a>
       <p>Privacy-first data analysis, designed for writers.</p>
     </div>
     <div class="footer-links">
@@ -215,6 +213,7 @@
     © 2025 Ink Insights — All rights reserved.
   </div>
 </footer>
+
 
   <!-- ======================= INTERACTIONS ======================= -->
   <script>
@@ -242,6 +241,12 @@
 
     document.querySelectorAll('.v-step, .process-card').forEach(n=>observer.observe(n));
   })();
+
+    // HERO animation on load
+window.addEventListener("load", () => {
+  document.querySelector(".hero").classList.add("loaded");
+});
+
   </script>
 </body>
 </html>
