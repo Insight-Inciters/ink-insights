@@ -7,7 +7,8 @@
 
   /* ======================= PAGE ======================= */
   .wrap{max-width:1000px;margin:24px auto 64px;padding:0 18px}
-  .title{font-family:"Rockwell","Courier New";font-weight:400;font-size:64px;line-height:1;margin:14px 0 6px;color:#000;text-shadow:0 2px 0 #cfcfcf,0 6px 16px rgba(0,0,0,.12)}
+  .title{font-family:"Rockwell","Courier New";font-weight:400;font-size:64px;line-height:1;margin:14px 0 6px;
+         color:#000;text-shadow:0 2px 0 #cfcfcf,0 6px 16px rgba(0,0,0,.12)}
   .top-dash{border-top:4px dashed var(--warm-green);margin:10px 0 18px}
 
   /* Dashboard title — Rockwell, NOT bold */
