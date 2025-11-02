@@ -132,14 +132,12 @@
   font-size: 64px;
   font-weight: 700;
   text-align: left;
-  margin: 0;
 }
 
 #dashboard-footer .footer-brand p {
   opacity: .85;
   font-size: 15px;
   text-align: left;
-  margin-top: 4px;
 }
 
 #dashboard-footer .footer-links {
@@ -168,7 +166,11 @@
 
 @media(max-width:768px){
   #dashboard-footer .footer-brand h1{
-    font-size:44px;
+    font-size:30px;
+    text-align:center;
+  }
+   #dashboard-footer .footer-brand p{
+    font-size:15px;
     text-align:center;
   }
   #dashboard-footer .footer-container{
