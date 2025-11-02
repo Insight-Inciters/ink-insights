@@ -2,7 +2,7 @@
 import { renderDoughnut, renderBar, renderRadar, renderScatter } from "viz.js";
 
 (async function () {
-  const API = "https://ink-insights-backend.vercel.app/";
+  const API = "https://ink-insights-backend.vercel.app/api/upload";
   const text = localStorage.getItem("ink_text") || "";
   const metaStr = localStorage.getItem("ink_report_meta") || "{}";
   const meta = JSON.parse(metaStr);
