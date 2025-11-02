@@ -1,5 +1,5 @@
 // js/dashboard.js
-import { renderDoughnut, renderBar, renderRadar, renderScatter } from "js/viz.js";
+import { renderDoughnut, renderBar, renderRadar, renderScatter } from "viz.js";
 
 (async function () {
   const API = "https://ink-insights-backend.vercel.app/analyze";
