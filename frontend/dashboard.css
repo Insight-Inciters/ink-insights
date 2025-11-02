@@ -47,6 +47,7 @@
 .navlinks a:hover::after{transform:scaleX(1)}
 
 .actions{margin-left:auto;display:flex;align-items:center;gap:16px}
+
 .nav-cta{
   font-family:"Rockwell","Courier New";
   font-weight:400;
