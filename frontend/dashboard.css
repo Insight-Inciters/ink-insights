@@ -59,7 +59,8 @@
   overflow:hidden;
   transition:all .3s ease;
   white-space:nowrap;
-  font-size:clamp(0.75rem, 1.6vw, 1rem);
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  flex-shrink: 0;
 }
 .nav-cta:hover{background:#000;color:#fff;transform:translateY(-2px);box-shadow:0 0 20px rgba(255,255,255,.6)}
 .nav-cta::before{
