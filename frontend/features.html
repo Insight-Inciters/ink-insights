@@ -248,6 +248,27 @@
   }
   .m-badge .value{color:#fff}
 
+
+  /* === Sentiment color variants === */
+.m-badge.positive {
+  border-color: var(--warm-green);
+  background: var(--warm-green-30);
+  color: var(--warm-green);
+}
+
+.m-badge.neutral {
+  border-color: var(--dark-grey);
+  background: rgba(115,115,115,0.25);
+  color: var(--dark-grey);
+}
+
+.m-badge.negative {
+  border-color: var(--danger);
+  background: var(--danger-15);
+  color: var(--danger);
+}
+
+
   /* ====== Single-page switching ====== */
   .feature-section{display:none}          /* hidden by default */
   .feature-section.active{display:block}  /* only active section shows */
@@ -489,9 +510,9 @@ footer{
       <div class="panel blue">
         <h2>Overview</h2>
         <div class="m-badges">
-          <span class="m-badge">Positive: <span class="value" id="se-pos">00%</span></span>
-          <span class="m-badge">Neutral: <span class="value" id="se-neu">00%</span></span>
-          <span class="m-badge">Negative: <span class="value" id="se-neg">00%</span></span>
+          <span class="m-badge positive">Positive: <span class="value" id="se-pos">00%</span></span>
+          <span class="m-badge neutral">Neutral: <span class="value" id="se-neu">00%</span></span>
+          <span class="m-badge negative">Negative: <span class="value" id="se-neg">00%</span></span>
         </div>
         <div class="grid">
           <div class="chartbox pink" id="se-donut">Donut Graph</div>
