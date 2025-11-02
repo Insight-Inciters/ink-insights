@@ -117,7 +117,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 40px;
-  border-bottom: 4px solid rgba(255, 255, 255, .15);
+  border-bottom: 4px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 20px;
   margin-bottom: 16px;
 }
@@ -131,12 +131,14 @@
 #dashboard-footer .footer-brand h1 {
   font-size: 64px;
   font-weight: 700;
+  margin: 0;
   text-align: left;
 }
 
 #dashboard-footer .footer-brand p {
-  opacity: .85;
+  opacity: 0.85;
   font-size: 15px;
+  margin-top: 4px;
   text-align: left;
 }
 
@@ -149,8 +151,8 @@
 
 #dashboard-footer .footer-links a {
   color: #fff;
-  opacity: .85;
-  transition: opacity .2s, transform .2s;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 #dashboard-footer .footer-links a:hover {
@@ -161,24 +163,28 @@
 #dashboard-footer .footer-bottom {
   text-align: center;
   font-size: 14px;
-  opacity: .8;
+  opacity: 0.8;
 }
 
-@media(max-width:768px){
-  #dashboard-footer .footer-brand h1{
-    font-size:30px;
-    text-align:center;
+/* Responsive behavior identical to About page */
+@media (max-width: 768px) {
+  #dashboard-footer .title {
+    font-size: 48px;
+    text-align: center;
   }
-   #dashboard-footer .footer-brand p{
-    font-size:15px;
-    text-align:center;
+
+  #dashboard-footer .footer-brand h1 {
+    font-size: 44px;
+    text-align: center;
   }
-  #dashboard-footer .footer-container{
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
+
+  #dashboard-footer .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 }
+
 
 
 
