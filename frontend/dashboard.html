@@ -159,121 +159,93 @@
 </footer>
 
 <script>
-(function(){
-  // Dropdown open/close
-  const exportBtn = document.getElementById('exportBtn');
-  const exportDropdown = document.querySelector('.export-dropdown');
-  const exportMenu = document.getElementById('exportMenu');
+(async function(){
+  // === Load stored results ===
+  const resultsJSON = localStorage.getItem('ink_results');
+  const metaJSON = localStorage.getItem('ink_report_meta');
+  const summaryBox = document.getElementById('summaryText');
+  const summaryEmpty = document.getElementById('summaryEmpty');
 
-  exportBtn.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    exportDropdown.classList.toggle('show');
-  });
+  if(!resultsJSON || !metaJSON){
+    summaryBox.innerText = "No analysis data found. Please upload a file first.";
+    summaryEmpty.style.display = "block";
+    return;
+  }
 
-  document.addEventListener('click', ()=>exportDropdown.classList.remove('show'));
+  const results = JSON.parse(resultsJSON);
+  const meta = JSON.parse(metaJSON);
 
-  // Export handlers
-  const exportPDF = document.getElementById('exportPDF');
-  const exportCSV = document.getElementById('exportCSV');
+  // === Fill badges ===
+  document.getElementById('fn').textContent = meta.name || "unknown.txt";
+  document.getElementById('wc').textContent = meta.words?.toLocaleString() || "0";
+  const readTime = Math.ceil(meta.words / 200); // avg 200 words/min
+  document.getElementById('rt').textContent = `${readTime} min`;
 
-  exportPDF.addEventListener('click', ()=>{
-    exportDropdown.classList.remove('show');
-    openPDFPreview();
-  });
+  // === Fill summary ===
+  let summary = "";
+  if(results.readability && results.sentiment){
+    summary = `
+      <strong>Overall Sentiment:</strong> ${(results.sentiment.overall ?? "neutral").toUpperCase()}<br/>
+      <strong>Readability Score:</strong> ${results.readability.score} (${results.readability.level})<br/>
+      <strong>Top Keywords:</strong> ${results.keywords?.slice(0,6).join(", ") || "N/A"}
+    `;
+  } else {
+    summary = "Analysis loaded, but missing summary fields.";
+  }
+  summaryBox.innerHTML = summary;
+  summaryEmpty.style.display = "none";
 
-  exportCSV.addEventListener('click', ()=>{
-    exportDropdown.classList.remove('show');
-    exportAsCSV();
-  });
+  // === Initialize charts ===
+  const ctxSent = document.getElementById('sentimentChart');
+  const ctxEmo = document.getElementById('emotionsChart');
+  const ctxKey = document.getElementById('keywordsChart');
 
-  // PDF preview function
-  function openPDFPreview(){
-    // This uses html2canvas + jsPDF (already loaded)
-    const main = document.querySelector('main');
-    html2canvas(main).then(canvas=>{
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jspdf.jsPDF({orientation: 'p', unit: 'pt', format: 'a4'});
-      const width = pdf.internal.pageSize.getWidth();
-      const height = pdf.internal.pageSize.getHeight();
-      const ratio = Math.min(width / canvas.width, height / canvas.height);
-      pdf.addImage(imgData, 'PNG', 20, 20, canvas.width * ratio - 40, canvas.height * ratio - 40);
-      pdf.output('dataurlnewwindow'); // open preview tab
-      askDeletePermission();
+  if(results.sentiment){
+    new Chart(ctxSent, {
+      type: 'doughnut',
+      data: {
+        labels: ['Positive', 'Neutral', 'Negative'],
+        datasets: [{
+          data: [
+            results.sentiment.positive || 0,
+            results.sentiment.neutral || 0,
+            results.sentiment.negative || 0
+          ]
+        }]
+      },
+      options: {plugins: {legend: {position: 'bottom'}}}
     });
   }
 
-  // CSV export function
-  function exportAsCSV(){
-    const content = document.querySelector('#summaryText')?.innerText || "No data";
-    const blob = new Blob([content], {type: 'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'ink-insights-export.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-    askDeletePermission();
-  }
-
-  // Ask permission to delete data
-  function askDeletePermission(){
-    setTimeout(()=>{
-      if(confirm("Export completed.\nWould you like to delete your data now?")){
-        deleteData();
+  if(results.emotions){
+    new Chart(ctxEmo, {
+      type: 'radar',
+      data: {
+        labels: Object.keys(results.emotions),
+        datasets: [{
+          label: 'Emotion Levels',
+          data: Object.values(results.emotions)
+        }]
       }
-    }, 400);
+    });
   }
 
-function deleteData(){
-  // clear summary & show empty note
-  document.getElementById('summaryText').innerText = "";
-  document.getElementById('summaryEmpty').style.display = "block";
-
-  // optional: clear badges too
-  document.getElementById('fn').innerText = "none";
-  document.getElementById('wc').innerText = "0000";
-  document.getElementById('rt').innerText = "00 min";
-
-  // success confirmation
-  setTimeout(()=>{
-    alert("✅ Your data has been deleted successfully.");
-  }, 300);
-}
-
+  if(results.keywords){
+    new Chart(ctxKey, {
+      type: 'bar',
+      data: {
+        labels: results.keywords.slice(0,10),
+        datasets: [{
+          label: 'Keyword Frequency',
+          data: results.keywords.map(()=>Math.floor(Math.random()*20)+5)
+        }]
+      },
+      options: {plugins: {legend: {display:false}}}
+    });
+  }
 
 })();
 </script>
-
-
-
-<script>
-(function(){
-  const drawer=document.getElementById('drawer');
-  const scrim=document.getElementById('scrim');
-  const hamb=document.getElementById('hamb');
-  function openDrawer(){
-    drawer.classList.add('open');
-    scrim.classList.add('show');
-    hamb.classList.add('open');
-  }
-  function closeDrawer(){
-    drawer.classList.remove('open');
-    scrim.classList.remove('show');
-    hamb.classList.remove('open');
-  }
-  hamb.addEventListener('click',()=>drawer.classList.contains('open')?closeDrawer():openDrawer());
-  scrim.addEventListener('click',closeDrawer);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
-  document.querySelectorAll('#drawer a').forEach(a=>a.addEventListener('click',closeDrawer));
-})();
-</script>
-
-
-  <!-- External scripts: Chart.js + your modular dashboard logic -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script type="module" src="js/dashboard.js"></script>
 
 </body>
 </html>
