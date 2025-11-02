@@ -120,17 +120,17 @@ footer{
   padding-bottom:20px;
   margin-bottom:16px;
 }
-.footer-brand{
+.footer-brand-dashboard{
   display:flex;
   flex-direction:column;
   gap:6px;
 }
-.footer-brand h1{
+.footer-brand-dashboard h1{
   font-size:64px;
   font-weight:700;
   margin:0;
 }
-.footer-brand p{opacity:.85;font-size:15px;margin-top:4px;}
+.footer-brand-dashboard p{opacity:.85;font-size:15px;margin-top:4px;}
 .footer-links{
   display:flex;
   flex-direction:column;
