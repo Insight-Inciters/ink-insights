@@ -249,12 +249,26 @@ footer{
 .footer-links a:hover{opacity:1;transform:translateX(3px);}
 .footer-bottom{text-align:center;font-size:14px;opacity:.8;}
 
+footer .footer-container {
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+}
+
+footer .footer-brand,
+footer .footer-brand h1,
+footer .footer-brand p {
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+
 @media(max-width:768px){
   .title{font-size:48px;text-align:center}
   .footer-brand h1{font-size:44px;text-align:center;}
   .footer-container{flex-direction:column;align-items:center;text-align:center;}
 }
-
 
 
 
