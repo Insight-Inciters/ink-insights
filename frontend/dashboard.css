@@ -104,55 +104,120 @@
 
 
 /* ================= FOOTER ================= */
-footer{
-  background:var(--dark-teal);
-  color:#fff;
-  font-family:"Rockwell","Courier New";
-  padding:50px 40px 30px;
-}
-.footer-container{
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  align-items:flex-start;
-  gap:40px;
-  border-bottom:4px solid rgba(255,255,255,0.15);
-  padding-bottom:20px;
-  margin-bottom:16px;
-}
-.footer-brand-dashboard{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.footer-brand-dashboard h1{
-  font-size:64px;
-  font-weight:700;
-  margin:0;
-}
-.footer-brand-dashboard p{opacity:.85;font-size:15px;margin-top:4px;}
-.footer-links{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  font-size:15px;
-}
-.footer-links a{
-  color:#fff;
-  opacity:.85;
-  transition:opacity .2s ease,transform .2s ease;
-}
-.footer-links a:hover{opacity:1;transform:translateX(3px);}
-.footer-bottom{
-  text-align:center;
-  font-size:14px;
-  opacity:.8;
+#dashboard-footer {
+  background: var(--dark-teal);
+  color: #fff;
+  font-family: "Rockwell", "Courier New";
+  padding: 50px 40px 30px;
 }
 
-@media(max-width:768px){
-  .footer-brand h1{font-size:44px;text-align:center;}
-  .footer-container{flex-direction:column;align-items:center;text-align:center;}
+#dashboard-footer .footer-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 60px;
+  border-bottom: 4px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 20px;
+  margin-bottom: 16px;
 }
+
+/* ----- Left section (brand + CTA) ----- */
+#dashboard-footer .footer-brand {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+#dashboard-footer .footer-brand h1 {
+  font-size: 64px;
+  font-weight: 700;
+  margin: 0;
+}
+
+#dashboard-footer .footer-brand p {
+  opacity: 0.85;
+  font-size: 15px;
+  margin-top: 4px;
+  max-width: 360px;
+}
+
+/* ----- CTA button ----- */
+#dashboard-footer .footer-btn {
+  display: inline-block;
+  background: #fff;
+  color: var(--dark-teal);
+  border: 2px solid #fff;
+  border-radius: 26px;
+  font-family: "Rockwell", "Courier New";
+  font-weight: 600;
+  padding: 10px 24px;
+  margin-top: 8px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+#dashboard-footer .footer-btn:hover {
+  background: transparent;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
+}
+
+/* ----- Right column links ----- */
+#dashboard-footer .footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  text-align: left;
+}
+
+#dashboard-footer .footer-links a {
+  color: #fff;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+#dashboard-footer .footer-links a:hover {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* ----- Bottom copyright ----- */
+#dashboard-footer .footer-bottom {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* ----- Responsive adjustments ----- */
+@media (max-width: 768px) {
+  #dashboard-footer .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  #dashboard-footer .footer-brand h1 {
+    font-size: 44px;
+  }
+
+  #dashboard-footer .footer-btn {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  #dashboard-footer .footer-links {
+    text-align: center;
+  }
+}
+
 
 
 /* ============ EXPORT DROPDOWN ============ */
