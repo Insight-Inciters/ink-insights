@@ -129,13 +129,76 @@
   .btn.back:hover{background:var(--dark-teal);color:#fff;transform:translateY(-2px)}
 
   /* ====== Feature pills — CENTERED ====== */
-.feature-tab{
-  display:inline-block;padding:10px 18px;border-radius:999px;border:3px dashed var(--warm-green);
-  background:var(--warm-green-10);font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;font-weight:700;letter-spacing:.5px;
-  transition:.2s transform,.2s box-shadow,.2s background,.2s color,.2s border-color; outline:0;
+.feature-tabs{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  margin:12px auto 18px;
+  justify-content:center; /* centered */
+  align-items:center;
+  max-width:800px;
 }
-.feature-tab:hover{transform:translateY(-2px)}
-.feature-tab.active{background:var(--warm-green);color:#fff}
+
+.feature-tab{
+  display:inline-block;
+  padding:10px 18px;
+  border-radius:999px;
+  border:3px dashed var(--warm-green);
+  background:var(--warm-green-10);
+  font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;
+  font-weight:700;
+  letter-spacing:.5px;
+  color:var(--warm-green);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:all .3s ease;
+  outline:0;
+}
+
+/* 🟩 Hover: solid green bg + soft glow + pulse ring */
+.feature-tab:hover{
+  background:var(--warm-green);
+  color:#fff;
+  border-color:var(--warm-green);
+  transform:translateY(-3px);
+  box-shadow:0 0 14px rgba(81,122,6,0.35);
+}
+
+/* ✨ Pulse effect when hovered */
+.feature-tab::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:0;
+  height:0;
+  border-radius:50%;
+  background:rgba(81,122,6,0.25);
+  transform:translate(-50%,-50%);
+  opacity:0;
+  pointer-events:none;
+}
+
+.feature-tab:hover::after{
+  animation:pulse-ring 0.8s ease-out;
+}
+
+@keyframes pulse-ring{
+  0%{opacity:0.4;transform:translate(-50%,-50%) scale(0.4);}
+  70%{opacity:0.2;transform:translate(-50%,-50%) scale(1.2);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.6);}
+}
+
+/* Active & ARIA-selected states */
+.feature-tab.active,
+.feature-tab[aria-selected="true"]{
+  background:var(--warm-green);
+  color:#fff;
+  border-color:var(--warm-green);
+  box-shadow:0 0 12px rgba(81,122,6,0.35);
+}
+
 
 
 
