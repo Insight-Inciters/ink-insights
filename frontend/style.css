@@ -365,3 +365,30 @@ footer{
   .footer-container{flex-direction:column;align-items:center;text-align:center;}
 }
 
+
+/* ================= HERO ANIMATIONS ================= */
+.hero-inner {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 1s ease;
+}
+.hero.loaded .hero-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Buttons pop-up animation */
+.hero .btn {
+  transform: scale(0.6);
+  opacity: 0;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+.hero.loaded .btn {
+  transform: scale(1);
+  opacity: 1;
+}
+.hero.loaded .btn:nth-child(2) {
+  transition-delay: 0.15s; /* slight stagger for 2nd button */
+}
+
+
