@@ -176,13 +176,13 @@
     .animate-arrow .arrow{animation:none}
   }
 
-  /* ======================= MOBILE OPTIMIZATION ======================= */
-
-
 
 /* ======================= MOBILE BODY LAYOUT STACK ======================= */
 @media (max-width: 900px) {
   /* Reorder and center everything vertically */
+ .title {
+  text-align: center;}
+ 
   .grid {
     display: flex;
     flex-direction: column;
@@ -229,18 +229,26 @@
 
   /* Center content alignment */
   .meta-list,
-  .dz-stack,
-  .card.blue,
-  .card.pink {
+  .dz-stack {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
+  .card.blue,
+  .card.pink {
+     display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+  }
+
+
   /* Adjust button */
   .get-btn {
-    width: 100%;
+    width: none;
+   align-items: center;
   }
 }
 
