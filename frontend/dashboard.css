@@ -207,85 +207,52 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 
 
 /* ================= FOOTER ================= */
-#dashboard-footer {
-  background: var(--dark-teal);
-  color: #fff;
-  font-family: "Rockwell", "Courier New";
-  padding: 50px 40px 30px;
+/* ================= FOOTER ================= */
+footer{
+  background:var(--dark-teal);
+  color:#fff;
+  font-family:"Rockwell","Courier New";
+  padding:50px 40px 30px;
 }
-
-#dashboard-footer .footer-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 40px;
-  border-bottom: 4px solid rgba(255, 255, 255, 0.15);
-  padding-bottom: 20px;
-  margin-bottom: 16px;
+.footer-container{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  gap:40px;
+  border-bottom:4px solid rgba(255,255,255,0.15);
+  padding-bottom:20px;
+  margin-bottom:16px;
 }
-
-#dashboard-footer .footer-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.footer-brand{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
 }
-
-#dashboard-footer .footer-brand h1 {
-  font-size: 64px;
-  font-weight: 700;
-  margin: 0;
-  text-align: left;
+.footer-brand h1{
+  font-size:64px;
+  font-weight:700;
+  margin:0;
 }
-
-#dashboard-footer .footer-brand p {
-  opacity: 0.85;
-  font-size: 15px;
-  margin-top: 4px;
-  text-align: left;
+.footer-brand p{opacity:.85;font-size:15px;margin-top:4px;}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  font-size:15px;
 }
-
-#dashboard-footer .footer-links {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 15px;
+.footer-links a{
+  color:#fff;
+  opacity:.85;
+  transition:opacity .2s ease,transform .2s ease;
 }
+.footer-links a:hover{opacity:1;transform:translateX(3px);}
+.footer-bottom{text-align:center;font-size:14px;opacity:.8;}
 
-#dashboard-footer .footer-links a {
-  color: #fff;
-  opacity: 0.85;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-#dashboard-footer .footer-links a:hover {
-  opacity: 1;
-  transform: translateX(3px);
-}
-
-#dashboard-footer .footer-bottom {
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-/* Responsive behavior identical to About page */
-@media (max-width: 768px) {
-  #dashboard-footer .title {
-    font-size: 48px;
-    text-align: center;
-  }
-
-  #dashboard-footer .footer-brand h1 {
-    font-size: 44px;
-    text-align: center;
-  }
-
-  #dashboard-footer .footer-container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+@media(max-width:768px){
+  .title{font-size:48px;text-align:center}
+  .footer-brand h1{font-size:44px;text-align:center;}
+  .footer-container{flex-direction:column;align-items:center;text-align:center;}
 }
 
 
