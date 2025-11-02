@@ -1,0 +1,302 @@
+  :root{
+    --dark-teal:#005A63; --teal:#257881;
+    --warm-green:#517A06; --warm-green-30:rgba(81,122,6,.30);
+    --pink:#FF2092; --pink-30:rgba(255,32,146,.30);
+    --blue:#00A6FF;  --blue-30:rgba(0,166,255,.30);
+    --light-grey:#DBDBDB; --dark-grey:#737373; --white:#FFFFFF;
+    --danger:#E03131; --danger-15:rgba(224,49,49,.15);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:"Droid Serif", Georgia, serif; color:#122022; background:#fff}
+  a{color:inherit;text-decoration:none}
+
+/* ================= HEADER ================= */
+.navbar{
+  background:var(--dark-teal);
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:40;
+}
+.nav-inner{width:100%;padding:20px 28px 16px;display:flex;align-items:center;gap:24px;justify-content:space-between}
+.brand a{display:flex;align-items:center;gap:10px;color:#fff;transition:transform .2s ease}
+.brand a:hover{transform:translateY(-1px) scale(1.02)}
+.brand img{width:54px;height:auto;transition:transform .4s ease,filter .4s ease}
+.brand a:hover img{transform:rotate(-3deg) scale(1.06);filter:drop-shadow(0 0 6px rgba(255,255,255,.85))}
+.brand .txt{display:flex;flex-direction:column;line-height:1.15}
+.brand .txt .line1{font:400 1.1rem/1 "Droid Serif",serif}
+.brand .txt .line2{
+  font:700 1.4rem/1.1 "Droid Serif",serif;
+  background:linear-gradient(90deg,#fff,var(--blue),var(--pink),#fff);
+  background-size:300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:colorFlow 6s linear infinite;
+}
+@keyframes colorFlow{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+
+.navlinks{flex:1;display:flex;justify-content:center;gap:34px}
+.navlinks a{
+  font-family:"Rockwell","Courier New",Courier,Georgia,serif;font-weight:700;color:#fff;position:relative;padding:6px 2px;
+  transition:color .2s ease,text-shadow .2s ease;
+}
+.navlinks a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.navlinks a:hover{text-shadow:0 0 10px rgba(255,255,255,.35)}
+.navlinks a:hover::after{transform:scaleX(1)}
+
+.actions{margin-left:auto;display:flex;align-items:center;gap:16px}
+.nav-cta{
+  font-family:"Rockwell","Courier New";
+  font-weight:400;
+  background:#fff;
+  color:var(--dark-teal);
+  padding:8px 14px; 
+  border-radius:24px;
+  position:relative;
+  overflow:hidden;
+  transition:all .3s ease;
+  white-space:nowrap;
+  font-size:clamp(0.75rem, 1.6vw, 1rem);
+}
+.nav-cta:hover{background:#000;color:#fff;transform:translateY(-2px);box-shadow:0 0 20px rgba(255,255,255,.6)}
+.nav-cta::before{
+  content:"";position:absolute;top:0;left:-50%;width:50%;height:100%;
+  background:linear-gradient(120deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.6) 50%,rgba(255,255,255,0) 100%);
+  transform:skewX(-25deg);animation:shine 2s linear infinite;
+}
+@keyframes shine{0%{left:-50%}100%{left:150%}}
+
+@media(max-width:900px){
+  .nav-cta{
+    padding:6px 10px;
+    font-size:0.8rem;
+  }
+  .actions{
+    gap:8px;
+  }
+}
+  
+.hamb{width:30px;height:22px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;transition:transform .2s ease}
+.hamb:hover{transform:scale(1.06)}
+.hamb span{height:3px;background:#fff;border-radius:2px;display:block;transition:transform .25s ease,opacity .25s ease}
+.hamb.open span:nth-child(1){transform:translateY(9px) rotate(45deg)}
+.hamb.open span:nth-child(2){opacity:0}
+.hamb.open span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
+@media(max-width:900px){.navlinks{display:none}}
+
+/* Drawer */
+.drawer{position:fixed;top:0;right:-320px;width:300px;height:100dvh;background:#fff;color:var(--dark-teal);
+box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1,.36,1);padding:22px;z-index:50}
+.drawer.open{right:0}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:45}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer .menu-title{text-align:center;font:700 20px/1 "Rockwell","Courier New";text-decoration:underline;text-underline-offset:6px;margin-bottom:16px}
+.drawer .menu{display:flex;flex-direction:column;gap:12px}
+.drawer .menu a{
+  display:flex;align-items:center;gap:10px;font-family:"Agency FB","Agency",Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif;
+  color:var(--dark-teal);border:2px dashed rgba(0,90,99,.25);background:rgba(0,90,99,.06);
+  padding:12px 10px;border-radius:12px;transition:.25s transform,.25s background;
+}
+.drawer .menu a::before{content:"✦";opacity:.9}
+.drawer .menu a:hover{background:rgba(0,90,99,.12);transform:translateX(4px)}
+.drawer-cta-wrap{text-align:center;margin-top:20px}
+.drawer-cta{display:inline-block;text-align:center;font-family:"Rockwell","Courier New";background:var(--dark-teal);color:#fff;border-radius:24px;padding:10px 18px;transition:background .2s,transform .2s}
+.drawer-cta:hover{background:#000;transform:translateY(-2px)}
+
+
+  /* ======================= PAGE ======================= */
+  .wrap{max-width:1000px;margin:24px auto 64px;padding:0 18px}
+  .title{font-family:"Rockwell","Courier New";font-weight:400;font-size:64px;line-height:1;margin:14px 0 6px;color:#000;text-shadow:0 2px 0 #cfcfcf,0 6px 16px rgba(0,0,0,.12)}
+  .top-dash{border-top:4px dashed var(--warm-green);margin:10px 0 18px}
+
+  /* Dashboard title — Rockwell, NOT bold */
+  .title{
+    font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;
+    font-weight:400; font-size:64px; line-height:1; margin:14px 0 6px; color:#000;
+    text-shadow:0 2px 0 #cfcfcf,0 6px 16px rgba(0,0,0,.12)
+  }
+  .divider{height:0;border-top:4px dashed var(--warm-green);margin:10px 0 18px}
+  .tagline{
+    font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;
+    font-weight:400; color:var(--dark-grey); font-style:italic; margin:0 0 8px
+  }
+
+  /* Badges — Rockwell (not bold), 30% bg, dashed border full color, white values */
+  .row{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:10px 0 16px}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:28px;border:2px dashed;
+    font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif; font-weight:400;
+    background:transparent;
+  }
+  .badge .label{opacity:.95}
+  .badge .value{color:#fff;font-weight:400}
+  .badge.file  { background:var(--warm-green-30); border-color:var(--warm-green); color:var(--warm-green) }
+  .badge.words { background:var(--pink-30);       border-color:var(--pink);       color:var(--pink) }
+  .badge.read  { background:var(--blue-30);       border-color:var(--blue);       color:var(--blue) }
+  .spacer{flex:1}
+
+  /* Buttons (not bold) */
+  .btn{
+    font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;
+    font-weight:400; border-radius:26px; padding:10px 18px; cursor:pointer; border:2px solid transparent;
+    transition:.2s transform,.2s box-shadow,.2s background-color,.2s color
+  }
+  .btn.export{background:var(--dark-teal);color:#fff}
+  .btn.export:hover{background:#000;transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.22)}
+  .btn.delete{background:var(--danger-15);color:var(--danger);border-color:var(--danger)}
+  .btn.delete:hover{background:var(--danger);color:#fff;transform:translateY(-2px);box-shadow:0 6px 14px rgba(224,49,49,.3)}
+
+  /* Panels & headings */
+  .panel{background:#fff;border-radius:14px;border:3px solid var(--dark-teal);border-top-color:var(--teal);border-left-color:var(--teal);padding:14px 14px 10px;margin:14px 0 20px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+  .panel.green{border-color:var(--warm-green)}
+  .panel.pink{border-color:var(--pink)}
+  .panel.teal{border-color:var(--blue)} /* Summary blue border */
+
+  /* Section headings — Agency + underline */
+  .panel h2{
+    font-family:"Agency FB","Agency",Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif;
+    font-weight:700; text-align:center; color:var(--dark-teal); font-size:26px; margin:0 0 8px;
+    letter-spacing:.5px; text-decoration:underline; text-underline-offset:4px;
+  }
+
+  /* Inner chart boxes with diagonal pattern */
+.chartbox{
+  --stripe: rgba(0,0,0,.06);
+  border-radius:18px;
+  margin:10px 12px 6px;
+  min-height:280px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+  border:3px dashed var(--dark-teal);
+  background:repeating-linear-gradient(45deg, var(--stripe) 0 12px, transparent 12px 24px);
+}
+.chartbox.pink{
+  border-color:var(--pink);
+  background:repeating-linear-gradient(45deg, var(--pink-10, rgba(255,32,146,.10)) 0 12px, transparent 12px 24px);
+}
+.chartbox.sage{
+  border-color:var(--warm-green);
+  background:repeating-linear-gradient(45deg, var(--warm-green-10, rgba(81,122,6,.10)) 0 12px, transparent 12px 24px);
+}
+.chartbox.blue{
+  border-color:var(--blue);
+  background:repeating-linear-gradient(45deg, var(--blue-10, rgba(0,166,255,.10)) 0 12px, transparent 12px 24px);
+}
+
+
+  .empty-note{color:var(--dark-grey);font-style:italic;text-align:center;margin:6px 0 2px}
+
+  /* New hover style (no shine): gentle tilt + border glow) */
+  .feature{display:block;transition:transform .2s ease, box-shadow .2s ease}
+  .feature:hover{transform:translateY(-3px) rotate(-.4deg);box-shadow:0 18px 30px rgba(0,0,0,.12)}
+  .feature:hover .panel{box-shadow:0 0 0 3px rgba(0,166,255,.18), 0 18px 30px rgba(0,0,0,.12)}
+  .feature:focus-visible{outline:3px solid var(--blue);border-radius:16px}
+
+  /* Grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+
+/* ================= FOOTER ================= */
+footer{
+  background:var(--dark-teal);
+  color:#fff;
+  font-family:"Rockwell","Courier New";
+  padding:50px 40px 30px;
+}
+.footer-container{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  gap:40px;
+  border-bottom:4px solid rgba(255,255,255,0.15);
+  padding-bottom:20px;
+  margin-bottom:16px;
+}
+.footer-brand{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.footer-brand h1{
+  font-size:64px;
+  font-weight:700;
+  margin:0;
+}
+.footer-brand p{opacity:.85;font-size:15px;margin-top:4px;}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  font-size:15px;
+}
+.footer-links a{
+  color:#fff;
+  opacity:.85;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.footer-links a:hover{opacity:1;transform:translateX(3px);}
+.footer-bottom{
+  text-align:center;
+  font-size:14px;
+  opacity:.8;
+}
+
+@media(max-width:768px){
+  .footer-brand h1{font-size:44px;text-align:center;}
+  .footer-container{flex-direction:column;align-items:center;text-align:center;}
+}
+
+
+/* ============ EXPORT DROPDOWN ============ */
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  background: #fff;
+  border: 2px solid var(--dark-teal);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  min-width: 180px;
+  z-index: 20;
+  overflow: hidden;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  text-align: left;
+  font-family: "Rockwell","Courier New",Courier,serif;
+  color: var(--dark-teal);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.dropdown-menu button:hover {
+  background: rgba(0,90,99,0.08);
+}
+
+.export-dropdown.show .dropdown-menu {
+  display: block;
+  animation: fadeIn .15s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-4px);}
+  to {opacity: 1; transform: translateY(0);}
+}
