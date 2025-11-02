@@ -174,7 +174,7 @@
   const fill=document.getElementById('fill');
   const pct=document.getElementById('pct');
   const bar=document.querySelector('.bar');
-  const duration=10000;
+  const duration=11000;
   const start=performance.now();
   function easeInOutCubic(x){return x<0.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
   function step(ts){
@@ -209,7 +209,7 @@
     }, 400);
   }
   cycle();
-  setInterval(cycle, 2000);
+  setInterval(cycle, 3000);
 })();
 </script>
 </body>
