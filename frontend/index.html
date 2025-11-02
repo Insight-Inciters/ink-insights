@@ -6,6 +6,12 @@
   <title>Ink Insights — Home</title>
   <link rel="icon" href="assests/Ink-logo.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Droid+Serif:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rockwell&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rockwell&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
 
@@ -69,128 +75,252 @@
           <a class="btn primary" href="upload.html">START ANALYSIS</a>
           <a class="btn ghost" href="#about-insights">LEARN MORE</a>
         </div>
+        <div class="hero-tags">
+  <span>No signup</span>
+  <span>5,000 word limit</span>
+  <span>We never store your text</span>
+</div>
+
       </div>
       <div class="hero-art">
         <img src="assests/FeatherInk.png" alt="Feather and ink bottle" />
       </div>
     </div>
 
-    <!-- Stacked waves -->
-    <div class="wave-stack" aria-hidden="true">
-      <svg class="wave w1" viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,96L1440,48L1440,120L0,120Z"></path></svg>
-      <svg class="wave w2" viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,96L1440,80L1440,120L0,120Z"></path></svg>
-      <svg class="wave w3" viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,96L1440,112L1440,120L0,120Z"></path></svg>
-    </div>
-  </section>
+
 
   <!-- ======================= WRITER STRUGGLES ======================= -->
-  <section class="writer-struggles">
-    <h2>Writer Struggles</h2>
-    <div class="ws-grid">
+<section class="writer-struggles">
+  <h2>Writer Struggles</h2>
+  <div class="writer-row">
+    <div class="writer-image">
       <img src="assests/PaperCrushed.jpg" alt="Crumpled paper on notebook" />
-      <p>
-        Every writer faces challenges—from overusing certain words without noticing, to struggling with tone, or
-        missing the hidden themes in their work. These struggles are part of the creative process, but they can also
-        hold back your writing’s impact.
-      </p>
+      <p class="img-credit">Image courtesy of <a href="https://pixabay.com/" target="_blank">Pixabay</a></p>
     </div>
-  </section>
+
+    <p class="writer-text">
+      Every writer faces challenges—from overusing certain words without noticing,
+      to struggling with tone, or missing the hidden themes in their work.
+      These struggles are part of the creative process, but they can also
+      hold back your writing’s impact.
+    </p>
+  </div>
+</section>
+
 
   <!-- ======================= INSIGHTS LEAD ======================= -->
-  <section class="insights-lead">
-    <p>That’s where insights step in, helping you analyze your text to uncover hidden messages and patterns.</p>
-  </section>
+<section class="lead-transition">
+  <p>
+    That’s where insights step in, helping you analyze your text to uncover hidden messages and patterns.
+  </p>
+</section>
+
 
   <!-- ======================= INK INSIGHTS (ABOUT) ======================= -->
-  <section id="about-insights" class="ink-insights">
-    <h2 class="section-title">Ink Insights</h2>
-    <div class="ii-grid">
-      <div class="ii-copy">
-        <h3>How are we helping them?</h3>
-        <p>
-          We built this tool to make the invisible visible. By analyzing your text, we highlight the words you repeat,
-          reveal the themes you return to, and map out the emotions flowing through your writing. Our dashboard turns
-          your work into simple charts and insights, helping you refine your style, balance your tone, and better
-          understand the stories you’re telling.
-        </p>
-      </div>
+ <section id="about-insights" class="ink-insights">
+  <h2>Ink Insights</h2>
+  <div class="ii-row">
+    <div class="ii-copy">
+      <h3>How are we helping them?</h3>
+      <p>
+        We built this tool to make the invisible visible. By analyzing your text, we highlight the words you repeat,
+        reveal the themes you return to, and map out the emotions flowing through your writing. Our dashboard turns
+        your work into simple charts and insights, helping you refine your style, balance your tone, and better
+        understand the stories you’re telling.
+      </p>
+    </div>
+    <div class="ii-image">
       <img src="assests/TruthTypewriter.jpg" alt="Typewriter printing TRUTH" />
     </div>
-    <div class="band band-bottom" aria-hidden="true"></div>
-  </section>
+  </div>
+</section>
 
   <!-- ======================= WHAT CAN YOUR WRITING REVEAL ======================= -->
-  <section id="reveal" class="reveal reveal--v2">
-    <div class="reveal-wrap">
-      <h2>What can your writing reveal?</h2>
-
-      <p class="reveal-line">Uncover the most repeated words in your text.<br>Spot overused terms and discover the vocabulary that shapes your writing.</p>
-      <p class="reveal-line">See whether your tone leans positive, negative, or neutral.<br>A quick glance at the emotional direction of your work.</p>
-      <p class="reveal-line">Identify recurring ideas and group them into themes.<br>Visualize how your words connect to form larger story patterns.</p>
-      <p class="reveal-line">Explore emotional tones and sensory cues.<br>Understand the feelings your writing evokes through data-driven insights.</p>
-
-      <img class="assests/deco icon-loupe"  src="KeywordIcon.png"   alt="" />
-      <img class="assests/deco icon-masks"  src="SentimentIcon.png" alt="" />
-      <img class="assests/deco icon-stars"  src="ClusterIcon.png"   alt="" />
-      <img class="assests/deco icon-hearts" src="EmotionalIcon.png" alt="" />
-      <div class="reveal-divider" aria-hidden="true"></div>
+<section class="features-section">
+  <h2>What can your writing reveal?</h2>
+  <div class="feature-grid">
+    <div class="feature-card feature-1">
+      <span class="feature-badge">Feature 1</span>
+      <img src="assests/KeywordIcon.png" alt="Magnifying glass over words" />
+      <p>
+        Uncover the most repeated words in your text. Spot overused terms and
+        discover the vocabulary that shapes your writing.
+      </p>
     </div>
-  </section>
 
-  <!-- ======================= HOW IT WORKS (vertical steps + animation) ======================= -->
-  <section class="how-vertical">
-    <div class="how-wrap">
-      <!-- Left: vertical steps -->
-      <ol class="v-steps">
-        <li class="v-step">
-          <div class="bubble">1</div>
-          <div class="copy">
-            <h3>Upload</h3>
-            <p>Upload your file — we accept <strong>.txt</strong> format.</p>
-          </div>
-        </li>
-        <li class="v-step">
-          <div class="bubble">2</div>
-          <div class="copy">
-            <h3>Analysis</h3>
-            <p>Our engine scans your writing to uncover keywords, themes, sentiments, and emotional tones.</p>
-          </div>
-        </li>
-        <li class="v-step">
-          <div class="bubble">3</div>
-          <div class="copy">
-            <h3>Dashboard</h3>
-            <p>View interactive charts and clear insights in an easy dashboard.</p>
-          </div>
-        </li>
-      </ol>
-
-      <!-- Right: animated process -->
-      <div class="process-card">
-        <div class="process-frame">
-          <img src="assests/WebAppProcess.gif" alt="Ink Insights process animation" />
-        </div>
-        <div class="process-shadow" aria-hidden="true"></div>
-      </div>
+    <div class="feature-card feature-2">
+      <span class="feature-badge">Feature 2</span>
+      <img src="assests/SentimentIcon.png" alt="Comedy and tragedy masks" />
+      <p>
+        See whether your tone leans positive, negative, or neutral. Get a quick
+        glance at the emotional direction of your work.
+      </p>
     </div>
-  </section>
+
+    <div class="feature-card feature-3">
+      <span class="feature-badge">Feature 3</span>
+      <img src="assests/ClusterIcon.png" alt="Stars and sparkles" />
+      <p>
+        Identify recurring ideas and group them into themes. Visualize how your
+        words connect to form larger story patterns.
+      </p>
+    </div>
+
+    <div class="feature-card feature-4">
+      <span class="feature-badge">Feature 4</span>
+      <img src="assests/EmotionalIcon.png" alt="Heart symbols" />
+      <p>
+        Explore emotional tones and sensory cues. Understand the feelings your
+        writing evokes through data-driven insights.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+
 
   <!-- ======================= QUOTE ======================= -->
-  <section class="quote">
+  <section class="quote fade-in">
     <blockquote>
       “Your writing voice is the deepest expression of who you are.”
       <cite>— Cheryl Strayed</cite>
     </blockquote>
   </section>
 
+
+
+  <!-- ======================= FEATURE SLIDES ======================= -->
+<section class="features-slideshow">
+  <div class="slide active" style="--bg-color:#0D4F2B;">
+    <div class="slide-left">
+      <h4 class="section-subtitle">FEATURES</h4>
+      <h2 class="slide-title">More About<br><em>Insights & their Graphs</em></h2>
+      <p class="slide-desc">Click arrows for Next Slide</p>
+    </div>
+    <div class="slide-right">
+      <img src="assets/feature1a.jpg" alt="Feature image 1">
+      <img src="assets/feature1b.jpg" alt="Feature image 2">
+    </div>
+  </div>
+
+  <div class="slide" style="--bg-color:#8C331C;">
+    <div class="slide-left">
+      <img src="assets/feature2a.jpg" alt="Feature image">
+      <p class="slide-desc">Feature description</p>
+    </div>
+    <div class="slide-right">
+      <p class="slide-num">#1</p>
+      <h2 class="slide-title">KEYWORD<br><em>& Frequency</em></h2>
+      <img src="assets/feature2b.jpg" alt="Feature image">
+    </div>
+  </div>
+
+  <div class="slide" style="--bg-color:#0A2E5A;">
+    <div class="slide-left">
+      <p class="slide-num">#2</p>
+      <h2 class="slide-title">THEMES<br><em>& Clusters</em></h2>
+      <img src="assets/feature3a.jpg" alt="Feature image">
+    </div>
+    <div class="slide-right">
+      <img src="assets/feature3b.jpg" alt="Feature image">
+      <p class="slide-desc">Feature description</p>
+    </div>
+  </div>
+
+  <div class="slide" style="--bg-color:#8C331C;">
+    <div class="slide-left">
+      <img src="assets/feature4a.jpg" alt="Feature image">
+      <p class="slide-desc">Feature description</p>
+    </div>
+    <div class="slide-right">
+      <p class="slide-num">#3</p>
+      <h2 class="slide-title"><em>Sentiments</em></h2>
+      <img src="assets/feature4b.jpg" alt="Feature image">
+    </div>
+  </div>
+
+  <div class="slide" style="--bg-color:#0A2E5A;">
+    <div class="slide-left">
+      <p class="slide-num">#4</p>
+      <h2 class="slide-title">EMOTIONAL<br><em>Patterns</em></h2>
+      <img src="assets/feature5a.jpg" alt="Feature image">
+    </div>
+    <div class="slide-right">
+      <img src="assets/feature5b.jpg" alt="Feature image">
+      <p class="slide-desc">Feature description</p>
+    </div>
+  </div>
+
+  <button class="nav prev">&#10094;</button>
+  <button class="nav next">&#10095;</button>
+</section>
+
+
+
+
+
+
+  <!-- ======================= HOW IT WORKS (vertical steps + animation) ======================= -->
+  <section class="how-vertical fade-in">
+  <h2>How it works?</h2>
+  <div class="how-wrap">
+    <!-- Left: vertical steps -->
+    <ol class="v-steps">
+      <li class="v-step">
+        <div class="step-box">
+          <div class="bubble">1</div>
+          <div class="copy">
+            <h3> <span class="step-title">Upload</span></h3>
+            <p>Upload your file — we accept <strong>.txt</strong> format.</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="v-step">
+        <div class="step-box">
+          <div class="bubble">2</div>
+          <div class="copy">
+            <h3><span class="step-title">Analysis</span></h3>
+            <p>Our NLP engine scans your writing to uncover keywords, themes, sentiments, and emotional tones.</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="v-step">
+        <div class="step-box">
+          <div class="bubble">3</div>
+          <div class="copy">
+            <h3> <span class="step-title">Dashboard</span></h3>
+            <p>View interactive charts and clear insights in an easy dashboard.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <!-- Right: animated process -->
+    <div class="process-card">
+      <div class="demo-box">
+        <h4>Product Demo</h4>
+        <img src="assests/WebAppProcess.gif" alt="Ink Insights process animation" />
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
   <!-- ======================= PRIVACY ======================= -->
-  <section class="privacy">
-    <h2>Privacy Guaranteed</h2>
-    <p>
-      Your words are yours alone. We process your text securely, and once your analysis is complete,
-      the data is deleted automatically. Nothing is stored and nothing is shared.
-    </p>
-  </section>
+<section class="privacy-section fade-in">
+  <h2>Privacy Guaranteed</h2>
+  <p>
+    Your words are yours alone. We process your text securely on our local server,
+    and once your analysis is complete, the data is deleted automatically.
+    Nothing is stored, nothing is shared — your privacy is always protected.
+  </p>
+  <a href="faq.html" class="privacy-btn">Learn More</a>
+</section>
 
 
 
@@ -215,6 +345,132 @@
     © 2025 Ink Insights — All rights reserved.
   </div>
 </footer>
+
+
+
+
+  <!-- ======================= SLIDE SHOW ANIMATION ======================= -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const slides = document.querySelectorAll(".features-slideshow .slide");
+  const btnNext = document.querySelector(".features-slideshow .next");
+  const btnPrev = document.querySelector(".features-slideshow .prev");
+
+  // Wrap slides in a track
+  const slideshow = document.querySelector(".features-slideshow");
+  const track = document.createElement("div");
+  track.classList.add("slides-track");
+
+  // Move all slides into track
+  slides.forEach(slide => track.appendChild(slide));
+  slideshow.insertBefore(track, btnPrev);
+
+  let index = 0;
+  let autoplay = true;
+  const total = slides.length;
+
+  function updateSlide() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  function nextSlide() {
+    index = (index + 1) % total;
+    updateSlide();
+  }
+
+  function prevSlide() {
+    index = (index - 1 + total) % total;
+    updateSlide();
+  }
+
+  let autoSlide = setInterval(() => {
+    if (autoplay) nextSlide();
+  }, 6000);
+
+  function stopAutoplay() {
+    autoplay = false;
+    clearInterval(autoSlide);
+  }
+
+  btnNext.addEventListener("click", () => {
+    stopAutoplay();
+    nextSlide();
+  });
+
+  btnPrev.addEventListener("click", () => {
+    stopAutoplay();
+    prevSlide();
+  });
+});
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const section = document.querySelector(".writer-struggles");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          section.classList.add("visible");
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  observer.observe(section);
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll(  ".writer-struggles, .lead-transition, .ink-insights, .features-section, .quote");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    },
+    { threshold: 0.3 }
+  );
+  sections.forEach((section) => observer.observe(section));
+});
+</script>
+
+
+<script>
+  const fadeElements = document.querySelectorAll('.fade-in');
+
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  fadeElements.forEach(el => fadeObserver.observe(el));
+</script>
+
+
+<script>
+  const fadeElements = document.querySelectorAll('.fade-in');
+
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  fadeElements.forEach(el => fadeObserver.observe(el));
+</script>
 
 
   <!-- ======================= INTERACTIONS ======================= -->
