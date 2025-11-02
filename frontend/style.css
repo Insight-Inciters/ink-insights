@@ -314,51 +314,97 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   .navlinks{display:none}
 }
 
-/* ================= FOOTER ================= */
-footer{
-  background:var(--dark-teal);
-  color:#fff;
-  font-family:"Rockwell","Courier New";
-  padding:50px 40px 30px;
+/* ================= FOOTER CTA REFINEMENT ================= */
+footer {
+  background: var(--dark-teal);
+  color: #fff;
+  font-family: "Rockwell", "Courier New";
+  padding: 60px 40px 40px;
+  text-align: center;
 }
-.footer-container{
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  align-items:flex-start;
-  gap:40px;
-  border-bottom:4px solid rgba(255,255,255,0.15);
-  padding-bottom:20px;
-  margin-bottom:16px;
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  border-bottom: 3px dashed rgba(255, 255, 255, 0.25);
+  padding-bottom: 26px;
 }
-.footer-brand{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+
+.footer-brand h2 {
+  font-size: 64px; /* same size as old "Enjoy Writing!" */
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
 }
-.footer-brand h1{
-  font-size:64px;
-  font-weight:700;
-  margin:0;
+
+.footer-brand p {
+  opacity: 0.85;
+  font-size: 15px;
+  margin-top: 6px;
 }
-.footer-brand p{opacity:.85;font-size:15px;margin-top:4px;}
-.footer-links{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  font-size:15px;
+
+/* Reworked CTA button — contrasts against teal background */
+.footer-brand .btn.primary {
+  background: #fff;
+  color: var(--dark-teal);
+  border: 2px solid #fff;
+  font-size: 1.05rem;
+  padding: 12px 26px;
+  margin-top: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 }
-.footer-links a{
-  color:#fff;
-  opacity:.85;
-  transition:opacity .2s ease,transform .2s ease;
+
+/* Hover: invert for dynamic feel */
+.footer-brand .btn.primary:hover {
+  background: transparent;
+  color: #fff;
+  border-color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
 }
-.footer-links a:hover{opacity:1;transform:translateX(3px);}
-.footer-bottom{
-  text-align:center;
-  font-size:14px;
-  opacity:.8;
+
+/* Footer links */
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 15px;
 }
+
+.footer-links a {
+  color: #fff;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Bottom note */
+.footer-bottom {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+  margin-top: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-brand h2 {
+    font-size: 46px;
+  }
+  .footer-brand .btn.primary {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
 
 @media(max-width:768px){
   .footer-brand h1{font-size:44px;text-align:center;}
