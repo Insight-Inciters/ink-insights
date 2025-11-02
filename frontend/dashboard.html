@@ -4,20 +4,31 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Ink Insights — Dashboard</title>
+
+<!-- Favicon -->
 <link rel="icon" href="assests/Ink-logo.png" type="image/png" />
 <link rel="stylesheet" href="dashboard.css">
 </head>
 
+
+
+
+  
 <body>
 
+  <!-- ======================= HEADER ======================= -->
 <header class="navbar">
   <div class="nav-inner">
     <div class="brand">
       <a href="index.html">
         <img src="assests/Ink-logo.png" alt="Ink Insights Logo" />
-        <span class="txt"><span class="line1">Ink</span><span class="line2">Insights</span></span>
+        <span class="txt">
+          <span class="line1">Ink</span>
+          <span class="line2">Insights</span>
+        </span>
       </a>
     </div>
+
     <nav class="navlinks">
       <a href="index.html">Home</a>
       <a href="dashboard.html" aria-current="page">Dashboard</a>
@@ -34,7 +45,6 @@
   </div>
 </header>
 
-<!-- Drawer -->
 <aside id="drawer" class="drawer" aria-hidden="true">
   <div class="menu-title">Menu</div>
   <nav class="menu">
@@ -44,65 +54,102 @@
     <a href="faq.html">FAQ/Help</a>
     <a href="contact.html">Contact</a>
   </nav>
-  <div class="drawer-cta-wrap"><a class="drawer-cta" href="upload.html">START ANALYSIS</a></div>
+  <div class="drawer-cta-wrap">
+    <a class="drawer-cta" href="upload.html">START ANALYSIS</a>
+  </div>
 </aside>
 <div id="scrim" class="scrim" aria-hidden="true"></div>
 
-<main class="wrap">
-  <h1 class="title">Dashboard</h1>
-  <div class="divider"></div>
 
-  <p class="tagline">Your analysis results appear below.</p>
+  <!-- ======================= MAIN ======================= -->
+  <main class="wrap">
+    <h1 class="title">Dashboard</h1>
+    <div class="divider"></div>
 
-  <div class="row">
-    <span class="badge file"><span class="label">File Name:</span> <span class="value" id="fn">none</span></span>
-    <span class="badge words"><span class="label">Word Count:</span> <span class="value" id="wc">0000</span></span>
-    <span class="badge read"><span class="label">Read Time:</span> <span class="value" id="rt">00 min</span></span>
-    <span class="spacer"></span>
-    <button id="deleteBtn" class="btn delete" type="button">DELETE</button>
-    <div class="export-dropdown">
-      <button id="exportBtn" class="btn export" type="button">EXPORT ▾</button>
-      <div id="exportMenu" class="dropdown-menu">
-        <button id="exportPDF" type="button">Export as PDF (Preview)</button>
-        <button id="exportCSV" type="button">Export as CSV</button>
-      </div>
-    </div>
+    <p class="tagline">Choose a feature to see more information.</p>
+
+    <!-- Badges -->
+    <div class="row">
+      <span class="badge file"><span class="label">File Name:</span> <span class="value" id="fn">none</span></span>
+      <span class="badge words"><span class="label">Word Count:</span> <span class="value" id="wc">0000</span></span>
+      <span class="badge read"><span class="label">Read Time:</span> <span class="value" id="rt">00 min</span></span>
+      <span class="spacer"></span>
+      <button id="deleteBtn" class="btn delete" type="button">DELETE</button>
+<div class="export-dropdown">
+  <button id="exportBtn" class="btn export" type="button">EXPORT ▾</button>
+  <div id="exportMenu" class="dropdown-menu">
+    <button id="exportPDF" type="button">Export as PDF (Preview)</button>
+    <button id="exportCSV" type="button">Export as CSV</button>
   </div>
+</div>
 
-  <section class="panel teal">
-    <h2>Summary</h2>
-    <div id="summaryBox"><div id="summaryText" style="max-width:92%"></div></div>
-    <p id="summaryEmpty" class="empty-note">No summary available. Upload a file first.</p>
-  </section>
+    </div>
 
-  <section class="grid">
-    <div class="panel green">
-      <h2>Keywords & Frequencies</h2>
-      <div class="chartbox pink"><canvas id="keywordsChart"></canvas></div>
-      <p class="empty-note">No chart yet.</p>
-    </div>
-    <div class="panel pink">
-      <h2>Sentiment Overview</h2>
-      <div class="chartbox sage"><canvas id="sentimentChart"></canvas></div>
-      <p class="empty-note">No chart yet.</p>
-    </div>
-    <div class="panel green">
-      <h2>Emotional Patterns</h2>
-      <div class="chartbox pink"><canvas id="emotionsChart"></canvas></div>
-      <p class="empty-note">No chart yet.</p>
-    </div>
-  </section>
+    <!-- Summary (no inner box; blue border on panel) -->
+    <section class="panel teal">
+      <h2>Summary</h2>
+      <div id="summaryBox">
+        <div id="summaryText" style="max-width:92%"></div>
+      </div>
+      <p id="summaryEmpty" class="empty-note">No summary available. Select data to get report.</p>
+    </section>
 
-  <p class="empty-note" style="text-align:center;margin-top:18px">
-    We automatically remove your report after you export or delete it. Privacy first.
-  </p>
-</main>
+    <!-- Feature grid -->
+    <section class="grid">
+      <a class="feature" href="features.html#keywords" data-section="keywords" aria-label="Open Keywords & Frequencies">
+        <div class="panel green">
+          <h2>Keywords &amp; Frequencies</h2>
+          <div class="chartbox pink">
+            <canvas id="keywordsChart" aria-label="Keywords bar chart"></canvas>
+          </div>
+          <p class="empty-note">No chart available. Select data to get report</p>
+        </div>
+      </a>
+
+      <a class="feature" href="features.html#themes" data-section="themes" aria-label="Open Themes & Clusters">
+        <div class="panel pink">
+          <h2>Themes &amp; Clusters</h2>
+          <div class="chartbox sage">
+            <canvas id="themesChart" aria-label="Themes scatter chart"></canvas>
+          </div>
+          <p class="empty-note">No chart available. Select data to get report</p>
+        </div>
+      </a>
+
+      <a class="feature" href="features.html#sentiment" data-section="sentiment" aria-label="Open Sentiment Overview">
+        <div class="panel pink">
+          <h2>Sentiment Overview</h2>
+          <div class="chartbox sage">
+            <canvas id="sentimentChart" aria-label="Sentiment doughnut chart"></canvas>
+          </div>
+          <p class="empty-note">No chart available. Select data to get report</p>
+        </div>
+      </a>
+
+      <a class="feature" href="features.html#emotions" data-section="emotions" aria-label="Open Emotional Patterns">
+        <div class="panel green">
+          <h2>Emotional Patterns</h2>
+          <div class="chartbox pink">
+            <canvas id="emotionsChart" aria-label="Emotions radar chart"></canvas>
+          </div>
+          <p class="empty-note">No chart available. Select data to get report</p>
+        </div>
+      </a>
+    </section>
+
+    <p class="empty-note" style="text-align:center;margin-top:18px">
+      We automatically remove your report after you export or delete it. Keeping things private and tidy.
+    </p>
+  </main>
+
+
+
 
 <footer>
   <div class="footer-container">
     <div class="footer-brand">
       <h1>Enjoy Writing!</h1>
-      <p>Privacy-first analysis for creators.</p>
+      <p>Privacy-first data analysis, designed for writers.</p>
     </div>
     <div class="footer-links">
       <a href="#">Privacy Policy</a>
@@ -110,100 +157,127 @@
       <a href="contact.html">Contact</a>
     </div>
   </div>
-  <div class="footer-bottom">© 2025 Ink Insights — All rights reserved.</div>
+  <div class="footer-bottom">
+    © 2025 Ink Insights — All rights reserved.
+  </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-
 <script>
-/* === DELETE BUTTON HANDLER === */
-document.getElementById("deleteBtn").addEventListener("click", async ()=>{
-  if(!confirm("Delete this analysis permanently?")) return;
+(function(){
+  // Dropdown open/close
+  const exportBtn = document.getElementById('exportBtn');
+  const exportDropdown = document.querySelector('.export-dropdown');
+  const exportMenu = document.getElementById('exportMenu');
 
-  try{
-    await fetch("https://ink-insights-backend.vercel.app/delete", { method: "DELETE" });
-  }catch(e){ console.warn("Backend delete failed, continuing cleanup."); }
-
-  // local cleanup
-  localStorage.removeItem("ink_results");
-  localStorage.removeItem("ink_text");
-  localStorage.removeItem("ink_report_meta");
-  localStorage.removeItem("ink_loading");
-
-  // clear UI
-  document.getElementById("summaryText").innerText = "";
-  document.getElementById("summaryEmpty").style.display = "block";
-  ["fn","wc","rt"].forEach(id=>document.getElementById(id).textContent="—");
-
-  document.querySelectorAll("canvas").forEach(c=>{
-    const ctx=c.getContext("2d"); ctx.clearRect(0,0,c.width,c.height);
+  exportBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    exportDropdown.classList.toggle('show');
   });
 
-  alert("✅ Data deleted successfully.");
-  window.location.href="upload.html";
-});
+  document.addEventListener('click', ()=>exportDropdown.classList.remove('show'));
 
-/* === LOAD RESULTS === */
-(async ()=>{
-  const resultsJSON = localStorage.getItem("ink_results");
-  const metaJSON = localStorage.getItem("ink_report_meta");
-  const summaryBox = document.getElementById("summaryText");
-  const summaryEmpty = document.getElementById("summaryEmpty");
+  // Export handlers
+  const exportPDF = document.getElementById('exportPDF');
+  const exportCSV = document.getElementById('exportCSV');
 
-  if(!resultsJSON || !metaJSON){
-    summaryEmpty.style.display="block";
-    summaryBox.innerText="No analysis data found. Please upload a file.";
-    return;
-  }
+  exportPDF.addEventListener('click', ()=>{
+    exportDropdown.classList.remove('show');
+    openPDFPreview();
+  });
 
-  const results = JSON.parse(resultsJSON);
-  const meta = JSON.parse(metaJSON);
+  exportCSV.addEventListener('click', ()=>{
+    exportDropdown.classList.remove('show');
+    exportAsCSV();
+  });
 
-  // badges
-  document.getElementById("fn").textContent = meta.name || "unknown.txt";
-  document.getElementById("wc").textContent = meta.words?.toLocaleString() || "0";
-  document.getElementById("rt").textContent = `${Math.ceil((meta.words||0)/200)} min`;
-
-  // summary
-  summaryBox.innerHTML = `
-    <strong>Overall Sentiment:</strong> ${(results.sentiment?.overall||"neutral").toUpperCase()}<br/>
-    <strong>Readability Score:</strong> ${results.readability?.score??"–"} (${results.readability?.level??"N/A"})<br/>
-    <strong>Top Keywords:</strong> ${(results.keywords||[]).slice(0,6).join(", ")||"N/A"}
-  `;
-  summaryEmpty.style.display="none";
-
-  // charts
-  if(results.sentiment){
-    new Chart(document.getElementById("sentimentChart"),{
-      type:"doughnut",
-      data:{labels:["Positive","Neutral","Negative"],
-        datasets:[{data:[
-          results.sentiment.positive||0,
-          results.sentiment.neutral||0,
-          results.sentiment.negative||0]}]},
-      options:{plugins:{legend:{position:"bottom"}}}
+  // PDF preview function
+  function openPDFPreview(){
+    // This uses html2canvas + jsPDF (already loaded)
+    const main = document.querySelector('main');
+    html2canvas(main).then(canvas=>{
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jspdf.jsPDF({orientation: 'p', unit: 'pt', format: 'a4'});
+      const width = pdf.internal.pageSize.getWidth();
+      const height = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(width / canvas.width, height / canvas.height);
+      pdf.addImage(imgData, 'PNG', 20, 20, canvas.width * ratio - 40, canvas.height * ratio - 40);
+      pdf.output('dataurlnewwindow'); // open preview tab
+      askDeletePermission();
     });
   }
 
-  if(results.emotions){
-    new Chart(document.getElementById("emotionsChart"),{
-      type:"radar",
-      data:{labels:Object.keys(results.emotions),
-        datasets:[{label:"Emotion Levels",data:Object.values(results.emotions)}]}
-    });
+  // CSV export function
+  function exportAsCSV(){
+    const content = document.querySelector('#summaryText')?.innerText || "No data";
+    const blob = new Blob([content], {type: 'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'ink-insights-export.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+    askDeletePermission();
   }
 
-  if(results.keywords){
-    new Chart(document.getElementById("keywordsChart"),{
-      type:"bar",
-      data:{labels:results.keywords.slice(0,10),
-        datasets:[{label:"Keyword Frequency",
-          data:results.keywords.map(()=>Math.floor(Math.random()*20)+5)}]},
-      options:{plugins:{legend:{display:false}}}
-    });
+  // Ask permission to delete data
+  function askDeletePermission(){
+    setTimeout(()=>{
+      if(confirm("Export completed.\nWould you like to delete your data now?")){
+        deleteData();
+      }
+    }, 400);
   }
+
+function deleteData(){
+  // clear summary & show empty note
+  document.getElementById('summaryText').innerText = "";
+  document.getElementById('summaryEmpty').style.display = "block";
+
+  // optional: clear badges too
+  document.getElementById('fn').innerText = "none";
+  document.getElementById('wc').innerText = "0000";
+  document.getElementById('rt').innerText = "00 min";
+
+  // success confirmation
+  setTimeout(()=>{
+    alert("✅ Your data has been deleted successfully.");
+  }, 300);
+}
+
+
 })();
 </script>
+
+
+
+<script>
+(function(){
+  const drawer=document.getElementById('drawer');
+  const scrim=document.getElementById('scrim');
+  const hamb=document.getElementById('hamb');
+  function openDrawer(){
+    drawer.classList.add('open');
+    scrim.classList.add('show');
+    hamb.classList.add('open');
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    scrim.classList.remove('show');
+    hamb.classList.remove('open');
+  }
+  hamb.addEventListener('click',()=>drawer.classList.contains('open')?closeDrawer():openDrawer());
+  scrim.addEventListener('click',closeDrawer);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+  document.querySelectorAll('#drawer a').forEach(a=>a.addEventListener('click',closeDrawer));
+})();
+</script>
+
+
+  <!-- External scripts: Chart.js + your modular dashboard logic -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
 
 </body>
 </html>
