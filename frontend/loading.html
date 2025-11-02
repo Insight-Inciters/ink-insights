@@ -169,25 +169,74 @@
   resize();makeStars();requestAnimationFrame(draw);
 })();
 
-/* ========= PROGRESS (≈8 s) & REDIRECT ========= */
-(function(){
+/* ========= LOADING PROGRESS & API CALL ========= */
+(async function(){
   const fill=document.getElementById('fill');
   const pct=document.getElementById('pct');
   const bar=document.querySelector('.bar');
-  const duration=11000;
+  const duration=11000; // ~11s full animation
   const start=performance.now();
+  let apiDone = false;
+  let progress = 0;
+
   function easeInOutCubic(x){return x<0.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
+
+  // Smooth progress animation
   function step(ts){
-    const progress=Math.min((ts-start)/duration,1);
-    const eased=easeInOutCubic(progress);
-    const value=Math.floor(eased*100);
-    fill.style.width=value+"%";
-    pct.textContent=value+"%";
-    bar.setAttribute("aria-valuenow",value);
-    if(progress<1){requestAnimationFrame(step);}
-    else{setTimeout(()=>location.href="dashboard.html",600);}
+    const p=Math.min((ts-start)/duration,1);
+    const eased=easeInOutCubic(p);
+    progress=Math.floor(eased*100);
+    fill.style.width=progress+"%";
+    pct.textContent=progress+"%";
+    bar.setAttribute("aria-valuenow",progress);
+    if(p<1){requestAnimationFrame(step);}
+    else if(apiDone){finish();}
   }
   requestAnimationFrame(step);
+
+  // ===== BACKEND CALL =====
+  const meta = JSON.parse(localStorage.getItem("ink_report_meta")||"{}");
+  const text = localStorage.getItem("ink_text")||"";
+
+  if(!text){
+    alert("No text found. Please upload your file again.");
+    window.location.href = "upload.html";
+    return;
+  }
+
+  try {
+    const res = await fetch("https://ink-insights-backend.vercel.app/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, filename: meta.name || "uploaded.txt" })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      alert("Error: " + (err.error || res.statusText));
+      window.location.href = "upload.html";
+      return;
+    }
+
+    const data = await res.json();
+    localStorage.setItem("ink_results", JSON.stringify(data));
+    apiDone = true;
+
+    // If animation already finished, go now
+    if(progress >= 100){
+      finish();
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Network or server error — please try again later.");
+    window.location.href = "upload.html";
+  }
+
+  // ===== When done, move to dashboard =====
+  function finish(){
+    setTimeout(()=>{ window.location.href = "dashboard.html"; }, 600);
+  }
 })();
 
 /* ========= ROTATING MESSAGES ========= */
@@ -212,5 +261,6 @@
   setInterval(cycle, 3000);
 })();
 </script>
+
 </body>
 </html>
