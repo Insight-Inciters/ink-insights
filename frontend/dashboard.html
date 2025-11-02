@@ -160,6 +160,8 @@
 
 <script>
 
+ fetch("https://ink-insights-backend.vercel.app/delete", { method: "DELETE" });
+
  function deleteData(){
   // Remove all stored analysis data
   localStorage.removeItem('ink_results');
