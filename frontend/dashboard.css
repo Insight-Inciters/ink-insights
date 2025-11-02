@@ -104,6 +104,7 @@
 
 
 /* ================= FOOTER ================= */
+/* Footer — Dashboard Only */
 #dashboard-footer {
   background: var(--dark-teal);
   color: #fff;
@@ -117,7 +118,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 40px;
-  border-bottom: 4px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 4px solid rgba(255, 255, 255, .15);
   padding-bottom: 20px;
   margin-bottom: 16px;
 }
@@ -135,7 +136,7 @@
 }
 
 #dashboard-footer .footer-brand p {
-  opacity: 0.85;
+  opacity: .85;
   font-size: 15px;
   margin-top: 4px;
 }
@@ -149,8 +150,8 @@
 
 #dashboard-footer .footer-links a {
   color: #fff;
-  opacity: 0.85;
-  transition: opacity 0.2s, transform 0.2s;
+  opacity: .85;
+  transition: opacity .2s, transform .2s;
 }
 
 #dashboard-footer .footer-links a:hover {
@@ -161,7 +162,7 @@
 #dashboard-footer .footer-bottom {
   text-align: center;
   font-size: 14px;
-  opacity: 0.8;
+  opacity: .8;
 }
 
 @media (max-width: 768px) {
@@ -181,7 +182,6 @@
     text-align: center;
   }
 }
-
 
 
 /* ============ EXPORT DROPDOWN ============ */
