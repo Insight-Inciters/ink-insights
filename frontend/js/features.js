@@ -1,5 +1,5 @@
 // js/features.js
-import { renderDoughnut, renderBar, renderRadar, renderLine } from "./viz.js";
+import { renderDoughnut, renderBar, renderRadar, renderLine } from "viz.js";
 
 (function () {
   const report = JSON.parse(localStorage.getItem("ink_report") || "null");
