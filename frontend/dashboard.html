@@ -159,6 +159,36 @@
 </footer>
 
 <script>
+
+ function deleteData(){
+  // Remove all stored analysis data
+  localStorage.removeItem('ink_results');
+  localStorage.removeItem('ink_text');
+  localStorage.removeItem('ink_report_meta');
+  localStorage.removeItem('ink_loading');
+
+  // Clear visible content
+  document.getElementById('summaryText').innerText = "";
+  document.getElementById('summaryEmpty').style.display = "block";
+  document.getElementById('fn').innerText = "none";
+  document.getElementById('wc').innerText = "0000";
+  document.getElementById('rt').innerText = "00 min";
+
+  // Clear charts if they exist
+  const canvases = document.querySelectorAll("canvas");
+  canvases.forEach(c => {
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+  });
+
+  // Confirm and redirect to upload page
+  setTimeout(()=>{
+    alert("✅ Your data has been permanently deleted.");
+    window.location.href = "upload.html";
+  }, 300);
+}
+
+ 
 (async function(){
   // === Load stored results ===
   const resultsJSON = localStorage.getItem('ink_results');
