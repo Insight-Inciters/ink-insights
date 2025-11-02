@@ -168,55 +168,80 @@
   .feature-section.active{display:block}  /* only active section shows */
 
   /* ================= FOOTER ================= */
-footer{
-  background:var(--dark-teal);
-  color:#fff;
-  font-family:"Rockwell","Courier New";
-  padding:50px 40px 30px;
-}
-.footer-container{
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  align-items:flex-start;
-  gap:40px;
-  border-bottom:4px solid rgba(255,255,255,0.15);
-  padding-bottom:20px;
-  margin-bottom:16px;
-}
-.footer-brand{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.footer-brand h1{
-  font-size:64px;
-  font-weight:700;
-  margin:0;
-}
-.footer-brand p{opacity:.85;font-size:15px;margin-top:4px;}
-.footer-links{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  font-size:15px;
-}
-.footer-links a{
-  color:#fff;
-  opacity:.85;
-  transition:opacity .2s ease,transform .2s ease;
-}
-.footer-links a:hover{opacity:1;transform:translateX(3px);}
-.footer-bottom{
-  text-align:center;
-  font-size:14px;
-  opacity:.8;
+/* ================= FOOTER (FEATURES PAGE) ================= */
+#features-footer {
+  background: var(--dark-teal);
+  color: #fff;
+  font-family: "Rockwell", "Courier New";
+  padding: 50px 40px 30px;
 }
 
-@media(max-width:768px){
-  .footer-brand h1{font-size:44px;text-align:center;}
-  .footer-container{flex-direction:column;align-items:center;text-align:center;}
+#features-footer .footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 40px;
+  border-bottom: 4px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 20px;
+  margin-bottom: 16px;
 }
+
+#features-footer .footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#features-footer .footer-brand h1 {
+  font-size: 64px;
+  font-weight: 700;
+  margin: 0;
+}
+
+#features-footer .footer-brand p {
+  opacity: 0.85;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+#features-footer .footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+}
+
+#features-footer .footer-links a {
+  color: #fff;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#features-footer .footer-links a:hover {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+#features-footer .footer-bottom {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  #features-footer .footer-brand h1 {
+    font-size: 44px;
+    text-align: center;
+  }
+
+  #features-footer .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
 
 
   /* ============ EXPORT DROPDOWN ============ */
