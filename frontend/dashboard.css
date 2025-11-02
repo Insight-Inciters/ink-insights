@@ -217,7 +217,7 @@ footer {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: left;
   gap: 40px;
   border-bottom: 4px solid rgba(255,255,255,0.15);
   padding-bottom: 20px;
