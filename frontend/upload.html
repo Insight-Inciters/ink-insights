@@ -353,7 +353,7 @@
     </section>
   </main>
 
-  <script>
+<script>
 (function(){
   const els = {
     drawer: document.getElementById('drawer'),
@@ -424,7 +424,7 @@
     els.fileInput.value = '';
   }
 
-  /* GET RESULTS */
+  /* GET RESULTS click */
   function setRipplePosition(e){
     const rect = els.resultsBtn.getBoundingClientRect();
     els.resultsBtn.style.setProperty('--x', e.clientX - rect.left + 'px');
@@ -455,9 +455,12 @@
       return;
     }
 
+    // Redirect to loading.html while analysis happens
+    localStorage.setItem('ink_loading', 'true');
+    window.location.href = 'loading.html';
+
+    // send data to backend (run in background)
     try {
-      els.resultsBtn.setAttribute('aria-disabled','true');
-      els.resultsBtn.textContent = 'Analyzing...';
       const res = await fetch('https://ink-insights-backend.vercel.app/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -467,12 +470,15 @@
       if (!res.ok) throw new Error('Server error: ' + res.statusText);
       const data = await res.json();
       localStorage.setItem('ink_results', JSON.stringify(data));
+
+      // mark done for dashboard to open
+      localStorage.removeItem('ink_loading');
       setTimeout(() => { window.location.href = 'dashboard.html'; }, 500);
     } catch (err) {
       console.error(err);
       alert('There was a problem analyzing your text. Please try again.');
-      els.resultsBtn.removeAttribute('aria-disabled');
-      els.resultsBtn.textContent = 'GET RESULTS ›';
+      localStorage.removeItem('ink_loading');
+      window.location.href = 'upload.html';
     }
   });
 
