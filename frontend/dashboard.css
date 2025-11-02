@@ -207,54 +207,63 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 
 
 /* ================= FOOTER ================= */
-/* ================= FOOTER ================= */
-footer{
-  background:var(--dark-teal);
-  color:#fff;
-  font-family:"Rockwell","Courier New";
-  padding:50px 40px 30px;
+footer {
+  background: var(--dark-teal);
+  color: #fff;
+  font-family: "Rockwell","Courier New";
+  padding: 50px 40px 30px;
 }
-.footer-container{
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  align-items:flex-start;
-  gap:40px;
-  border-bottom:4px solid rgba(255,255,255,0.15);
-  padding-bottom:20px;
-  margin-bottom:16px;
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 40px;
+  border-bottom: 4px solid rgba(255,255,255,0.15);
+  padding-bottom: 20px;
+  margin-bottom: 16px;
 }
-.footer-brand{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
-.footer-brand h1{
-  font-size:64px;
-  font-weight:700;
-  align-items:left;text-align:left;
-  margin:0;
+.footer-brand h1 {
+  font-size: 64px;
+  font-weight: 700;
+  margin: 0;
 }
-.footer-brand p{opacity:.85;font-size:15px;margin-top:4px;  align-items:left;text-align:left;}
-.footer-links{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  font-size:15px;
+.footer-brand p {
+  opacity: .85;
+  font-size: 15px;
+  margin-top: 4px;
 }
-.footer-links a{
-  color:#fff;
-  opacity:.85;
-  transition:opacity .2s ease,transform .2s ease;
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
 }
-.footer-links a:hover{opacity:1;transform:translateX(3px);}
-.footer-bottom{text-align:center;font-size:14px;opacity:.8;}
+.footer-links a {
+  color: #fff;
+  opacity: .85;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.footer-links a:hover {
+  opacity: 1;
+  transform: translateX(3px);
+}
+.footer-bottom {
+  text-align: center;
+  font-size: 14px;
+  opacity: .8;
+}
 
-@media(max-width:768px){
-  .title{font-size:48px;text-align:center}
-  .footer-brand h1{font-size:44px;text-align:center;}
-  .footer-container{flex-direction:column;align-items:center;text-align:center;}
+@media (max-width:768px) {
+  .footer-brand h1 {font-size:44px;text-align:center;}
+  .footer-container {flex-direction:column;align-items:center;text-align:center;}
 }
+
 
 
 
