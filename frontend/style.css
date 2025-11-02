@@ -351,19 +351,12 @@ footer {
   text-align: center;
 }
 
-.footer-brand-dashboard h1 {
-  font-size: 64px;
-  font-weight: 700;
-  margin: 0;
-  text-align: left;
-}
 
 .footer-brand p {
   opacity: 0.85;
   font-size: 15px;
   margin-top: 4px;
   text-align: left;
-  max-width: 360px;
 }
 
 /* ===== Footer CTA Button ===== */
