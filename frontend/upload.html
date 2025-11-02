@@ -177,54 +177,16 @@
   }
 
   /* ======================= MOBILE OPTIMIZATION ======================= */
-/* --- Fix Header Layout on Mobile --- */
-@media (max-width: 900px) {
-  .navbar {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .nav-inner {
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .navlinks {
-    display: none; /* hide full nav on mobile (drawer handles it) */
-  }
-
-  .hamb {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 24px;
-    height: 18px;
-    cursor: pointer;
-  }
-
-  .hamb span {
-    display: block;
-    height: 3px;
-    background: #fff;
-    border-radius: 2px;
-    transition: 0.3s;
-  }
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: 0;
-  }
-
-  .nav-cta {
-    font-size: 0.9rem;
-    padding: 6px 12px;
-    flex-shrink: 0;
-  }
-}
+@media (max-width: 900px) { 
+ .nav-inner { flex-wrap: wrap; justify-content: space-between; padding: 10px 16px; } 
+ .brand img { width: 44px; } 
+ .nav-cta { padding: 8px 14px; font-size: 0.9rem; } 
+ .grid { grid-template-columns: 1fr; gap: 20px; } 
+ .card { padding: 16px; } .dz-text { font-size: 32px; } 
+ .dropzone { min-height: 200px; padding: 20px; } 
+ .get-btn { width: 100%; justify-content: center; font-size: 1rem; padding: 14px 0; } 
+ .meta-list { gap: 8px; } .title { font-size: 52px; text-align: center; } 
+ .top-dash { margin: 12px auto 20px; width: 80%; } }
 
 
 /* ======================= MOBILE BODY LAYOUT STACK ======================= */
