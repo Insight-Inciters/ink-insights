@@ -1,141 +1,88 @@
 // js/dashboard.js
-import { Analysis } from './analysis.js';
-import { Charts } from './charts.js';
+import { renderDoughnut, renderBar, renderRadar, renderScatter } from "./viz.js";
 
-window.addEventListener('DOMContentLoaded', () => {
-  const els = {
-    fn: document.getElementById('fn'),
-    wc: document.getElementById('wc'),
-    rt: document.getElementById('rt'),
-    summaryText: document.getElementById('summaryText'),
-    summaryEmpty: document.getElementById('summaryEmpty'),
-    deleteBtn: document.getElementById('deleteBtn'),
-    exportBtn: document.getElementById('exportBtn'),
-  };
+(async function () {
+  const API = "https://ink-insights-backend.vercel.app/analyze";
+  const text = localStorage.getItem("ink_text") || "";
+  const metaStr = localStorage.getItem("ink_report_meta") || "{}";
+  const meta = JSON.parse(metaStr);
 
-  // ----- Restore meta/text -----
-  const text = localStorage.getItem('ink_text') || '';
-  const meta = JSON.parse(localStorage.getItem('ink_report_meta') || 'null');
+  // Update badges quickly
+  const $ = (s) => document.querySelector(s);
+  $("#fn").textContent = meta.name || "none";
+  $("#wc").textContent = (meta.words || 0).toLocaleString();
+  $("#rt").textContent = `${Math.max(1, Math.ceil((meta.words || 0)/200))} min`;
 
-  // badges
-  const words = meta?.words ?? (text.match(/\b[\p{L}\p{N}’'-]+\b/gu) || []).length;
-  els.fn.textContent = meta?.name || 'none';
-  els.wc.textContent = words ? words.toLocaleString() : '0000';
-  els.rt.textContent = words ? `${Math.max(1, Math.ceil(words / 200))} min` : '00 min';
-
-  // summary
-  const summary = Analysis.quickSummary(text);
-  if (summary) {
-    els.summaryText.textContent = summary;
-    els.summaryEmpty.hidden = true;
-  } else {
-    els.summaryText.textContent = '';
-    els.summaryEmpty.hidden = false;
+  if (!text) {
+    alert("No text found. Please upload a .txt file first.");
+    window.location.href = "upload.html";
+    return;
   }
 
-  // charts render or clear
-  if (text && text.trim().length > 0) {
-    Charts.renderDashboardCharts();
-  } else {
-    Charts.clearCharts();
-  }
-
-  // ====== DELETE ======
-  const handleDelete = () => {
-    if (!confirm('Delete this report?')) return;
-    try {
-      localStorage.removeItem('ink_text');
-      localStorage.removeItem('ink_report_meta');
-    } catch {}
-    // reset UI
-    els.fn.textContent = 'none';
-    els.wc.textContent = '0000';
-    els.rt.textContent = '00 min';
-    els.summaryText.textContent = '';
-    els.summaryEmpty.hidden = false;
-
-    // tear down charts and show "No chart available" notes
-    Charts.clearCharts();
-  };
-  if (els.deleteBtn) els.deleteBtn.addEventListener('click', handleDelete);
-
-  // ====== EXPORT PDF ======
-  async function exportPDF() {
-    // Ensure charts are painted
-    await new Promise(requestAnimationFrame);
-
-    const { jsPDF } = window.jspdf || {};
-    if (!window.html2canvas || !jsPDF) {
-      alert('PDF libraries not found. Make sure html2canvas and jsPDF are included before this script.');
-      return;
-    }
-
-    // Target: export the main dashboard area
-    const target = document.querySelector('main.wrap') || document.body;
-
-    // Optional: temporarily hide the “No chart available” helper lines during export
-    const notes = Array.from(target.querySelectorAll('.panel .empty-note'));
-    const prevHidden = notes.map(n => n.hidden);
-    notes.forEach(n => (n.hidden = true));
-
-    // High-res rasterization of the area
-    const canvas = await window.html2canvas(target, {
-      scale: Math.min(2, window.devicePixelRatio || 2),
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      logging: false,
-      windowWidth: document.documentElement.scrollWidth,
-      windowHeight: document.documentElement.scrollHeight
+  // Call backend
+  let resp;
+  try {
+    const r = await fetch(API, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ text, filename: meta.name || "document.txt" })
     });
-
-    // Restore note visibility
-    notes.forEach((n, i) => (n.hidden = prevHidden[i]));
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-    // Page setup (A4 portrait)
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-
-    const margin = 10; // mm
-    const usableW = pageW - margin * 2;
-    const imgW = usableW;
-    const imgH = (canvas.height * imgW) / canvas.width;
-
-    // Add first page
-    let position = margin;
-    pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
-
-    // Paginate if content is taller than a single page
-    let heightLeft = imgH - (pageH - margin * 2);
-    while (heightLeft > 0) {
-      pdf.addPage();
-      position = margin - (imgH - heightLeft);
-      pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
-      heightLeft -= (pageH - margin * 2);
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      throw new Error(e.error || `Request failed (${r.status})`);
     }
-
-    const baseName = (meta?.name ? meta.name : 'Ink-Insights-Report')
-      .toString()
-      .trim()
-      .replace(/[^\w\-]+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '') || 'Ink-Insights-Report';
-
-    const stamp = new Date().toISOString().slice(0,10);
-    pdf.save(`${baseName}-${stamp}.pdf`);
+    resp = await r.json();
+  } catch (err) {
+    console.error(err);
+    alert("Analysis failed. Please try again.");
+    return;
   }
 
-  if (els.exportBtn) {
-    els.exportBtn.addEventListener('click', exportPDF);
-  }
+  // cache the whole report for features page
+  localStorage.setItem("ink_report", JSON.stringify(resp));
 
-  // Persist selected feature so features.html can auto-open the right section
-  document.querySelectorAll('.feature').forEach(link => {
-    link.addEventListener('click', () => {
-      const section = link.getAttribute('data-section');
-      try { localStorage.setItem('ink_target_section', section); } catch {}
-    });
+  // Summary
+  const summaryText = resp.summary || "No summary generated.";
+  $("#summaryText").textContent = summaryText;
+  $("#summaryEmpty").style.display = "none";
+
+  // Readability note (optional in summary box)
+  const rd = resp.readability || {};
+  const rdLine = `Readability: ${rd.score ?? "—"} (${rd.level ?? "—"})`;
+  const rdEl = document.createElement("div");
+  rdEl.style.marginTop = "6px";
+  rdEl.style.opacity = "0.8";
+  rdEl.textContent = rdLine;
+  $("#summaryText").appendChild(rdEl);
+
+  // --- Charts (Chart.js is already included on this page) ---
+  const kw = resp.keywords || {};
+  const topWords = (kw.list || []).slice(0, 10);
+  const kwLabels = topWords.map(x => x.token);
+  const kwData = topWords.map(x => x.count);
+  renderBar("#keywordsChart", kwLabels, kwData, "Top Keywords");
+
+  const se = resp.sentiment || {};
+  renderDoughnut("#sentimentChart", ["Positive", "Neutral", "Negative"], [se.pos||0, se.neu||0, se.neg||0], "Sentiment");
+
+  const em = resp.emotions || {};
+  const emoLabels = ["joy","anger","sadness","fear","surprise"];
+  const emoVals = emoLabels.map(k => (em.breakdown||{})[k] || 0);
+  renderRadar("#emotionsChart", emoLabels, emoVals, "Emotions");
+
+  const th = resp.themes || {};
+  // Simple scatter: x=index, y=keyword frequency (fake cluster viz for now)
+  const scatterPts = topWords.map((x, i) => ({x: i+1, y: x.count}));
+  renderScatter("#themesChart", scatterPts, "Themes (density)");
+
+  // Delete button clears local only (server stores nothing)
+  $("#deleteBtn").addEventListener("click", () => {
+    if (confirm("Delete your local analysis data now?")) {
+      localStorage.removeItem("ink_text");
+      localStorage.removeItem("ink_report_meta");
+      localStorage.removeItem("ink_report");
+      alert("✅ Your data has been deleted.");
+      window.location.href = "upload.html";
+    }
   });
-});
+})();
