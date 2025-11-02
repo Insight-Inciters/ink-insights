@@ -1,13 +1,3 @@
-  :root{
-    --dark-teal:#005A63; --teal:#257881;
-    --warm-green:#517A06; --warm-green-20:rgba(81,122,6,.20); --warm-green-30:rgba(81,122,6,.30);
-    --pink:#FF2092; --pink-20:rgba(255,32,146,.20); --pink-30:rgba(255,32,146,.30);
-    --blue:#00A6FF;  --blue-20:rgba(0,166,255,.20); --blue-30:rgba(0,166,255,.30);
-    --light-grey:#DBDBDB; --dark-grey:#737373; --white:#FFFFFF;
-    --danger:#E03131; --danger-15:rgba(224,49,49,.15);
-    --ink:#000; --bg:#fff;
-  }
-
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:"Droid Serif", Georgia, serif; color:#122022; background:#fff}
