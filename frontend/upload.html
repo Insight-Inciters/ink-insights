@@ -263,6 +263,7 @@
 </head>
 <body>
 
+
   <!-- ======================= HEADER ======================= -->
   <header class="navbar">
     <div class="nav-inner">
@@ -351,153 +352,140 @@
       </article>
     </section>
   </main>
-<script>
-(function(){
-  const els = {
-    drawer: document.getElementById('drawer'),
-    scrim: document.getElementById('scrim'),
-    hamb: document.getElementById('hamb'),
-    dropzone: document.getElementById('dropzone'),
-    fileInput: document.getElementById('fileInput'),
-    fileName: document.getElementById('fileName'),
-    wordCount: document.getElementById('wordCount'),
-    resultsBtn: document.getElementById('resultsBtn')
-  };
 
-  /* Drawer controls */
-  function openDrawer(){ els.drawer.classList.add('open'); els.drawer.setAttribute('aria-hidden','false'); els.scrim.classList.add('show'); els.scrim.setAttribute('aria-hidden','false'); els.hamb.classList.add('open'); els.hamb.setAttribute('aria-expanded','true'); }
-  function closeDrawer(){ els.drawer.classList.remove('open'); els.drawer.setAttribute('aria-hidden','true'); els.scrim.classList.remove('show'); els.scrim.setAttribute('aria-hidden','true'); els.hamb.classList.remove('open'); els.hamb.setAttribute('aria-expanded','false'); }
-  function toggleDrawer(){ (els.drawer.classList.contains('open') ? closeDrawer : openDrawer)(); }
-  els.hamb.addEventListener('click', toggleDrawer);
-  els.hamb.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleDrawer(); } });
-  els.scrim.addEventListener('click', closeDrawer);
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
-  document.querySelectorAll('#drawer a').forEach(a=>a.addEventListener('click', closeDrawer));
-
-  /* Helpers */
-  function countWords(t){ return (t.match(/\b[\p{L}\p{N}’'-]+\b/gu)||[]).length; }
-
-  function setBtnEnabled(enabled){
-    if(enabled){
-      els.resultsBtn.removeAttribute('aria-disabled');
-      els.resultsBtn.removeAttribute('title');
-    }else{
-      els.resultsBtn.setAttribute('aria-disabled','true');
-      els.resultsBtn.setAttribute('title','Upload a .txt file to enable');
-    }
-  }
-
-  function store(text, name){
-    const words = countWords(text);
-    try{
-      localStorage.setItem('ink_text', text);
-      localStorage.setItem('ink_report_meta', JSON.stringify({ name, words, ts: Date.now() }));
-    }catch{}
-    els.fileName.textContent = name || '—';
-    els.wordCount.textContent = words.toLocaleString();
-    const ok = (words && words<=5000);
-    setBtnEnabled(ok);
-  }
-
-  /* Dropzone interactions */
-  ['dragenter','dragover'].forEach(evt=>{
-    els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; els.dropzone.classList.add('drag'); });
-  });
-  ['dragleave','drop'].forEach(evt=>{
-    els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); els.dropzone.classList.remove('drag'); });
-  });
-  els.dropzone.addEventListener('drop', e=>{ const f=e.dataTransfer.files?.[0]; if(f) handleFile(f); });
-
-  /* File input change */
-  els.fileInput.addEventListener('change', ()=>{
-    const f=els.fileInput.files?.[0];
-    if(f) handleFile(f);
-  });
-
-  function handleFile(file){
-    if(!/\.txt$/i.test(file.name)){ alert('Please upload only .txt files.'); return; }
-    const reader=new FileReader();
-    reader.onload= e=>{
-      const text = e.target.result || '';
-      const words = countWords(text);
-      if(words>5000){ alert('The word limit is 5,000. Please upload a shorter file.'); }
-      store(text, file.name);
+  <script>
+  (function(){
+    const els={
+      drawer:document.getElementById('drawer'),
+      scrim:document.getElementById('scrim'),
+      hamb:document.getElementById('hamb'),
+      dropzone:document.getElementById('dropzone'),
+      fileInput:document.getElementById('fileInput'),
+      fileName:document.getElementById('fileName'),
+      wordCount:document.getElementById('wordCount'),
+      resultsBtn:document.getElementById('resultsBtn')
     };
-    reader.readAsText(file);
-    els.fileInput.value='';
-  }
 
-  /* Ripple helper */
-  function setRipplePosition(e){
-    const rect = els.resultsBtn.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    els.resultsBtn.style.setProperty('--x', x + 'px');
-    els.resultsBtn.style.setProperty('--y', y + 'px');
-  }
+    /* Drawer controls */
+    function openDrawer(){ els.drawer.classList.add('open'); els.drawer.setAttribute('aria-hidden','false'); els.scrim.classList.add('show'); els.scrim.setAttribute('aria-hidden','false'); els.hamb.classList.add('open'); els.hamb.setAttribute('aria-expanded','true'); }
+    function closeDrawer(){ els.drawer.classList.remove('open'); els.drawer.setAttribute('aria-hidden','true'); els.scrim.classList.remove('show'); els.scrim.setAttribute('aria-hidden','true'); els.hamb.classList.remove('open'); els.hamb.setAttribute('aria-expanded','false'); }
+    function toggleDrawer(){ (els.drawer.classList.contains('open')?closeDrawer:openDrawer)(); }
+    els.hamb.addEventListener('click', toggleDrawer);
+    els.hamb.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleDrawer(); } });
+    els.scrim.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
+    document.querySelectorAll('#drawer a').forEach(a=>a.addEventListener('click', closeDrawer));
 
-  /* MAIN LOGIC: handle click and send text to backend */
-  els.resultsBtn.addEventListener('click', async (e)=>{
-    if(els.resultsBtn.getAttribute('aria-disabled') === 'true'){
-      els.resultsBtn.classList.remove('shake');
-      void els.resultsBtn.offsetWidth;
-      els.resultsBtn.classList.add('shake');
-      return;
-    }
+    /* Helpers */
+    function countWords(t){ return (t.match(/\b[\p{L}\p{N}’'-]+\b/gu)||[]).length; }
 
-    setRipplePosition(e);
-    els.resultsBtn.classList.remove('rippling');
-    void els.resultsBtn.offsetWidth;
-    els.resultsBtn.classList.add('rippling');
-
-    const meta = JSON.parse(localStorage.getItem('ink_report_meta')||'{}');
-    const text = localStorage.getItem('ink_text') || '';
-    if(!text || meta.words > 5000){
-      alert('Please upload a valid file under 5,000 words.');
-      return;
-    }
-
-    try {
-      // 🚀 Send to your live Render backend
-      const res = await fetch("https://ink-insights-api.onrender.com/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, filename: meta.name })
-      });
-
-      if (!res.ok) throw new Error("Backend error: " + res.statusText);
-      const data = await res.json();
-
-      // Save analysis results locally
-      localStorage.setItem("ink_results", JSON.stringify(data));
-
-      // Redirect to dashboard
-      setTimeout(()=>{ window.location.href='dashboard.html'; }, 300);
-    } catch (err) {
-      console.error(err);
-      alert("There was a problem analyzing your text. Please try again later.");
-    }
-  });
-
-  /* Init from storage */
-  (function init(){
-    try{
-      const meta = JSON.parse(localStorage.getItem('ink_report_meta')||'null');
-      const text = localStorage.getItem('ink_text')||'';
-      if(meta||text){
-        const words = meta?.words ?? countWords(text);
-        els.fileName.textContent = meta?.name || '—';
-        els.wordCount.textContent = (words||0).toLocaleString();
-        setBtnEnabled(!!words && words<=5000);
+    function setBtnEnabled(enabled){
+      if(enabled){
+        els.resultsBtn.removeAttribute('aria-disabled');
+        els.resultsBtn.removeAttribute('title');
       }else{
+        els.resultsBtn.setAttribute('aria-disabled','true');
+        els.resultsBtn.setAttribute('title','Upload a .txt file to enable');
+      }
+    }
+
+    function store(text, name){
+      const words = countWords(text);
+      try{
+        localStorage.setItem('ink_text', text);
+        localStorage.setItem('ink_report_meta', JSON.stringify({ name, words, ts: Date.now() }));
+      }catch{}
+      els.fileName.textContent = name || '—';
+      els.wordCount.textContent = words.toLocaleString();
+      const ok = (words && words<=5000);
+      setBtnEnabled(ok);
+    }
+
+    /* Dropzone interactions */
+    ['dragenter','dragover'].forEach(evt=>{
+      els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; els.dropzone.classList.add('drag'); });
+    });
+    ['dragleave','drop'].forEach(evt=>{
+      els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); els.dropzone.classList.remove('drag'); });
+    });
+    els.dropzone.addEventListener('drop', e=>{ const f=e.dataTransfer.files?.[0]; if(f) handleFile(f); });
+
+    /* File input change */
+    els.fileInput.addEventListener('change', ()=>{
+      const f=els.fileInput.files?.[0];
+      if(f) handleFile(f);
+    });
+
+    function handleFile(file){
+      if(!/\.txt$/i.test(file.name)){ alert('Please upload only .txt files.'); return; }
+      const reader=new FileReader();
+      reader.onload= e=>{
+        const text = e.target.result || '';
+        const words = countWords(text);
+        if(words>5000){ alert('The word limit is 5,000. Please upload a shorter file.'); }
+        store(text, file.name);
+      };
+      reader.readAsText(file);
+      // allow selecting the same file again
+      els.fileInput.value='';
+    }
+
+    /* GET RESULTS interactions: ripple + behavior */
+    function setRipplePosition(e){
+      const rect = els.resultsBtn.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      els.resultsBtn.style.setProperty('--x', x + 'px');
+      els.resultsBtn.style.setProperty('--y', y + 'px');
+    }
+
+    els.resultsBtn.addEventListener('mousemove', (e)=>{
+      if(els.resultsBtn.getAttribute('aria-disabled') === 'true') return;
+      setRipplePosition(e);
+    });
+
+    els.resultsBtn.addEventListener('click', (e)=>{
+      if(els.resultsBtn.getAttribute('aria-disabled') === 'true'){
+        // little shake feedback if disabled
+        els.resultsBtn.classList.remove('shake');
+        void els.resultsBtn.offsetWidth;
+        els.resultsBtn.classList.add('shake');
+        return;
+      }
+      setRipplePosition(e);
+      // trigger ripple
+      els.resultsBtn.classList.remove('rippling');
+      void els.resultsBtn.offsetWidth; // restart animation
+      els.resultsBtn.classList.add('rippling');
+
+      // validation (extra safety)
+      const meta = JSON.parse(localStorage.getItem('ink_report_meta')||'{}');
+      if(!meta.words || meta.words>5000){
+        alert('Please keep files within 5,000 words.');
+        return;
+      }
+      // small delay so ripple is visible, then go to loading
+      setTimeout(()=>{ window.location.href='loading.html'; }, 220);
+    });
+
+    /* Init from storage if returning */
+    (function init(){
+      try{
+        const meta = JSON.parse(localStorage.getItem('ink_report_meta')||'null');
+        const text = localStorage.getItem('ink_text')||'';
+        if(meta||text){
+          const words = meta?.words ?? countWords(text);
+          els.fileName.textContent = meta?.name || '—';
+          els.wordCount.textContent = (words||0).toLocaleString();
+          setBtnEnabled(!!words && words<=5000);
+        }else{
+          setBtnEnabled(false);
+        }
+      }catch{
         setBtnEnabled(false);
       }
-    }catch{
-      setBtnEnabled(false);
-    }
+    })();
   })();
-})();
-</script>
-
+  </script>
 </body>
 </html>
