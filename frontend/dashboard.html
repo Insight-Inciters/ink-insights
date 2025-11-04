@@ -5,18 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Ink Insights — Dashboard</title>
 
-<!-- Favicon -->
 <link rel="icon" href="assests/Ink-logo.png" type="image/png" />
 <link rel="stylesheet" href="dashboard.css">
 </head>
 
-
-
-
-  
 <body>
 
-  <!-- ======================= HEADER ======================= -->
+<!-- ================= HEADER ================= -->
 <header class="navbar">
   <div class="nav-inner">
     <div class="brand">
@@ -61,90 +56,91 @@
 <div id="scrim" class="scrim" aria-hidden="true"></div>
 
 
-  <!-- ======================= MAIN ======================= -->
-  <main class="wrap">
-    <h1 class="title">Dashboard</h1>
-    <div class="divider"></div>
+<!-- ================= MAIN ================= -->
+<main class="wrap">
+  <h1 class="title">Dashboard</h1>
+  <div class="divider"></div>
 
-    <p class="tagline">Choose a feature to see more information.</p>
+  <p class="tagline">Choose a feature to see more information.</p>
 
-    <!-- Badges -->
-    <div class="row">
-      <span class="badge file"><span class="label">File Name:</span> <span class="value" id="fn">none</span></span>
-      <span class="badge words"><span class="label">Word Count:</span> <span class="value" id="wc">0000</span></span>
-      <span class="badge read"><span class="label">Read Time:</span> <span class="value" id="rt">00 min</span></span>
-      <span class="spacer"></span>
-      <button id="deleteBtn" class="btn delete" type="button">DELETE</button>
-<div class="export-dropdown">
-  <button id="exportBtn" class="btn export" type="button">EXPORT ▾</button>
-  <div id="exportMenu" class="dropdown-menu">
-    <button id="exportPDF" type="button">Export as PDF (Preview)</button>
-    <button id="exportCSV" type="button">Export as CSV</button>
-  </div>
-</div>
+  <!-- Badges -->
+  <div class="row">
+    <span class="badge file"><span class="label">File Name:</span> <span class="value" id="fn">none</span></span>
+    <span class="badge words"><span class="label">Word Count:</span> <span class="value" id="wc">0000</span></span>
+    <span class="badge read"><span class="label">Read Time:</span> <span class="value" id="rt">00 min</span></span>
+    <span class="spacer"></span>
 
-    </div>
-
-    <!-- Summary (no inner box; blue border on panel) -->
-    <section class="panel teal">
-      <h2>Summary</h2>
-      <div id="summaryBox">
-        <div id="summaryText" style="max-width:92%"></div>
+    <!-- Export + Delete Buttons -->
+  <div class="export-dropdown">
+    <button id="exportBtn" class="btn export" type="button">EXPORT ▾</button>
+      <div id="exportMenu" class="dropdown-menu">
+        <button id="exportPDF" type="button">Export as PDF</button>
+        <button id="exportCSV" type="button">Export as CSV</button>
+        <button id="exportJSON" type="button">Export as JSON</button>
       </div>
-      <p id="summaryEmpty" class="empty-note">No summary available. Select data to get report.</p>
-    </section>
+  </div>
 
-    <!-- Feature grid -->
-    <section class="grid">
-      <a class="feature" href="features.html#keywords" data-section="keywords" aria-label="Open Keywords & Frequencies">
-        <div class="panel green">
-          <h2>Keywords &amp; Frequencies</h2>
-          <div class="chartbox pink">
-            <canvas id="keywordsChart" aria-label="Keywords bar chart"></canvas>
-          </div>
-          <p class="empty-note">No chart available. Select data to get report</p>
+    <button id="deleteBtn" class="btn delete" type="button">DELETE</button>
+  </div>
+
+  <!-- Summary Box -->
+  <section class="panel teal">
+    <h2>Summary</h2>
+    <div id="summaryBox">
+      <div id="summaryText" style="max-width:92%"></div>
+    </div>
+    <p id="summaryEmpty" class="empty-note">No summary available. Select data to get report.</p>
+  </section>
+
+  <!-- Feature Grid -->
+  <section class="grid">
+    <a class="feature" href="features.html#keywords" aria-label="Open Keywords & Frequencies">
+      <div class="panel green">
+        <h2>Keywords &amp; Frequencies</h2>
+        <div class="chartbox pink">
+          <canvas id="keywordsChart" aria-label="Keywords bar chart"></canvas>
         </div>
-      </a>
+        <p class="empty-note">No chart available. Select data to get report.</p>
+      </div>
+    </a>
 
-      <a class="feature" href="features.html#themes" data-section="themes" aria-label="Open Themes & Clusters">
-        <div class="panel pink">
-          <h2>Themes &amp; Clusters</h2>
-          <div class="chartbox sage">
-            <canvas id="themesChart" aria-label="Themes scatter chart"></canvas>
-          </div>
-          <p class="empty-note">No chart available. Select data to get report</p>
+    <a class="feature" href="features.html#themes" aria-label="Open Themes & Clusters">
+      <div class="panel pink">
+        <h2>Themes &amp; Clusters</h2>
+        <div class="chartbox sage">
+          <canvas id="themesChart" aria-label="Themes bubble chart"></canvas>
         </div>
-      </a>
+        <p class="empty-note">No chart available. Select data to get report.</p>
+      </div>
+    </a>
 
-      <a class="feature" href="features.html#sentiment" data-section="sentiment" aria-label="Open Sentiment Overview">
-        <div class="panel pink">
-          <h2>Sentiment Overview</h2>
-          <div class="chartbox sage">
-            <canvas id="sentimentChart" aria-label="Sentiment doughnut chart"></canvas>
-          </div>
-          <p class="empty-note">No chart available. Select data to get report</p>
+    <a class="feature" href="features.html#sentiment" aria-label="Open Sentiment Overview">
+      <div class="panel pink">
+        <h2>Sentiment Overview</h2>
+        <div class="chartbox sage">
+          <canvas id="sentimentChart" aria-label="Sentiment doughnut chart"></canvas>
         </div>
-      </a>
+        <p class="empty-note">No chart available. Select data to get report.</p>
+      </div>
+    </a>
 
-      <a class="feature" href="features.html#emotions" data-section="emotions" aria-label="Open Emotional Patterns">
-        <div class="panel green">
-          <h2>Emotional Patterns</h2>
-          <div class="chartbox pink">
-            <canvas id="emotionsChart" aria-label="Emotions radar chart"></canvas>
-          </div>
-          <p class="empty-note">No chart available. Select data to get report</p>
+    <a class="feature" href="features.html#emotions" aria-label="Open Emotional Patterns">
+      <div class="panel green">
+        <h2>Emotional Patterns</h2>
+        <div class="chartbox pink">
+          <canvas id="emotionsChart" aria-label="Emotions radar chart"></canvas>
         </div>
-      </a>
-    </section>
+        <p class="empty-note">No chart available. Select data to get report.</p>
+      </div>
+    </a>
+  </section>
 
-    <p class="empty-note" style="text-align:center;margin-top:18px">
-      We automatically remove your report after you export or delete it. Keeping things private and tidy.
-    </p>
-  </main>
+  <p class="empty-note" style="text-align:center;margin-top:18px">
+    We automatically remove your report after you export or delete it. Keeping things private and tidy.
+  </p>
+</main>
 
-
-
-
+<!-- ================= FOOTER ================= -->
 <footer>
   <div class="footer-container">
     <div class="footer-brand">
@@ -157,99 +153,20 @@
       <a href="contact.html">Contact</a>
     </div>
   </div>
-  <div class="footer-bottom">
-    © 2025 Ink Insights — All rights reserved.
-  </div>
+  <div class="footer-bottom">© 2025 Ink Insights — All rights reserved.</div>
 </footer>
 
-<script>
-(function(){
-  // Dropdown open/close
-  const exportBtn = document.getElementById('exportBtn');
-  const exportDropdown = document.querySelector('.export-dropdown');
-  const exportMenu = document.getElementById('exportMenu');
-
-  exportBtn.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    exportDropdown.classList.toggle('show');
-  });
-
-  document.addEventListener('click', ()=>exportDropdown.classList.remove('show'));
-
-  // Export handlers
-  const exportPDF = document.getElementById('exportPDF');
-  const exportCSV = document.getElementById('exportCSV');
-
-  exportPDF.addEventListener('click', ()=>{
-    exportDropdown.classList.remove('show');
-    openPDFPreview();
-  });
-
-  exportCSV.addEventListener('click', ()=>{
-    exportDropdown.classList.remove('show');
-    exportAsCSV();
-  });
-
-  // PDF preview function
-  function openPDFPreview(){
-    // This uses html2canvas + jsPDF (already loaded)
-    const main = document.querySelector('main');
-    html2canvas(main).then(canvas=>{
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jspdf.jsPDF({orientation: 'p', unit: 'pt', format: 'a4'});
-      const width = pdf.internal.pageSize.getWidth();
-      const height = pdf.internal.pageSize.getHeight();
-      const ratio = Math.min(width / canvas.width, height / canvas.height);
-      pdf.addImage(imgData, 'PNG', 20, 20, canvas.width * ratio - 40, canvas.height * ratio - 40);
-      pdf.output('dataurlnewwindow'); // open preview tab
-      askDeletePermission();
-    });
-  }
-
-  // CSV export function
-  function exportAsCSV(){
-    const content = document.querySelector('#summaryText')?.innerText || "No data";
-    const blob = new Blob([content], {type: 'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'ink-insights-export.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-    askDeletePermission();
-  }
-
-  // Ask permission to delete data
-  function askDeletePermission(){
-    setTimeout(()=>{
-      if(confirm("Export completed.\nWould you like to delete your data now?")){
-        deleteData();
-      }
-    }, 400);
-  }
-
-function deleteData(){
-  // clear summary & show empty note
-  document.getElementById('summaryText').innerText = "";
-  document.getElementById('summaryEmpty').style.display = "block";
-
-  // optional: clear badges too
-  document.getElementById('fn').innerText = "none";
-  document.getElementById('wc').innerText = "0000";
-  document.getElementById('rt').innerText = "00 min";
-
-  // success confirmation
-  setTimeout(()=>{
-    alert("✅ Your data has been deleted successfully.");
-  }, 300);
-}
-
-
-})();
-</script>
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 
 
+
+<!-- Drawer (hamburger) -->
 <script>
 (function(){
   const drawer=document.getElementById('drawer');
@@ -272,12 +189,49 @@ function deleteData(){
 })();
 </script>
 
+<!-- PDF/CSV Export Helper -->
+<script>
+(function(){
+  const exportBtn = document.getElementById('exportBtn');
+  const exportDropdown = document.querySelector('.export-dropdown');
+  const exportMenu = document.getElementById('exportMenu');
 
-  <!-- External scripts: Chart.js + your modular dashboard logic -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script type="module" src="js/dashboard.js"></script>
+  exportBtn.addEventListener('click', e=>{
+    e.stopPropagation();
+    exportDropdown.classList.toggle('show');
+  });
+  document.addEventListener('click', ()=>exportDropdown.classList.remove('show'));
 
+  // PDF preview (html2canvas + jsPDF)
+  document.getElementById('exportPDF').addEventListener('click', ()=>{
+    exportDropdown.classList.remove('show');
+    const main = document.querySelector('main');
+    html2canvas(main).then(canvas=>{
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jspdf.jsPDF({orientation:'p',unit:'pt',format:'a4'});
+      const w = pdf.internal.pageSize.getWidth();
+      const h = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(w / canvas.width, h / canvas.height);
+      pdf.addImage(imgData,'PNG',20,20,canvas.width*ratio-40,canvas.height*ratio-40);
+      pdf.output('dataurlnewwindow');
+    });
+  });
+
+  // CSV export
+  document.getElementById('exportCSV').addEventListener('click', ()=>{
+    exportDropdown.classList.remove('show');
+    const txt = document.querySelector('#summaryText')?.innerText || "No data";
+    const blob = new Blob([txt], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ink-insights-export.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+
+<!-- Modular Dashboard -->
+<script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
