@@ -73,7 +73,7 @@ function sentimentFromPolarity(polarity) {
 }
 
 (async function () {
-  const API = "https://ink-insights-backend.vercel.app/analyze";
+  const API = "https://ink-insights-backend.onrender.com/analyze";
   const text = localStorage.getItem("ink_text") || "";
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
 
