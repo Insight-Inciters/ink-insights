@@ -57,43 +57,35 @@ function hasNonZero(arr) {
   return Array.isArray(arr) && arr.some(v => (typeof v === "number" ? v : 0) > 0);
 }
 
+
+
 /* ---------- sentiment % from polarity ---------- */
-/* ---------- sentiment % from polarity ---------- */
-/* polarity ∈ [-1, 1]. Map to Positive/Neutral/Negative % */
 function sentimentFromPolarity(polarity) {
-  const p = Number(polarity);
-  let pos = 0, neu = 0, neg = 0;
+  const val = Number(polarity) || 0;
+  const p = Math.max(0, val);
+  const n = Math.max(0, -val);
 
-  if (p > 0.2) {
-    // clearly positive
-    pos = p * 100;
-    neu = 100 - pos;
-    neg = 0;
-  } else if (p < -0.2) {
-    // clearly negative
-    neg = Math.abs(p) * 100;
-    neu = 100 - neg;
-    pos = 0;
-  } else {
-    // neutral zone: softly blend toward center
-    const abs = Math.abs(p);
-    neu = 100 - abs * 200;         // near 0 → ~100% neutral
-    pos = p > 0 ? abs * 100 : 0;   // small bias positive side
-    neg = p < 0 ? abs * 100 : 0;   // small bias negative side
-  }
+  let pos = p * 100;
+  let neg = n * 100;
+  let neu = 100 - pos - neg;
 
-  // normalize to total 100%
-  const sum = pos + neu + neg || 1;
+  // Ensure neutral isn't negative or rounding to 0 too early
+  neu = Math.max(0, neu);
+
+  // Normalize
+  const sum = pos + neg + neu || 1;
   pos = (pos / sum) * 100;
-  neu = (neu / sum) * 100;
   neg = (neg / sum) * 100;
+  neu = (neu / sum) * 100;
 
+  // ✅ Keep at least one decimal precision, but don't kill small values
   return [
-    Number(pos.toFixed(1)),
-    Number(neu.toFixed(1)),
-    Number(neg.toFixed(1))
+    +(pos.toFixed(2)),
+    +(neu.toFixed(2)),
+    +(neg.toFixed(2))
   ];
 }
+
 
 
 
