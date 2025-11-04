@@ -27,11 +27,6 @@ import {
   sessionStorage.removeItem("fromPreview");
 })();
 
-// Reusable storage cleanup helper
-clearReportStorage();
-
-  );
-}
 
 
 /* ---------- helpers for empty/loading state per chart ---------- */
@@ -63,7 +58,6 @@ function hasNonZero(arr) {
 }
 
 /* ---------- sentiment % from polarity ---------- */
-/* ---------- sentiment % from polarity or detailed object ---------- */
 function sentimentFromPolarity(sentiment) {
   // If backend gives detailed values
   if (typeof sentiment === "object" && sentiment !== null) {
@@ -156,8 +150,8 @@ if (cached) {
   /* =================== SUMMARY =================== */
   const kwList = resp?.keywords?.list || [];
   const themePoints = resp?.themes?.points || [];
-  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment ?? 0);
 
+  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment ?? 0);
 
 
 $("#summaryText").innerHTML = `
@@ -355,8 +349,9 @@ function showDeleteOverlay(onDone) {
   setTimeout(() => (fill.style.width = "100%"), 100);
 
   // clear storage after a short delay
-  clearReportStorage();
-
+  setTimeout(() => {
+    ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+      localStorage.removeItem(k)
     );
 
     destroyCharts?.(window.charts || []);
@@ -615,10 +610,6 @@ function postExportPrompt() {
 }
 
 
-
-
-  
-
 })();
 
 
@@ -690,8 +681,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // clear storage + redirect
             setTimeout(() => {
-              clearReportStorage();
-
+              ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+                localStorage.removeItem(k)
               );
 
               overlay.classList.add("fade-out");
