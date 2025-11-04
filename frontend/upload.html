@@ -263,8 +263,7 @@
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45) url('assests/bg-blur.jpg') center/cover no-repeat; /* optional blurred backdrop */
-  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.45); /* dim backdrop */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,59 +277,149 @@
   pointer-events: auto;
 }
 
+/* Blurred Popup Box */
 .popup-box {
-  background: rgba(255,255,255,0.9);
-  border-radius: 20px;
-  padding: 24px 20px 28px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
-  text-align: center;
   position: relative;
-  max-width: 420px;
-  width: 90%;
-  animation: popIn .35s ease-out;
+  backdrop-filter: blur(14px); /* blur INSIDE box */
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 24px;
+  padding: 32px 28px 38px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  max-width: 520px;
+  width: 92%;
+  animation: popIn .4s ease-out;
 }
 
-@keyframes popIn {
-  from {transform: scale(.8); opacity: 0;}
-  to {transform: scale(1); opacity: 1;}
+/* Title */
+.popup-box h2 {
+  font-family: "Rockwell", "Courier New", serif;
+  font-size: 28px;
+  color: var(--blue, #0a60a8);
+  text-shadow: 0 1px 4px rgba(0,0,0,.1);
+  margin-top: 0;
+  margin-bottom: 18px;
 }
 
+/* Animation Image */
 .popup-img {
   width: 100%;
+  max-width: 420px;
   border-radius: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
   user-select: none;
   pointer-events: none;
 }
 
+/* Close (×) Button */
 .popup-close {
   position: absolute;
-  top: 10px;
-  right: 14px;
+  top: 12px;
+  right: 16px;
   background: transparent;
   border: none;
-  font-size: 26px;
+  font-size: 28px;
   color: #777;
   cursor: pointer;
-  transition: color .2s ease, transform .2s ease;
+  transition: color .25s ease, transform .25s ease, text-shadow .25s ease;
 }
-.popup-close:hover { color: #000; transform: rotate(90deg); }
+.popup-close:hover {
+  color: var(--danger, #d63b3b);
+  transform: rotate(90deg) scale(1.25);
+  text-shadow: 0 0 12px var(--danger, #d63b3b);
+}
 
+/* --- Popup CTA Button (replica of .footer-btn with animation) --- */
 .popup-btn {
-  background: #7aa053;
-  color: #fff;
-  border: none;
+  display: inline-block;
+  background: #fff;
+  color: var(--dark-teal, #0a3d2e);
+  border: 2px solid #fff;
   border-radius: 26px;
-  padding: 12px 24px;
-  font-family: "Rockwell","Courier New",serif;
-  font-size: 1rem;
+  font-family: "Rockwell", "Courier New";
   font-weight: 600;
+  padding: 10px 24px;
+  margin-top: 10px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  transition: all .25s ease;
+  transition: all 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  animation: gentlePulse 2.4s ease-in-out infinite;
 }
-.popup-btn:hover { background:#688b47; transform: translateY(-2px); }
-.popup-btn:active { transform: scale(.98); }
 
+/* Shimmer effect */
+.popup-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: skewX(-25deg);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.popup-btn:hover::before {
+  animation: shimmerSlide 1.3s ease-in-out;
+  opacity: 1;
+}
+
+/* Hover: invert + glow */
+.popup-btn:hover {
+  background: transparent;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+  text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* Click */
+.popup-btn:active {
+  transform: scale(.96);
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+
+/* Animations */
+@keyframes popIn {
+  from { transform: scale(.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes shimmerSlide {
+  0%   { left: -75%; }
+  100% { left: 125%; }
+}
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 18px rgba(255,255,255,.25); }
+}
+
+/* Mobile Optimization */
+@media (max-width: 480px) {
+  .popup-box {
+    max-width: 90%;
+    padding: 22px 16px 28px;
+  }
+  .popup-box h2 {
+    font-size: 22px;
+  }
+  .popup-close {
+    font-size: 24px;
+    top: 8px;
+    right: 12px;
+  }
+  .popup-img {
+    max-width: 320px;
+    margin-bottom: 18px;
+  }
+  .popup-btn {
+    font-size: 0.95rem;
+    padding: 9px 20px;
+  }
+}
 
 
 </style>
@@ -432,8 +521,9 @@
 <div id="welcomePopup" class="popup-overlay">
   <div class="popup-box">
     <button class="popup-close" aria-label="Close">&times;</button>
+       <h2>See Ink Insights in Action!</h2>
     <img src="assests/WebAppProcess.gif" alt="Ink Insights process animation" class="popup-img" />
-    <button class="popup-btn">Let's start</button>
+    <button class="popup-btn">Let's Get Started</button>
   </div>
 </div>
 
