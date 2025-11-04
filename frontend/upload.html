@@ -300,6 +300,7 @@
   font-weight: 700;
   font-size: 40px;
   color: var(--dark-teal);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -464,13 +465,7 @@
 .popup-box h2 span:nth-child(3) {
   animation-delay: 0.2s;
 }
-/* Continue for each letter... Adjust the delays as needed */
 
-/* Underline animation for h2 */
-@keyframes underline {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
-}
 
 /* Underline style */
 .popup-box h2::after {
@@ -487,6 +482,11 @@
   transition: transform 0.3s ease;
 }
 
+ /* Underline animation for h2 */
+@keyframes underline {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
 
 </style>
 </head>
