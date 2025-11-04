@@ -291,13 +291,17 @@
 
 /* Title */
 .popup-box h2 {
+  position: relative;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: "Droid Serif", serif;
-  font-size: 40px;
-  color: var(--teal);
-  text-shadow: 0 1px 4px rgba(0,0,0,.1);
-  margin-top: 0;
-  margin-bottom: 18px;
+  font-weight: 700;
+  font-size: 64px;
+  color: var(--dark-teal);
 }
+
 
 /* Animation Image */
 .popup-img {
@@ -316,7 +320,7 @@
   right: 16px;
   background: transparent;
   border: none;
-  font-size: 28px;
+  font-size: 40px;
   color: #777;
   cursor: pointer;
   transition: color .25s ease, transform .25s ease, text-shadow .25s ease;
@@ -327,7 +331,7 @@
   text-shadow: 0 0 12px var(--danger, #d63b3b);
 }
 
-/* --- Popup CTA Button (replica of .footer-btn with animation) --- */
+/* --- Popup  --- */
 .popup-btn {
   display: inline-block;
   background: #fff;
@@ -427,18 +431,37 @@
 }
 
 /* ======================= Animated Heading in Popup ======================= */
-.popup-box h2 {
-  position: relative;
-  margin-bottom: 30px;
-  opacity: 0; /* Initially hidden */
-  animation: fadeIn 1s ease-out forwards, underline 1s ease-out 0.5s forwards; /* Combined animation */
+
+.popup-box h2 span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: popupLetter 0.5s ease-out forwards;
 }
 
-/* Fade-in animation for h2 */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
+/* Popup letter animation */
+@keyframes popupLetter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+/* Adding a slight delay for each letter */
+.popup-box h2 span:nth-child(1) {
+  animation-delay: 0s;
+}
+.popup-box h2 span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.popup-box h2 span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+/* Continue for each letter... Adjust the delays as needed */
 
 /* Underline animation for h2 */
 @keyframes underline {
@@ -465,6 +488,7 @@
 .popup-box h2:hover::after {
   transform: scaleX(1); /* Expands the underline */
 }
+
 
 
 
@@ -730,6 +754,19 @@
     if (e.target === popup) closePopup();
   });
 })();
+
+ document.addEventListener("DOMContentLoaded", function () {
+  const heading = document.querySelector('.popup-box h2');
+  const text = heading.innerText;
+  heading.innerHTML = ''; // Clear the current text
+
+  // Wrap each letter in a span
+  for (let letter of text) {
+    const span = document.createElement('span');
+    span.innerText = letter;
+    heading.appendChild(span);
+  }
+});
 
 
   </script>
