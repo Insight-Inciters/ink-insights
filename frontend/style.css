@@ -591,11 +591,6 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 .quote cite{display:block;margin-top:8px;font-style:italic;color:#2f6164}
 
 
-@media (max-width: 768px) {
-  .demo-box { padding: 30px 20px; }
-  .demo-box h4 { font-size: 28px; }
-  .demo-box img { width: 95%; max-width: 420px; margin: 0 auto; display: block; }
-}
 
 
 
@@ -986,7 +981,7 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 }
 
 .demo-box img {
-  width: 500px;
+  width: 600px;
   max-width: 100%;
   border-radius: 12px;
   background-color: var(--teal);
@@ -1008,7 +1003,7 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   }
 
   .demo-box img {
-    width: 80%;
+    width: 90%;
   }
 }
 
@@ -1300,7 +1295,6 @@ footer {
 }
 
 /* Responsive */
-/* ===================== UPDATED RESPONSIVE FIXES ===================== */
 
 /* --- Desktop adjustments: make slide images smaller --- */
 .features-slideshow .slide-left img,
@@ -1396,7 +1390,7 @@ footer {
   }
 
   .demo-box img {
-    width: 100%; /* larger image on mobile */
+    width: 150%; /* larger image on mobile */
     max-width: 480px;
   }
 }
@@ -1414,3 +1408,34 @@ footer {
   }
 }
 
+
+/* --- Slide 1: title between images on phones --- */
+@media (max-width: 600px) {
+  /* Make the right column vertical */
+  .features-slideshow .slide:first-child .slide-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* Move the title into the right column visually */
+  .features-slideshow .slide:first-child .slide-left {
+    order: 0; /* text column appears first */
+  }
+
+  .features-slideshow .slide:first-child .slide-right img:first-of-type {
+    order: 1;
+  }
+
+  .features-slideshow .slide:first-child .slide-title {
+    order: 2;          /* 👈 place title between the two images */
+    font-size: 26px;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .features-slideshow .slide:first-child .slide-right img:last-of-type {
+    order: 3;
+  }
+}
