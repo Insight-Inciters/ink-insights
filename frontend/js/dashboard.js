@@ -27,6 +27,11 @@ import {
   sessionStorage.removeItem("fromPreview");
 })();
 
+// Reusable storage cleanup helper
+clearReportStorage();
+
+  );
+}
 
 
 /* ---------- helpers for empty/loading state per chart ---------- */
@@ -58,10 +63,9 @@ function hasNonZero(arr) {
 }
 
 /* ---------- sentiment % from polarity ---------- */
-/* polarity ∈ [-1,1]. Map to Positive/Negative/Neutral % */
 /* ---------- sentiment % from polarity or detailed object ---------- */
 function sentimentFromPolarity(sentiment) {
-  // if detailed breakdown is available, use it
+  // If backend gives detailed values
   if (typeof sentiment === "object" && sentiment !== null) {
     const pos = Math.max(0, sentiment.positive || 0);
     const neg = Math.max(0, sentiment.negative || 0);
@@ -74,7 +78,7 @@ function sentimentFromPolarity(sentiment) {
     ];
   }
 
-  // fallback for simple polarity value (-1 to 1)
+  // Fallback when only a single polarity number (-1 to 1) exists
   const polarity = Number(sentiment) || 0;
   const pos = polarity > 0 ? polarity * 100 : 0;
   const neg = polarity < 0 ? -polarity * 100 : 0;
@@ -86,6 +90,7 @@ function sentimentFromPolarity(sentiment) {
     Number(((neg / sum) * 100).toFixed(1))
   ];
 }
+
 
 (async function () {
   const API = "https://ink-insights-backend.onrender.com/analyze";
@@ -151,8 +156,8 @@ if (cached) {
   /* =================== SUMMARY =================== */
   const kwList = resp?.keywords?.list || [];
   const themePoints = resp?.themes?.points || [];
-
   const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment ?? 0);
+
 
 
 $("#summaryText").innerHTML = `
@@ -282,6 +287,8 @@ $("#summaryText").innerHTML = `
   }
 
 
+  // Expose charts globally so deletion & cleanup work correctly
+  window.charts = charts;
 
 
 
@@ -348,9 +355,8 @@ function showDeleteOverlay(onDone) {
   setTimeout(() => (fill.style.width = "100%"), 100);
 
   // clear storage after a short delay
-  setTimeout(() => {
-    ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
-      localStorage.removeItem(k)
+  clearReportStorage();
+
     );
 
     destroyCharts?.(window.charts || []);
@@ -684,8 +690,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // clear storage + redirect
             setTimeout(() => {
-              ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
-                localStorage.removeItem(k)
+              clearReportStorage();
+
               );
 
               overlay.classList.add("fade-out");
