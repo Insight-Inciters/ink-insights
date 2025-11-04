@@ -58,19 +58,44 @@ function hasNonZero(arr) {
 }
 
 /* ---------- sentiment % from polarity ---------- */
-/* polarity ∈ [-1,1]. Map to Positive/Negative/Neutral % */
+/* polarity ∈ [-1, 1]. Map to Positive/Neutral/Negative % */
 function sentimentFromPolarity(polarity) {
-  const p = Math.max(0, Number(polarity) || 0);
-  const n = Math.max(0, -(Number(polarity) || 0));
-  let pos = p * 100;
-  let neg = n * 100;
-  let neu = Math.max(0, 100 - pos - neg);
-  const sum = pos + neg + neu || 1;
+  const p = Number(polarity);
+
+  let pos = 0, neu = 0, neg = 0;
+
+  // Strongly positive
+  if (p > 0.2) {
+    pos = p * 100;
+    neg = 0;
+    neu = 100 - pos;
+  }
+  // Strongly negative
+  else if (p < -0.2) {
+    neg = Math.abs(p) * 100;
+    pos = 0;
+    neu = 100 - neg;
+  }
+  // Near zero → neutral
+  else {
+    neu = 100 - Math.abs(p) * 200; // fade into neutrality near 0
+    pos = (p > 0 ? p * 500 : 0);   // small bias toward one side
+    neg = (p < 0 ? -p * 500 : 0);
+  }
+
+  // Clamp + normalize
+  const sum = pos + neu + neg || 1;
   pos = (pos / sum) * 100;
-  neg = (neg / sum) * 100;
   neu = (neu / sum) * 100;
-  return [Number(pos.toFixed(1)), Number(neu.toFixed(1)), Number(neg.toFixed(1))];
+  neg = (neg / sum) * 100;
+
+  return [
+    Number(pos.toFixed(1)),
+    Number(neu.toFixed(1)),
+    Number(neg.toFixed(1))
+  ];
 }
+
 
 (async function () {
   const API = "https://ink-insights-backend.onrender.com/analyze";
