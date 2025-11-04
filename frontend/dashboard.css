@@ -410,6 +410,8 @@ footer {
 
 
 
+
+
 /* ===== Summary Info Bubbles (Refined) ===== */
 .summary-item {
   display: flex; align-items: center; justify-content: space-between; margin: 6px 0; position: relative; font-family: "Rockwell","Courier New",serif;
@@ -502,6 +504,38 @@ footer {
     transform: translateY(-2px);
   }
 }
+
+
+
+
+
+/* --- Responsive fix for toolkits / info icons --- */
+@media (max-width: 768px) {
+  #summaryText .info {
+    position: static !important; /* removes absolute positioning on small screens */
+    display: inline-block;
+    margin-left: 6px;
+    margin-top: 6px;
+    transform: none !important;
+    float: none;
+  }
+
+  #summaryText {
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info svg, 
+  .info img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+
+
+
 
 
 /* --- Fancy Slide-Up Animation for Prompt --- */
