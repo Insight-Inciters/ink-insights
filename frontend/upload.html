@@ -298,7 +298,7 @@
   align-items: center;
   font-family: "Droid Serif", serif;
   font-weight: 700;
-  font-size: 64px;
+  font-size: 40px;
   color: var(--dark-teal);
 }
 
@@ -309,6 +309,7 @@
   max-width: 600px;
   border-radius: 14px;
   margin-bottom: 22px;
+  justify-content: center;
   user-select: none;
   pointer-events: none;
 }
@@ -430,24 +431,26 @@
   }
 }
 
-/* ======================= Animated Heading in Popup ======================= */
-
 .popup-box h2 span {
   display: inline-block;
   opacity: 0;
-  transform: translateY(20px);
-  animation: popupLetter 0.5s ease-out forwards;
+  transform: scale(0.5);
+  animation: stretchBounce 1s ease-out forwards;
 }
 
-/* Popup letter animation */
-@keyframes popupLetter {
+/* New Animation for Letter Stretching and Bouncing */
+@keyframes stretchBounce {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 
@@ -489,6 +492,11 @@
   transform: scaleX(1); /* Expands the underline */
 }
 
+@media (max-width: 900px) {
+  .popup-box h2 {
+    font-size: 32px; /* Adjusted font size for mobile */
+  }
+}
 
 
 
@@ -755,7 +763,7 @@
   });
 })();
 
- document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   const heading = document.querySelector('.popup-box h2');
   const text = heading.innerText;
   heading.innerHTML = ''; // Clear the current text
