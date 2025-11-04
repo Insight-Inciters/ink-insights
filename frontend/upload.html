@@ -756,13 +756,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const text = heading.innerText;
   heading.innerHTML = ''; // Clear the current text
 
-  // Wrap each letter in a span
-  for (let letter of text) {
+  // Wrap each letter or space in a span
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
     const span = document.createElement('span');
-    span.innerText = letter;
-    heading.appendChild(span);
+    span.innerText = char;
+    
+    // Check if the character is a space, if so, don't wrap in span
+    if (char === ' ') {
+      heading.appendChild(document.createTextNode(' ')); // Append a space as a text node
+    } else {
+      heading.appendChild(span); // Otherwise, append the span with the letter
+    }
   }
 });
+
 
 
   </script>
