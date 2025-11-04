@@ -405,7 +405,7 @@ function showDeleteOverlay(onDone) {
 
 
 
-// --- FINAL PDF Export: Dashboard layout (direct download only) ---
+// --- FINAL PDF Export: Dashboard layout (direct download only, optimized for A4) ---
 document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -433,7 +433,7 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   const footerNote = Array.from(document.querySelectorAll("p, div, span"))
     .find((el) => el.textContent?.includes("We automatically remove your report"));
 
-  // NEW → hide toolkits near summary (the "?" info icons)
+  // Hide toolkits near summary ("?" info icons)
   const toolkits = document.querySelectorAll("#summaryText .info");
   toolkits.forEach((el) => {
     hiddenEls.push(el);
@@ -463,16 +463,34 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   `;
   document.body.appendChild(header);
 
-  // Wait to ensure rendering
-  await new Promise((r) => setTimeout(r, 250));
+  // Small delay to ensure rendering
+  await new Promise((r) => setTimeout(r, 100));
 
-  // Capture screenshot
+  // 📄 Force A4-like layout width (≈1123px) for desktop layout
+  const originalWidth = document.body.style.width;
+  const originalTransform = dashboard.style.transform;
+  const originalTransformOrigin = dashboard.style.transformOrigin;
+
+  document.body.style.width = "1123px";
+  dashboard.style.transform = "scale(0.9)";
+  dashboard.style.transformOrigin = "top center";
+
+  await new Promise((r) => setTimeout(r, 100));
+
+  // Capture screenshot quickly with crisp quality
   const canvas = await html2canvas(dashboard, {
-    scale: 2,
+    scale: 1.5, // ✅ faster and still sharp
     backgroundColor: "#ffffff",
     useCORS: true,
     scrollY: -window.scrollY,
+    windowWidth: 1123,
+    logging: false
   });
+
+  // Restore layout
+  document.body.style.width = originalWidth;
+  dashboard.style.transform = originalTransform;
+  dashboard.style.transformOrigin = originalTransformOrigin;
 
   // Remove header and restore elements
   header.remove();
@@ -515,10 +533,13 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   a.click();
   document.body.removeChild(a);
 
-  // Clean up and show export prompt
-  postExportPrompt();
+  // Clean up + small memory release
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 
+  // Optional: show export prompt if you use one
+  postExportPrompt?.();
 });
+
 
 
 // --- Post Export Prompt ---
