@@ -71,7 +71,7 @@ export function renderDoughnut(selector, labels, data, title) {
       datasets: [
         {
           data,
-          backgroundColor: ["#2ecc71", "#f1c40f", "#e74c3c"],
+          backgroundColor: ["#517A06", "#DBDBDB", "#E03131"],
           borderWidth: 1,
         },
       ],
