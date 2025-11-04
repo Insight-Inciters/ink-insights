@@ -405,8 +405,7 @@ function showDeleteOverlay(onDone) {
 
 
 
-
-// --- FINAL PDF Export: Dashboard layout (optimized) ---
+// --- FINAL PDF Export (Optimized & Instant Preview) ---
 document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -419,27 +418,22 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
   const docTitle = (meta.name?.replace(/\.[^/.]+$/, "") || "Your Text") + " Report";
 
-  // target dashboard
   const dashboard =
     document.querySelector(".dashboard-container") ||
     document.querySelector("main") ||
     document.body;
 
-  // hide extra UI
+  // Hide unnecessary UI elements
   const hiddenEls = [];
-  const hideEls = [
-    ".export-dropdown",
-    "#deleteBtn",
-    "#summaryText .info"
-  ];
-  hideEls.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
+  const hideEls = [".export-dropdown", "#deleteBtn", "#summaryText .info"];
+  hideEls.forEach((sel) => {
+    document.querySelectorAll(sel).forEach((el) => {
       hiddenEls.push(el);
       el.style.display = "none";
     });
   });
 
-  // add top header
+  // Add temporary title
   const header = document.createElement("div");
   header.innerHTML = `
     <div style="
@@ -453,24 +447,23 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
       font-size: 22px;
       color: #1a1f71;">
       ${docTitle}
-    </div>
-  `;
+    </div>`;
   document.body.appendChild(header);
-  await new Promise(r => setTimeout(r, 250));
+  await new Promise((r) => setTimeout(r, 200));
 
-  // capture screenshot
+  // Capture dashboard
   const canvas = await html2canvas(dashboard, {
-    scale: 1.4, // reduced from 2 → smaller file
-    backgroundColor: "#ffffff",
+    scale: 1.2,                // ↓ reduce resolution
+    backgroundColor: "#fff",
     useCORS: true,
     scrollY: -window.scrollY,
   });
 
   header.remove();
-  hiddenEls.forEach(el => (el.style.display = ""));
+  hiddenEls.forEach((el) => (el.style.display = ""));
 
-  // compress image
-  const imgData = canvas.toDataURL("image/jpeg", 0.7); // JPEG + compression
+  // Convert canvas → compressed JPEG
+  const imgData = canvas.toDataURL("image/jpeg", 0.65);
 
   const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
   const pageW = pdf.internal.pageSize.getWidth();
@@ -485,68 +478,27 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
     if (y < imgH) pdf.addPage();
   }
 
-  // footer
+  // Footer
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(10);
   pdf.setTextColor("#9C9B9B");
-  const baseName = (meta.name?.replace(/\.[^/.]+$/, "") || "Untitled");
+  const baseName = meta.name?.replace(/\.[^/.]+$/, "") || "Untitled";
   const footerText = `${baseName} Report — Produced using Ink Insights`;
   pdf.text(footerText, pageW / 2, pageH - 15, { align: "center" });
 
-  // create blob and open only once
-  const fileName = `${baseName || "Ink_Report"}.pdf`;
+  // Generate Blob
   const pdfBlob = pdf.output("blob");
   const pdfURL = URL.createObjectURL(pdfBlob);
 
+  // Only preview once
   sessionStorage.setItem("fromPreview", "true");
-
-  // open preview (no auto download)
-  window.open(pdfURL, "_blank", "noopener");
+  window.open(pdfURL, "_blank", "noopener,noreferrer");
 
   postExportPrompt();
-  setTimeout(() => URL.revokeObjectURL(pdfURL), 20000);
+
+  // Cleanup
+  setTimeout(() => URL.revokeObjectURL(pdfURL), 15000);
 });
-
-
-// --- Post Export Prompt ---
-function postExportPrompt() {
-  const box = document.createElement("div");
-  box.className = "export-prompt";
-  box.innerHTML = `
-    <div class="prompt-overlay"></div>
-    <div class="prompt-card">
-      <h3>What would you like to do next?</h3>
-      <p>Your export is ready. Would you like to delete this report or continue exploring your results?</p>
-      <div class="prompt-actions">
-        <button id="keepReport" class="btn keep">Continue Exploring</button>
-        <button id="deleteReportNow" class="btn delete">Delete Report</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(box);
-
-  // Fade in
-  setTimeout(() => box.classList.add("show"), 50);
-
-  // Actions
-  document.querySelector("#keepReport").onclick = () => {
-    box.classList.remove("show");
-    setTimeout(() => box.remove(), 400);
-  };
-
-  // ✅ FIXED: directly show delete animation (no second confirm)
-  document.querySelector("#deleteReportNow").onclick = () => {
-    box.classList.remove("show");
-    setTimeout(() => {
-      box.remove();
-      showDeleteOverlay(); // direct deletion + animation
-    }, 400);
-  };
-}
-
-
-
-
 
 
 })();
