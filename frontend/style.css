@@ -1448,99 +1448,105 @@ footer {
 }
 
 
-/* --- For iPad Horizontal (768px to 1024px) --- */
-@media (min-width: 600px) and (max-width: 1024px) {
-
-  /* ===== WRITERS SECTION ===== */
+/* ===== WRITERS SECTION ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
   .writer-struggles {
-    padding: 100px 15%; /* Same padding as desktop */
+    padding: 100px 8%; /* Adjust padding to match the desktop feel */
   }
 
   .writer-struggles h2 {
-    font-size: 56px; /* Slightly smaller than desktop */
+    font-size: 56px; /* Reduced for a better fit on iPad */
+    margin-bottom: 40px; /* Adjust margin */
   }
 
   .writer-row {
     display: flex;
-    justify-content: space-between;
-    gap: 60px; /* Same as desktop */
-    flex-wrap: wrap; /* Keeps the two columns for images and text */
+    gap: 40px;
+    justify-content: space-between; /* Space items evenly */
+    flex-wrap: wrap; /* Ensure responsive layout */
   }
 
+  /* Adjust image and text layout */
   .writer-text {
-    flex: 1 1 500px;
-    font-size: 20px; /* Adjust for better readability */
+    flex: 1 1 45%; /* Adjust width to be more flexible */
+    font-size: 18px; /* Font size slightly reduced */
     text-align: left;
+  }
+
+  .writer-image img {
+    width: 100%; /* Ensure image fits within container */
+    max-width: 450px; /* Max width for image */
+    height: auto;
+    border-radius: 8px;
   }
 
   /* ===== ABOUT INSIGHTS SECTION ===== */
   .ink-insights {
-    padding: 100px 12%; /* Same padding as desktop */
+    padding: 100px 10%; /* Adjust padding for iPad */
   }
 
   .ink-insights h2 {
-    font-size: 56px; /* Same size as desktop */
+    font-size: 56px; /* Adjust heading font size */
+    margin-bottom: 40px; /* Space for the heading */
   }
 
   .ii-row {
     display: flex;
+    gap: 40px;
     justify-content: space-between;
-    gap: 60px; /* Space between items */
+    flex-wrap: wrap;
+    margin: 0 auto;
   }
 
   .ii-copy {
-    flex: 1 1 500px;
-    font-size: 20px; /* Adjusted for iPad */
-    text-align: center; /* Center aligned for balance */
+    flex: 1 1 45%;
+    font-size: 18px; /* Adjust font size for readability */
+    text-align: left;
   }
 
   .ii-image img {
-    width: 480px;
+    width: 100%; /* Ensure responsive image */
+    max-width: 480px; /* Prevent images from becoming too large */
     height: auto;
-    max-width: 100%;
   }
 
   /* ===== FEATURES SECTION ===== */
   .features-section {
-    padding: 120px 10%; /* Same padding as desktop */
+    padding: 120px 8%; /* Padding for features section */
   }
 
   .features-section h2 {
-    font-size: 56px; /* Slightly reduced from desktop size */
+    font-size: 56px; /* Adjust title font size */
+    margin-bottom: 40px; /* Spacing below title */
   }
 
   .feature-grid {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap; /* Wrap the cards */
-    max-width: 1100px;
-    margin: 0 auto;
+    gap: 40px;
+    flex-wrap: wrap;
   }
 
   .feature-card {
-    width: 300px; /* Adjust card width to fit the iPad */
-    padding: 40px 30px; /* Adjust padding for better fit */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Slightly adjusted shadow */
+    width: 45%; /* Adjust card width for better responsiveness */
+    max-width: 300px; /* Maximum width for each card */
+    padding: 40px 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Card shadow */
+    border-radius: 20px;
   }
 
-  /* Card Image and Text */
   .feature-card img {
-    width: 200px; /* Reduced image size */
+    width: 100%; /* Ensure the image fits within the card */
+    max-width: 200px;
   }
 
   .feature-card h3 {
-    font-size: 22px; /* Slightly smaller than desktop */
+    font-size: 22px; /* Adjust heading size */
   }
 
   .feature-card p {
-    font-size: 16px; /* Adjusted font size */
-  }
-
-  /* Responsive Grid Adjustments */
-  .feature-grid {
-    flex-wrap: wrap;
-    justify-content: center;
+    font-size: 16px; /* Adjust paragraph font size */
   }
 }
+
 
