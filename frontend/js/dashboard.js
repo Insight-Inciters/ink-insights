@@ -96,6 +96,20 @@ function sentimentFromPolarity(polarity) {
     setChartStateByCanvas(sel, { loading: true, hasData: false })
   );
 
+
+  // ✅ New: Use cached report immediately if available
+const cached = localStorage.getItem("ink_report");
+if (cached) {
+  try {
+    const cachedData = JSON.parse(cached);
+    renderDashboard(cachedData); // <-- we’ll define this below
+    console.log("⚡ Loaded from cache while fetching new analysis...");
+  } catch (e) {
+    console.warn("Cached report invalid, ignoring.");
+  }
+}
+
+  
   let resp;
   try {
     const r = await fetch(API, {
