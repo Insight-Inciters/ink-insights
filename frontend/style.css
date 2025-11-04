@@ -9,13 +9,6 @@
   --orange: #FF9716;
 }
 
-body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.6}
 html{scroll-behavior:smooth}
