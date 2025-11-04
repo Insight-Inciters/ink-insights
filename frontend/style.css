@@ -1300,10 +1300,106 @@ footer {
 }
 
 /* Responsive */
+/* ===================== UPDATED RESPONSIVE FIXES ===================== */
+
+/* --- Desktop adjustments: make slide images smaller --- */
+.features-slideshow .slide-left img,
+.features-slideshow .slide-right img {
+  width: 55%;
+  max-width: 360px;
+  transition: all 0.3s ease;
+}
+
+/* --- Make sure text is readable --- */
+.features-slideshow .slide-title {
+  font-size: 56px;
+  line-height: 1.15;
+}
+
+.features-slideshow .slide-desc {
+  font-size: 18px;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* --- Mobile: stack, smaller headings, and balanced layout --- */
+@media (max-width: 900px) {
+  .features-slideshow .slide {
+    flex-direction: column;
+    padding: 60px 6%;
+    gap: 24px;
+    text-align: left;
+  }
+
+  .features-slideshow .slide-title {
+    font-size: 38px;
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  .features-slideshow .slide-desc {
+    font-size: 16px;
+    text-align: left;
+    margin-top: 10px;
+  }
+
+  .features-slideshow .slide-left img,
+  .features-slideshow .slide-right img {
+    width: 85%;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}
+
+/* --- Phones (below 600px): smaller text, compact layout --- */
 @media (max-width: 600px) {
-  .slide { flex-direction: column; padding: 40px 4%; gap: 20px; text-align: left; }
-  .slide-title { font-size: 30px; line-height: 1.2; text-align: left; }
-  .slide-desc { font-size: 16px; text-align: left; }
-  .slide-left img, .slide-right img { width: 90%; max-width: 320px; margin: 0 auto; }
+  .features-slideshow .slide {
+    flex-direction: column;
+    padding: 40px 5%;
+    gap: 20px;
+  }
+
+  .features-slideshow .slide-title {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  .features-slideshow .slide-desc {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .features-slideshow .slide-left img,
+  .features-slideshow .slide-right img {
+    width: 80%;
+    max-width: 260px;
+  }
+}
+
+/* --- Product Demo section tweaks --- */
+@media (max-width: 768px) {
+  .demo-box h4 {
+    font-size: 26px; /* smaller title */
+    margin-bottom: 16px;
+  }
+
+  .demo-box img {
+    width: 95%; /* larger image on mobile */
+    max-width: 480px;
+  }
+}
+
+/* --- Heading size consistency across phones --- */
+@media (max-width: 768px) {
+  h1.title,
+  .writer-struggles h2,
+  .ink-insights h2,
+  .features-section h2,
+  .how-vertical h2,
+  .privacy-section h2 {
+    font-size: 42px !important;
+    line-height: 1.2;
+  }
 }
 
