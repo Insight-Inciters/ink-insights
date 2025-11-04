@@ -59,32 +59,36 @@ function hasNonZero(arr) {
 
 
 
-/* ---------- sentiment % from polarity ---------- */
-function sentimentFromPolarity(polarity) {
-  const val = Number(polarity) || 0;
-  const p = Math.max(0, val);
-  const n = Math.max(0, -val);
+/* ---------- sentiment % from backend data ---------- */
+function sentimentFromBackend(sentiment = {}) {
+  const polarity = Number(sentiment.polarity) || 0;      // -1 to +1
+  const subjectivity = Math.min(1, Math.max(0, Number(sentiment.subjectivity) || 0)); // 0 to 1
 
-  let pos = p * 100;
-  let neg = n * 100;
-  let neu = 100 - pos - neg;
+  // Map polarity to raw positive / negative
+  const pos = polarity > 0 ? polarity : 0;
+  const neg = polarity < 0 ? -polarity : 0;
 
-  // Ensure neutral isn't negative or rounding to 0 too early
-  neu = Math.max(0, neu);
+  // Adjust neutral based on subjectivity (more subjective => less neutral)
+  const neuBase = 1 - subjectivity;
+  const neu = Math.max(0, neuBase);
+
+  // Weight positive/negative strength by subjectivity (more subjective = stronger polarities)
+  const posW = pos * subjectivity;
+  const negW = neg * subjectivity;
 
   // Normalize
-  const sum = pos + neg + neu || 1;
-  pos = (pos / sum) * 100;
-  neg = (neg / sum) * 100;
-  neu = (neu / sum) * 100;
+  const sum = posW + negW + neu || 1;
+  const posPct = (posW / sum) * 100;
+  const negPct = (negW / sum) * 100;
+  const neuPct = (neu / sum) * 100;
 
-  // ✅ Keep at least one decimal precision, but don't kill small values
   return [
-    +(pos.toFixed(2)),
-    +(neu.toFixed(2)),
-    +(neg.toFixed(2))
+    +(posPct.toFixed(1)),
+    +(neuPct.toFixed(1)),
+    +(negPct.toFixed(1))
   ];
 }
+
 
 
 
@@ -154,7 +158,8 @@ if (cached) {
   const kwList = resp?.keywords?.list || [];
   const themePoints = resp?.themes?.points || [];
 
-  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment?.polarity ?? 0);
+  const [posPct, neuPct, negPct] = sentimentFromBackend(resp?.sentiment ?? {});
+
 
 $("#summaryText").innerHTML = `
   <div class="summary-item">
