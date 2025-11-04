@@ -1305,8 +1305,6 @@ footer {
 /* --- Desktop adjustments: make slide images smaller --- */
 .features-slideshow .slide-left img,
 .features-slideshow .slide-right img {
-  width: 55%;
-  max-width: 360px;
   transition: all 0.3s ease;
 }
 
@@ -1335,7 +1333,7 @@ footer {
   .features-slideshow .slide-title {
     font-size: 38px;
     line-height: 1.2;
-    text-align: left;
+    text-align: center;
   }
 
   .features-slideshow .slide-desc {
@@ -1346,13 +1344,13 @@ footer {
 
   .features-slideshow .slide-left img,
   .features-slideshow .slide-right img {
-    width: 85%;
-    max-width: 280px;
+    width: 80%;
+    max-width: 260px;
     margin: 0 auto;
   }
 }
 
-/* --- Phones (below 600px): smaller text, compact layout --- */
+/* --- Phones (below 600px): smaller text, more compact, smaller images --- */
 @media (max-width: 600px) {
   .features-slideshow .slide {
     flex-direction: column;
@@ -1361,19 +1359,22 @@ footer {
   }
 
   .features-slideshow .slide-title {
-    font-size: 28px;
+    font-size: 26px;
     line-height: 1.2;
+    text-align: center;
   }
 
   .features-slideshow .slide-desc {
-    font-size: 15px;
+    font-size: 14.5px;
     line-height: 1.6;
+    text-align: left;
   }
 
   .features-slideshow .slide-left img,
   .features-slideshow .slide-right img {
-    width: 80%;
-    max-width: 260px;
+    width: 65%;        /* ⬅️ slightly smaller image */
+    max-width: 220px;  /* ⬅️ tighter width cap for phones */
+    margin: 10px auto 0;
   }
 }
 
@@ -1385,7 +1386,7 @@ footer {
   }
 
   .demo-box img {
-    width: 95%; /* larger image on mobile */
+    width: 100%; /* larger image on mobile */
     max-width: 480px;
   }
 }
