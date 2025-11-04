@@ -433,6 +433,14 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   const deleteBtn = document.querySelector("#deleteBtn");
   const footerNote = Array.from(document.querySelectorAll("p, div, span"))
     .find((el) => el.textContent?.includes("We automatically remove your report"));
+
+// NEW → hide toolkits near summary (the "?" info icons)
+  const toolkits = document.querySelectorAll("#summaryText .info");
+  toolkits.forEach((el) => {
+  hiddenEls.push(el);
+  el.style.display = "none";});
+
+  
   if (exportMenu) { hiddenEls.push(exportMenu); exportMenu.style.display = "none"; }
   if (deleteBtn) { hiddenEls.push(deleteBtn); deleteBtn.style.display = "none"; }
   if (footerNote) { hiddenEls.push(footerNote); footerNote.style.display = "none"; }
@@ -495,7 +503,7 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
 
   const baseName = (meta.name?.replace(/\.[^/.]+$/, "") || "Untitled");
   const footerText = `${baseName} Report — Produced using Ink Insights`;
-  pdf.text(footerText, pageW / 2, pageH - 30, { align: "center" });
+  pdf.text(footerText, pageW / 2, pageH - 15, { align: "center" });
 
   // Save + Preview
   const fileName =
