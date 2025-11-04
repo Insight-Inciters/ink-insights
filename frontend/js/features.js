@@ -78,10 +78,6 @@ document.querySelectorAll('.btn.back').forEach(btn=>{
 });
 
 
-
-
-
-
 const inkText = localStorage.getItem("ink_text") || "";
 
 
@@ -110,8 +106,6 @@ if (report) {
     window.location.href = "upload.html";
     return;
   }
-
-
 
 
   // ===== KEYWORDS =====
@@ -172,7 +166,7 @@ if (report) {
   } else {
     renderBar("#th-desc", themeLabels, themeValues, "Theme Relevance");
   }
-renderSuggestions("#th-suggestions", th.suggestions || DEFAULT_SUGGESTIONS.keywords);
+renderSuggestions("#th-suggestions", th.suggestions || DEFAULT_SUGGESTIONS.themes);
 
 })();
 
@@ -190,7 +184,7 @@ renderSuggestions("#th-suggestions", th.suggestions || DEFAULT_SUGGESTIONS.keywo
     const ys = (se.timeline||[]).map(p => p.compound);
     renderLine("#se-timeline", xs, ys, "Sentiment Over Time");
 
-renderSuggestions("#se-suggestions", se.suggestions || DEFAULT_SUGGESTIONS.keywords);
+renderSuggestions("#se-suggestions", se.suggestions || DEFAULT_SUGGESTIONS.sentiment);
 
   })();
 
@@ -207,7 +201,7 @@ renderSuggestions("#se-suggestions", se.suggestions || DEFAULT_SUGGESTIONS.keywo
     const ys = (em.arc||[]).map(p => p.value);
     renderLine("#em-arc", xs, ys, "Emotional Arc");
 
-renderSuggestions("#em-suggestions", em.suggestions || DEFAULT_SUGGESTIONS.keywords);
+renderSuggestions("#em-suggestions", em.suggestions || DEFAULT_SUGGESTIONS.emotions);
 
   })();
 
@@ -244,91 +238,3 @@ renderSuggestions("#em-suggestions", em.suggestions || DEFAULT_SUGGESTIONS.keywo
 })();
 
 
-
-
-
-
-/* =================== START ANALYSIS CONFIRMATION =================== */
-document.addEventListener("DOMContentLoaded", () => {
-  const startBtns = document.querySelectorAll(".nav-cta, .drawer-cta");
-  if (!startBtns.length) return;
-
-  startBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      const hasOldData =
-        localStorage.getItem("ink_text") ||
-        localStorage.getItem("ink_report_meta") ||
-        localStorage.getItem("ink_report") ||
-        localStorage.getItem("ink_results");
-
-      if (hasOldData) {
-        const box = document.createElement("div");
-        box.className = "confirm-delete";
-        box.innerHTML = `
-          <div class="prompt-overlay"></div>
-          <div class="prompt-card">
-            <h3>Start a New Analysis?</h3>
-            <p>Starting another analysis will delete your existing report data. Do you wish to continue?</p>
-            <div class="prompt-actions">
-              <button id="cancelNew" class="btn keep">Cancel</button>
-              <button id="confirmNew" class="btn delete">Yes, Start New</button>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(box);
-        setTimeout(() => box.classList.add("show"), 50);
-
-        // cancel
-        box.querySelector("#cancelNew").addEventListener("click", () => {
-          box.classList.remove("show");
-          setTimeout(() => box.remove(), 300);
-        });
-
-        // click outside to close
-        box.querySelector(".prompt-overlay").addEventListener("click", () => {
-          box.classList.remove("show");
-          setTimeout(() => box.remove(), 300);
-        });
-
-        // ✅ confirm → show duplicate loading overlay (works independently)
-        box.querySelector("#confirmNew").addEventListener("click", () => {
-          box.classList.remove("show");
-          setTimeout(() => {
-            box.remove();
-
-            // duplicate of showDeleteOverlay()
-            const overlay = document.createElement("div");
-            overlay.className = "delete-overlay";
-            overlay.innerHTML = `
-              <div class="delete-box">
-                <h3>Your data is being deleted...</h3>
-                <div class="progress-bar"><div class="bar-fill"></div></div>
-              </div>
-            `;
-            document.body.appendChild(overlay);
-
-            // animate progress
-            const fill = overlay.querySelector(".bar-fill");
-            setTimeout(() => (fill.style.width = "100%"), 100);
-
-            // clear storage + redirect
-            setTimeout(() => {
-              ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
-                localStorage.removeItem(k)
-              );
-
-              overlay.classList.add("fade-out");
-              setTimeout(() => {
-                window.location.href = "upload.html";
-              }, 900);
-            }, 7000);
-          }, 300);
-        });
-      } else {
-        window.location.href = "upload.html";
-      }
-    });
-  });
-});
