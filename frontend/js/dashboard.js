@@ -406,46 +406,40 @@ function showDeleteOverlay(onDone) {
 
 
 
-// --- FINAL PDF Export: Dashboard layout (no footer text, dynamic title) ---
+// --- FINAL PDF Export: Dashboard layout (optimized) ---
 document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  // Ensure dependencies exist
   const { jsPDF } = window.jspdf;
   if (!window.html2canvas) {
     console.error("html2canvas not found — include via CDN before this script.");
     return;
   }
 
-  // Get metadata for title
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
   const docTitle = (meta.name?.replace(/\.[^/.]+$/, "") || "Your Text") + " Report";
 
-  // Target main dashboard
+  // target dashboard
   const dashboard =
     document.querySelector(".dashboard-container") ||
     document.querySelector("main") ||
     document.body;
 
-  // Hide unwanted UI before capture
+  // hide extra UI
   const hiddenEls = [];
-  const exportMenu = document.querySelector(".export-dropdown");
-  const deleteBtn = document.querySelector("#deleteBtn");
-  const footerNote = Array.from(document.querySelectorAll("p, div, span"))
-    .find((el) => el.textContent?.includes("We automatically remove your report"));
+  const hideEls = [
+    ".export-dropdown",
+    "#deleteBtn",
+    "#summaryText .info"
+  ];
+  hideEls.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      hiddenEls.push(el);
+      el.style.display = "none";
+    });
+  });
 
-// NEW → hide toolkits near summary (the "?" info icons)
-  const toolkits = document.querySelectorAll("#summaryText .info");
-  toolkits.forEach((el) => {
-  hiddenEls.push(el);
-  el.style.display = "none";});
-
-  
-  if (exportMenu) { hiddenEls.push(exportMenu); exportMenu.style.display = "none"; }
-  if (deleteBtn) { hiddenEls.push(deleteBtn); deleteBtn.style.display = "none"; }
-  if (footerNote) { hiddenEls.push(footerNote); footerNote.style.display = "none"; }
-
-  // Add temporary top title for export
+  // add top header
   const header = document.createElement("div");
   header.innerHTML = `
     <div style="
@@ -457,72 +451,59 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
       font-family: 'Helvetica Neue', sans-serif;
       font-weight: 700;
       font-size: 22px;
-      color: #1a1f71;
-      letter-spacing: 0.5px;">
+      color: #1a1f71;">
       ${docTitle}
     </div>
   `;
   document.body.appendChild(header);
+  await new Promise(r => setTimeout(r, 250));
 
-  // Wait to ensure rendering
-  await new Promise((r) => setTimeout(r, 250));
-
-  // Capture screenshot
+  // capture screenshot
   const canvas = await html2canvas(dashboard, {
-    scale: 2,
+    scale: 1.4, // reduced from 2 → smaller file
     backgroundColor: "#ffffff",
     useCORS: true,
     scrollY: -window.scrollY,
   });
 
-  // Remove header and restore elements
   header.remove();
-  hiddenEls.forEach((el) => (el.style.display = ""));
+  hiddenEls.forEach(el => (el.style.display = ""));
 
-  // Generate PDF
-  const imgData = canvas.toDataURL("image/png", 1.0);
+  // compress image
+  const imgData = canvas.toDataURL("image/jpeg", 0.7); // JPEG + compression
+
   const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-
   const pageW = pdf.internal.pageSize.getWidth();
   const pageH = pdf.internal.pageSize.getHeight();
   const imgW = pageW;
   const imgH = (canvas.height * imgW) / canvas.width;
 
-  // Add pages
   let y = 0;
   while (y < imgH) {
-    pdf.addImage(imgData, "PNG", 0, -y, imgW, imgH);
+    pdf.addImage(imgData, "JPEG", 0, -y, imgW, imgH);
     y += pageH;
     if (y < imgH) pdf.addPage();
   }
 
-  // ✨ Branded footer only once on last page (dynamic filename)
+  // footer
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(10);
   pdf.setTextColor("#9C9B9B");
-
   const baseName = (meta.name?.replace(/\.[^/.]+$/, "") || "Untitled");
   const footerText = `${baseName} Report — Produced using Ink Insights`;
   pdf.text(footerText, pageW / 2, pageH - 15, { align: "center" });
 
-  // Save + Preview
-  const fileName =
-    (meta.name?.replace(/\.[^/.]+$/, "") || "Ink_Report") + ".pdf";
+  // create blob and open only once
+  const fileName = `${baseName || "Ink_Report"}.pdf`;
   const pdfBlob = pdf.output("blob");
   const pdfURL = URL.createObjectURL(pdfBlob);
 
   sessionStorage.setItem("fromPreview", "true");
-  window.open(pdfURL, "_blank"); // preview
-  const a = document.createElement("a");
-  a.href = pdfURL;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
 
-  // ✅ FIXED: Only one click/remove, then show export prompt
+  // open preview (no auto download)
+  window.open(pdfURL, "_blank", "noopener");
+
   postExportPrompt();
-
   setTimeout(() => URL.revokeObjectURL(pdfURL), 20000);
 });
 
