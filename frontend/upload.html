@@ -259,6 +259,80 @@
 }
 
 
+/* ======================= FIRST-COMER POPUP ======================= */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45) url('assests/bg-blur.jpg') center/cover no-repeat; /* optional blurred backdrop */
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.popup-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup-box {
+  background: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  padding: 24px 20px 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  text-align: center;
+  position: relative;
+  max-width: 420px;
+  width: 90%;
+  animation: popIn .35s ease-out;
+}
+
+@keyframes popIn {
+  from {transform: scale(.8); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+.popup-img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  color: #777;
+  cursor: pointer;
+  transition: color .2s ease, transform .2s ease;
+}
+.popup-close:hover { color: #000; transform: rotate(90deg); }
+
+.popup-btn {
+  background: #7aa053;
+  color: #fff;
+  border: none;
+  border-radius: 26px;
+  padding: 12px 24px;
+  font-family: "Rockwell","Courier New",serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+.popup-btn:hover { background:#688b47; transform: translateY(-2px); }
+.popup-btn:active { transform: scale(.98); }
+
+
+
 </style>
 </head>
 <body>
@@ -353,6 +427,17 @@
     </section>
   </main>
 
+
+<!-- ======================= FIRST-COMER POPUP ======================= -->
+<div id="welcomePopup" class="popup-overlay">
+  <div class="popup-box">
+    <button class="popup-close" aria-label="Close">&times;</button>
+    <img src="assests/WebAppProcess.gif" alt="Ink Insights process animation" class="popup-img" />
+    <button class="popup-btn">Let's start</button>
+  </div>
+</div>
+
+ 
  
   <script>
   (function(){
@@ -487,6 +572,31 @@
       }
     })();
   })();
+
+   /* ---------- First Comer Popup ---------- */
+(function popupInit(){
+  const popup = document.getElementById('welcomePopup');
+  const closeBtn = popup.querySelector('.popup-close');
+  const startBtn = popup.querySelector('.popup-btn');
+
+  // show popup only once per user
+  const hasSeen = localStorage.getItem('ink_welcome_seen');
+  if(!hasSeen){
+    popup.classList.add('show');
+  }
+
+  function closePopup(){
+    popup.classList.remove('show');
+    localStorage.setItem('ink_welcome_seen', 'true');
+  }
+
+  closeBtn.addEventListener('click', closePopup);
+  startBtn.addEventListener('click', closePopup);
+  popup.addEventListener('click', e=>{
+    if(e.target === popup) closePopup();
+  });
+})();
+
   </script>
 </body>
 </html>
