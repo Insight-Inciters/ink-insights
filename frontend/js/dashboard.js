@@ -405,7 +405,7 @@ function showDeleteOverlay(onDone) {
 
 
 
-// --- FINAL PDF Export (Optimized & Instant Preview) ---
+// --- FINAL PDF Export: High Quality Direct Download ---
 document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -423,7 +423,7 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
     document.querySelector("main") ||
     document.body;
 
-  // Hide unnecessary UI elements
+  // Hide unwanted UI elements (menus, tooltips, delete buttons)
   const hiddenEls = [];
   const hideEls = [".export-dropdown", "#deleteBtn", "#summaryText .info"];
   hideEls.forEach((sel) => {
@@ -433,7 +433,7 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
     });
   });
 
-  // Add temporary title
+  // Temporary title overlay
   const header = document.createElement("div");
   header.innerHTML = `
     <div style="
@@ -451,34 +451,36 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   document.body.appendChild(header);
   await new Promise((r) => setTimeout(r, 200));
 
-  // Capture dashboard
+  // Capture at higher scale for clarity
   const canvas = await html2canvas(dashboard, {
-    scale: 1.2,                // ↓ reduce resolution
-    backgroundColor: "#fff",
+    scale: 2,                 // ↑ crisp text & images
+    backgroundColor: "#ffffff",
     useCORS: true,
     scrollY: -window.scrollY,
   });
 
+  // Clean up overlay + restore UI
   header.remove();
   hiddenEls.forEach((el) => (el.style.display = ""));
 
-  // Convert canvas → compressed JPEG
-  const imgData = canvas.toDataURL("image/jpeg", 0.65);
-
+  // Convert to mid-compression JPEG (sharp but smaller)
+  const imgData = canvas.toDataURL("image/jpeg", 0.85); // ↑ slightly higher quality
   const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+
   const pageW = pdf.internal.pageSize.getWidth();
   const pageH = pdf.internal.pageSize.getHeight();
   const imgW = pageW;
   const imgH = (canvas.height * imgW) / canvas.width;
 
+  // Add image slices for multi-page export
   let y = 0;
   while (y < imgH) {
-    pdf.addImage(imgData, "JPEG", 0, -y, imgW, imgH);
+    pdf.addImage(imgData, "JPEG", 0, -y, imgW, imgH, "", "FAST"); // "FAST" = efficient render
     y += pageH;
     if (y < imgH) pdf.addPage();
   }
 
-  // Footer
+  // Footer on last page
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(10);
   pdf.setTextColor("#9C9B9B");
@@ -486,29 +488,12 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   const footerText = `${baseName} Report — Produced using Ink Insights`;
   pdf.text(footerText, pageW / 2, pageH - 15, { align: "center" });
 
-  // Generate Blob
-  const pdfBlob = pdf.output("blob");
-  const pdfURL = URL.createObjectURL(pdfBlob);
+  // ✅ Direct download (no preview)
+  const fileName = `${baseName || "Ink_Report"}.pdf`;
+  pdf.save(fileName);
 
-  // Only preview once
-  sessionStorage.setItem("fromPreview", "true");
-  
-// ✅ Open preview in a single dedicated window (no duplicate tabs)
-let previewWin = window.open("", "InkPreview", "width=900,height=800");
-previewWin.document.title = "Ink Report Preview";
-previewWin.document.body.innerHTML = `
-  <iframe src="${pdfURL}" width="100%" height="100%" style="border:none;"></iframe>
-`;
-
-// Optional: revoke after preview window closed
-previewWin.onbeforeunload = () => URL.revokeObjectURL(pdfURL);
-
-// continue normal post-export behavior
-postExportPrompt();
-
-
-  // Cleanup
-  setTimeout(() => URL.revokeObjectURL(pdfURL), 15000);
+  // Trigger your post-export UI
+  postExportPrompt();
 });
 
 
