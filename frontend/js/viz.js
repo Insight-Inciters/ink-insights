@@ -101,7 +101,7 @@ export function renderRadar(selector, labels, data, title) {
           fill: true,
           backgroundColor: "rgba(108,160,220,0.2)",
           borderColor: "#6ca0dc",
-          pointBackgroundColor: "#6ca0dc",
+          pointBackgroundColor: "#517A06",
         },
       ],
     },
