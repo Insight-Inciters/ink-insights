@@ -988,7 +988,7 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 }
 
 .demo-box img {
-  width: 600px;
+  width: 550px;
   max-width: 100%;
   border-radius: 12px;
   background-color: var(--teal);
@@ -1010,7 +1010,7 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   }
 
   .demo-box img {
-    width: 90%;
+    width: 80%;
   }
 }
 
