@@ -1397,7 +1397,7 @@ footer {
   }
 
   .demo-box img {
-    width: 110%; /* larger image on mobile */
+    width: 100%; /* larger image on mobile */
     max-width: 480px;
   }
 }
