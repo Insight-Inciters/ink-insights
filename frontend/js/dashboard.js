@@ -518,7 +518,6 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   // Clean up and show export prompt
   postExportPrompt();
 
-  setTimeout(() => URL.revokeObjectURL(a.href), 20000);
 });
 
 
