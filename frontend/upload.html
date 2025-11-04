@@ -353,6 +353,24 @@
     </section>
   </main>
 
+
+<script>
+// 🧹 Always start fresh when visiting the upload page
+(function(){
+  const isUpload = window.location.pathname.includes("upload.html");
+  if (isUpload) {
+    ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+      localStorage.removeItem(k)
+    );
+    sessionStorage.removeItem("ink_session_active");
+    sessionStorage.removeItem("fromPreview");
+    console.log("🔄 Cleared old report data for a fresh upload session.");
+  }
+})();
+</script>
+
+
+ 
   <script>
   (function(){
     const els={
