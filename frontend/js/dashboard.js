@@ -11,22 +11,16 @@ import {
 // --- Auto-delete report data when the user starts a NEW visit ---
 (() => {
   const REPORT_KEYS = ["ink_text", "ink_report_meta", "ink_report", "ink_results"];
-
   const fromPreview = sessionStorage.getItem("fromPreview") === "true";
   const sessionActive = sessionStorage.getItem("ink_session_active") === "1";
 
-  // Brand-new visit (no active session) and not coming from a preview tab:
   if (!sessionActive && !fromPreview) {
     REPORT_KEYS.forEach(k => localStorage.removeItem(k));
-    // console.log("🧹 Local report data cleared for privacy.");
   }
 
-  // Mark this browser tab's session as active
   sessionStorage.setItem("ink_session_active", "1");
-  // Clear the preview flag (only used during exports)
   sessionStorage.removeItem("fromPreview");
 })();
-
 
 
 /* ---------- helpers for empty/loading state per chart ---------- */
@@ -37,19 +31,11 @@ function setChartStateByCanvas(canvasSelector, { loading, hasData }) {
   const emptyNote = box?.parentElement?.querySelector(".empty-note");
   if (!box) return;
 
-  // toggle loading/empty background (diagonal stripes)
   const isLoading = !!loading || !hasData;
   box.classList.toggle("chart-loading", isLoading);
-
-  // ✅ dynamic background color
-  if (hasData) {
-    box.style.background = "#fff"; // plain white when chart visible
-  } else {
-    box.style.background =
-      "repeating-linear-gradient(45deg, #f6f6f6 0, #f6f6f6 10px, #eaeaea 10px, #eaeaea 20px)";
-  }
-
-  // show/hide the "No chart available" note
+  box.style.background = hasData
+    ? "#fff"
+    : "repeating-linear-gradient(45deg, #f6f6f6 0, #f6f6f6 10px, #eaeaea 10px, #eaeaea 20px)";
   if (emptyNote) emptyNote.style.display = hasData ? "none" : "block";
 }
 
@@ -59,7 +45,6 @@ function hasNonZero(arr) {
 
 /* ---------- sentiment % from polarity ---------- */
 function sentimentFromPolarity(sentiment) {
-  // If backend gives detailed values
   if (typeof sentiment === "object" && sentiment !== null) {
     const pos = Math.max(0, sentiment.positive || 0);
     const neg = Math.max(0, sentiment.negative || 0);
@@ -72,29 +57,120 @@ function sentimentFromPolarity(sentiment) {
     ];
   }
 
-  // Fallback when only a single polarity number (-1 to 1) exists
+  // fallback if backend sends single polarity number (-1 to 1)
   const polarity = Number(sentiment) || 0;
-  const pos = polarity > 0 ? polarity * 100 : 0;
-  const neg = polarity < 0 ? -polarity * 100 : 0;
-  const neu = Math.max(0, 100 - pos - neg);
-  const sum = pos + neg + neu || 1;
+  const pos = polarity > 0 ? polarity * 50 : 0; // scaled better
+  const neg = polarity < 0 ? -polarity * 50 : 0;
+  const neu = 100 - pos - neg;
   return [
-    Number(((pos / sum) * 100).toFixed(1)),
-    Number(((neu / sum) * 100).toFixed(1)),
-    Number(((neg / sum) * 100).toFixed(1))
+    Number(pos.toFixed(1)),
+    Number(neu.toFixed(1)),
+    Number(neg.toFixed(1))
   ];
 }
 
 
+/* =================== RENDER DASHBOARD =================== */
+function renderDashboard(resp) {
+  const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
+  const kwList = resp?.keywords?.list || [];
+  const themePoints = resp?.themes?.points || [];
+  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment ?? 0);
+
+  // --- summary info ---
+  $("#summaryText").innerHTML = `
+    <div class="summary-item">
+      <span class="info" data-tooltip="Indicates how easy your text is to read and understand. Higher = simpler language.">?</span>
+      <span class="label">Readability Score: </span>
+      <span class="value">${Number(resp.readability ?? 0).toFixed(0)}</span>
+    </div>
+
+    <div class="summary-item">
+      <span class="info" data-tooltip="Percentage of sentences with positive sentiment.">?</span>
+      <span class="label">Positive: </span>
+      <span class="value">${posPct}%</span>
+    </div>
+
+    <div class="summary-item">
+      <span class="info" data-tooltip="Percentage of sentences with negative sentiment.">?</span>
+      <span class="label">Negative: </span>
+      <span class="value">${negPct}%</span>
+    </div>
+
+    <div class="summary-item">
+      <span class="info" data-tooltip="Most frequently used significant words in your text.">?</span>
+      <span class="label">Top Keywords: </span>
+      <span class="value">${kwList.slice(0,3).map(x=>x.token).join(", ") || "—"}</span>
+    </div>
+
+    <div class="summary-item">
+      <span class="info" data-tooltip="Main semantic clusters or recurring ideas detected in your writing.">?</span>
+      <span class="label">Top Themes: </span>
+      <span class="value">${themePoints.slice(0,3).map(t => t.label).filter(Boolean).join(", ") || "—"}</span>
+    </div>
+  `;
+  $("#summaryEmpty").style.display = "none";
+
+  // --- Sentiment chart ---
+  const sentimentData = [posPct, neuPct, negPct];
+  if (hasNonZero(sentimentData)) {
+    setChartStateByCanvas("#sentimentChart", { loading: false, hasData: true });
+    renderDoughnut("#sentimentChart", ["Positive", "Neutral", "Negative"], sentimentData, "Sentiment");
+  } else {
+    setChartStateByCanvas("#sentimentChart", { loading: true, hasData: false });
+  }
+
+  // --- Keywords chart ---
+  const labels = kwList.slice(0,10).map(x=>x.token);
+  const data = kwList.slice(0,10).map(x=>x.count);
+  if (labels.length > 0 && hasNonZero(data)) {
+    setChartStateByCanvas("#keywordsChart", { loading: false, hasData: true });
+    renderBar("#keywordsChart", labels, data, "Top Keywords");
+  } else {
+    setChartStateByCanvas("#keywordsChart", { loading: true, hasData: false });
+  }
+
+  // --- Emotions chart ---
+  const breakdown = resp?.emotions?.breakdown || {};
+  const emoLabels = Object.keys(breakdown);
+  const emoData = emoLabels.map(k => Number(breakdown[k]) || 0);
+  if (emoLabels.length > 0 && hasNonZero(emoData)) {
+    setChartStateByCanvas("#emotionsChart", { loading: false, hasData: true });
+    renderRadar("#emotionsChart", emoLabels, emoData, "Emotions");
+  } else {
+    setChartStateByCanvas("#emotionsChart", { loading: true, hasData: false });
+  }
+
+  // --- Themes (bubble) ---
+  const clusters = {};
+  (themePoints || []).forEach(p => {
+    const cid = Number(p.cluster ?? 0);
+    (clusters[cid] ||= []).push({
+      x: Number(p.x) || 0,
+      y: Number(p.y) || 0,
+      r: Math.max(6, Math.min(18, Number(p.count || 1) * 1.2)),
+      label: p.label || "(unknown)"
+    });
+  });
+
+  const clusterKeys = Object.keys(clusters);
+  if (clusterKeys.length > 0) {
+    setChartStateByCanvas("#themesChart", { loading: false, hasData: true });
+    renderBubble("#themesChart", clusters, "Semantic Clusters");
+  } else {
+    setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
+  }
+}
+
+
+/* =================== MAIN EXECUTION =================== */
 (async function () {
   const API = "https://ink-insights-backend.onrender.com/analyze";
   const text = localStorage.getItem("ink_text") || "";
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
 
   const $ = (s) => document.querySelector(s);
-  const charts = [];
 
-  // badges
   $("#fn").textContent = meta.name || "none";
   $("#wc").textContent = (meta.words || 0).toLocaleString();
   $("#rt").textContent = `${Math.max(1, Math.ceil((meta.words || 0) / 200))} min`;
@@ -105,25 +181,23 @@ function sentimentFromPolarity(sentiment) {
     return;
   }
 
-  // initial loading visuals
   ["#keywordsChart", "#themesChart", "#sentimentChart", "#emotionsChart"].forEach(sel =>
     setChartStateByCanvas(sel, { loading: true, hasData: false })
   );
 
-
-  // ✅ New: Use cached report immediately if available
-const cached = localStorage.getItem("ink_report");
-if (cached) {
-  try {
-    const cachedData = JSON.parse(cached);
-    renderDashboard(cachedData); // <-- we’ll define this below
-    console.log("⚡ Loaded from cache while fetching new analysis...");
-  } catch (e) {
-    console.warn("Cached report invalid, ignoring.");
+  // ✅ Use cached data immediately if available
+  const cached = localStorage.getItem("ink_report");
+  if (cached) {
+    try {
+      const cachedData = JSON.parse(cached);
+      renderDashboard(cachedData);
+      console.log("⚡ Loaded from cache while fetching new analysis...");
+    } catch (e) {
+      console.warn("Cached report invalid, ignoring.");
+    }
   }
-}
 
-  
+  // Fetch latest analysis
   let resp;
   try {
     const r = await fetch(API, {
@@ -131,10 +205,7 @@ if (cached) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, filename: meta.name || "document.txt" }),
     });
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      throw new Error(e.error || `Request failed (${r.status})`);
-    }
+    if (!r.ok) throw new Error(`Request failed (${r.status})`);
     resp = await r.json();
   } catch (err) {
     console.error(err);
@@ -142,147 +213,14 @@ if (cached) {
     return;
   }
 
-  // cache response
   localStorage.setItem("ink_report", JSON.stringify(resp));
   window.inkReport = resp;
   window.inkMeta = meta;
 
-  /* =================== SUMMARY =================== */
-  const kwList = resp?.keywords?.list || [];
-  const themePoints = resp?.themes?.points || [];
+  // ✅ Render new data
+  renderDashboard(resp);
+})();
 
-  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment ?? 0);
-
-
-$("#summaryText").innerHTML = `
-  <div class="summary-item">
-    <span class="info" data-tooltip="Indicates how easy your text is to read and understand. Higher = simpler language.">?</span>
-    <span class="label">Readability Score:  </span>
-    <span class="value">${Number(resp.readability ?? 0).toFixed(0)}</span>
-  </div>
-
-  <div class="summary-item">
-    <span class="info" data-tooltip="Percentage of sentences with positive sentiment.">?</span>
-    <span class="label">Positive:  </span>
-    <span class="value">${posPct}%</span>
-  </div>
-
-  <div class="summary-item">
-    <span class="info" data-tooltip="Percentage of sentences with negative sentiment.">?</span>
-    <span class="label">Negative:  </span>
-    <span class="value">${negPct}%</span>
-  </div>
-
-  <div class="summary-item">
-    <span class="info" data-tooltip="Most frequently used significant words in your text.">?</span>
-    <span class="label">Top Keywords:  </span>
-    <span class="value">${kwList.slice(0,3).map(x=>x.token).join(", ") || "—"}</span>
-  </div>
-
-  <div class="summary-item">
-    <span class="info" data-tooltip="Main semantic clusters or recurring ideas detected in your writing.">?</span>
-    <span class="label">Top Themes:  </span>
-    <span class="value">${themePoints.slice(0,3).map(t => t.label).filter(Boolean).join(", ") || "—"}</span>
-  </div>
-`;
-
-  $("#summaryEmpty").style.display = "none";
-
-  /* =================== CHARTS =================== */
-  // --- Keywords (bar)
-  {
-    const labels = kwList.slice(0,10).map(x=>x.token);
-    const data = kwList.slice(0,10).map(x=>x.count);
-    const ok = labels.length > 0 && hasNonZero(data);
-    if (ok) {
-      setChartStateByCanvas("#keywordsChart", { loading: false, hasData: true });
-      charts.push(renderBar("#keywordsChart", labels, data, "Top Keywords"));
-    } else {
-      setChartStateByCanvas("#keywordsChart", { loading: true, hasData: false });
-    }
-  }
-
-  // --- Sentiment (doughnut)
-  {
-    const data = [posPct, neuPct, negPct];
-    const ok = hasNonZero(data);
-    if (ok) {
-      setChartStateByCanvas("#sentimentChart", { loading: false, hasData: true });
-      charts.push(renderDoughnut("#sentimentChart", ["Positive", "Neutral", "Negative"], data, "Sentiment"));
-    } else {
-      setChartStateByCanvas("#sentimentChart", { loading: true, hasData: false });
-    }
-  }
-
-  // --- Emotions (radar)
-  {
-    const breakdown = resp?.emotions?.breakdown || {};
-    const labels = Object.keys(breakdown);
-    const data = labels.map(k => Number(breakdown[k]) || 0);
-    const ok = labels.length > 0 && hasNonZero(data);
-    if (ok) {
-      setChartStateByCanvas("#emotionsChart", { loading: false, hasData: true });
-      charts.push(renderRadar("#emotionsChart", labels, data, "Emotions"));
-    } else {
-      setChartStateByCanvas("#emotionsChart", { loading: true, hasData: false });
-    }
-  }
-
-  // --- Themes / Semantic clusters (bubble)
-  {
-    const clusters = {};
-    (themePoints || []).forEach(p => {
-      const cid = Number(p.cluster ?? 0);
-      (clusters[cid] ||= []).push({
-        x: Number(p.x) || 0,
-        y: Number(p.y) || 0,
-        r: Math.max(6, Math.min(18, Number(p.count || 1) * 1.2)),
-        label: p.label || "(unknown)"
-      });
-    });
-
-    const clusterKeys = Object.keys(clusters);
-    const ok = clusterKeys.length > 0;
-
-    if (ok) {
-      setChartStateByCanvas("#themesChart", { loading: false, hasData: true });
-      const el = document.querySelector("#themesChart");
-      const datasets = clusterKeys.map(cid => ({
-        label: `Cluster ${cid}`,
-        data: clusters[cid],
-        backgroundColor: `hsl(${(cid * 60) % 360}, 70%, 65%)`,
-        borderColor: `hsl(${(cid * 60) % 360}, 70%, 45%)`,
-      }));
-
-      const chart = new Chart(el, {
-        type: "bubble",
-        data: { datasets },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: "bottom" },
-            title: { display: true, text: "Semantic Clusters" },
-            tooltip: {
-              callbacks: {
-                label: ctx => ctx.raw.label || ""
-              }
-            }
-          },
-          scales: {
-            x: { beginAtZero: true },
-            y: { beginAtZero: true }
-          }
-        }
-      });
-      charts.push(chart);
-    } else {
-      setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
-    }
-  }
-
-
-  // Expose charts globally so deletion & cleanup work correctly
-  window.charts = charts;
 
 
 
