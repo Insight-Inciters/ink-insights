@@ -295,7 +295,7 @@
 /* Title */
 .popup-box h2 {
   font-family: "Droid Serif", serif;
-  font-size: 30px;
+  font-size: 40px;
   color: var(--teal);
   text-shadow: 0 1px 4px rgba(0,0,0,.1);
   margin-top: 0;
@@ -305,7 +305,7 @@
 /* Animation Image */
 .popup-img {
   width: 100%;
-  max-width: 420px;
+  max-width: 600px;
   border-radius: 14px;
   margin-bottom: 22px;
   user-select: none;
@@ -429,6 +429,48 @@
   }
 }
 
+/* ======================= Animated Heading ======================= */
+h2 {
+  font-family: "Droid Serif", serif;
+  font-weight: 700;
+  font-size: 64px;
+  color: var(--dark-teal);
+  position: relative;
+  margin-bottom: 30px;
+  opacity: 0; /* Initially hidden */
+  animation: fadeIn 1s ease-out forwards, underline 1s ease-out 0.5s forwards; /* Combined animation */
+}
+
+/* Fade-in animation for h2 */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Underline animation for h2 */
+@keyframes underline {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+/* Underline style */
+h2::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background-color: var(--accent-green, #609d9f); /* Custom color for underline */
+  transition: width 0.3s ease; /* Smooth transition */
+}
+
+/* Add animation delay and smooth transition to the line */
+h2:hover::after {
+  width: 100%;
+}
+
 
 </style>
 </head>
@@ -529,9 +571,9 @@
 <div id="welcomePopup" class="popup-overlay">
   <div class="popup-box">
     <button class="popup-close">&times;</button>
-    <h2>Welcome to Ink Insights!</h2>
+    <h2>Get Your Report in Few Seconds!</h2>
     <img src="assests/WebAppProcess.gif" alt="Ink Insights Process Animation" class="popup-img" />
-    <button class="popup-btn">Let's Start</button>
+    <button class="popup-btn">Let's Get Started</button>
   </div>
 </div>
 
