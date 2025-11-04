@@ -8,6 +8,9 @@ import {
   destroyCharts
 } from "./viz.js";
 
+// global shortcut for selectors (used across all functions)
+const $ = (s) => document.querySelector(s);
+
 // --- Auto-delete report data when the user starts a NEW visit ---
 (() => {
   const REPORT_KEYS = ["ink_text", "ink_report_meta", "ink_report", "ink_results"];
@@ -21,7 +24,6 @@ import {
   sessionStorage.setItem("ink_session_active", "1");
   sessionStorage.removeItem("fromPreview");
 })();
-
 
 /* ---------- helpers for empty/loading state per chart ---------- */
 function setChartStateByCanvas(canvasSelector, { loading, hasData }) {
@@ -59,7 +61,7 @@ function sentimentFromPolarity(sentiment) {
 
   // fallback if backend sends single polarity number (-1 to 1)
   const polarity = Number(sentiment) || 0;
-  const pos = polarity > 0 ? polarity * 50 : 0; // scaled better
+  const pos = polarity > 0 ? polarity * 50 : 0;
   const neg = polarity < 0 ? -polarity * 50 : 0;
   const neu = 100 - pos - neg;
   return [
@@ -68,7 +70,6 @@ function sentimentFromPolarity(sentiment) {
     Number(neg.toFixed(1))
   ];
 }
-
 
 /* =================== RENDER DASHBOARD =================== */
 function renderDashboard(resp) {
@@ -79,34 +80,20 @@ function renderDashboard(resp) {
 
   // --- summary info ---
   $("#summaryText").innerHTML = `
-    <div class="summary-item">
-      <span class="info" data-tooltip="Indicates how easy your text is to read and understand. Higher = simpler language.">?</span>
-      <span class="label">Readability Score: </span>
-      <span class="value">${Number(resp.readability ?? 0).toFixed(0)}</span>
+    <div class="summary-item"><span class="info" data-tooltip="Indicates how easy your text is to read. Higher = simpler language.">?</span>
+      <span class="label">Readability Score: </span><span class="value">${Number(resp.readability ?? 0).toFixed(0)}</span>
     </div>
-
-    <div class="summary-item">
-      <span class="info" data-tooltip="Percentage of sentences with positive sentiment.">?</span>
-      <span class="label">Positive: </span>
-      <span class="value">${posPct}%</span>
+    <div class="summary-item"><span class="info" data-tooltip="Percentage of sentences with positive sentiment.">?</span>
+      <span class="label">Positive: </span><span class="value">${posPct}%</span>
     </div>
-
-    <div class="summary-item">
-      <span class="info" data-tooltip="Percentage of sentences with negative sentiment.">?</span>
-      <span class="label">Negative: </span>
-      <span class="value">${negPct}%</span>
+    <div class="summary-item"><span class="info" data-tooltip="Percentage of sentences with negative sentiment.">?</span>
+      <span class="label">Negative: </span><span class="value">${negPct}%</span>
     </div>
-
-    <div class="summary-item">
-      <span class="info" data-tooltip="Most frequently used significant words in your text.">?</span>
-      <span class="label">Top Keywords: </span>
-      <span class="value">${kwList.slice(0,3).map(x=>x.token).join(", ") || "—"}</span>
+    <div class="summary-item"><span class="info" data-tooltip="Most frequently used significant words.">?</span>
+      <span class="label">Top Keywords: </span><span class="value">${kwList.slice(0,3).map(x=>x.token).join(", ") || "—"}</span>
     </div>
-
-    <div class="summary-item">
-      <span class="info" data-tooltip="Main semantic clusters or recurring ideas detected in your writing.">?</span>
-      <span class="label">Top Themes: </span>
-      <span class="value">${themePoints.slice(0,3).map(t => t.label).filter(Boolean).join(", ") || "—"}</span>
+    <div class="summary-item"><span class="info" data-tooltip="Main semantic clusters or recurring ideas.">?</span>
+      <span class="label">Top Themes: </span><span class="value">${themePoints.slice(0,3).map(t => t.label).filter(Boolean).join(", ") || "—"}</span>
     </div>
   `;
   $("#summaryEmpty").style.display = "none";
@@ -162,14 +149,11 @@ function renderDashboard(resp) {
   }
 }
 
-
 /* =================== MAIN EXECUTION =================== */
 (async function () {
   const API = "https://ink-insights-backend.onrender.com/analyze";
   const text = localStorage.getItem("ink_text") || "";
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
-
-  const $ = (s) => document.querySelector(s);
 
   $("#fn").textContent = meta.name || "none";
   $("#wc").textContent = (meta.words || 0).toLocaleString();
@@ -217,10 +201,8 @@ function renderDashboard(resp) {
   window.inkReport = resp;
   window.inkMeta = meta;
 
-  // ✅ Render new data
   renderDashboard(resp);
 })();
-
 
 
 
