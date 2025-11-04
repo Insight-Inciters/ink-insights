@@ -522,6 +522,46 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
 });
 
 
+// --- Post Export Prompt ---
+function postExportPrompt() {
+  const box = document.createElement("div");
+  box.className = "export-prompt";
+  box.innerHTML = `
+    <div class="prompt-overlay"></div>
+    <div class="prompt-card">
+      <h3>What would you like to do next?</h3>
+      <p>Your export is ready. Would you like to delete this report or continue exploring your results?</p>
+      <div class="prompt-actions">
+        <button id="keepReport" class="btn keep">Continue Exploring</button>
+        <button id="deleteReportNow" class="btn delete">Delete Report</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(box);
+
+  // Fade in
+  setTimeout(() => box.classList.add("show"), 50);
+
+  // Actions
+  document.querySelector("#keepReport").onclick = () => {
+    box.classList.remove("show");
+    setTimeout(() => box.remove(), 400);
+  };
+
+  // ✅ FIXED: directly show delete animation (no second confirm)
+  document.querySelector("#deleteReportNow").onclick = () => {
+    box.classList.remove("show");
+    setTimeout(() => {
+      box.remove();
+      showDeleteOverlay(); // direct deletion + animation
+    }, 400);
+  };
+}
+
+
+
+
+  
 
 })();
 
