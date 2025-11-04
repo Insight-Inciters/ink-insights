@@ -59,17 +59,32 @@ function hasNonZero(arr) {
 
 /* ---------- sentiment % from polarity ---------- */
 /* polarity ∈ [-1,1]. Map to Positive/Negative/Neutral % */
-function sentimentFromPolarity(polarity) {
-  const p = Math.max(0, Number(polarity) || 0);
-  const n = Math.max(0, -(Number(polarity) || 0));
-  let pos = p * 100;
-  let neg = n * 100;
-  let neu = Math.max(0, 100 - pos - neg);
+/* ---------- sentiment % from polarity or detailed object ---------- */
+function sentimentFromPolarity(sentiment) {
+  // if detailed breakdown is available, use it
+  if (typeof sentiment === "object" && sentiment !== null) {
+    const pos = Math.max(0, sentiment.positive || 0);
+    const neg = Math.max(0, sentiment.negative || 0);
+    const neu = Math.max(0, sentiment.neutral || 0);
+    const sum = pos + neg + neu || 1;
+    return [
+      Number(((pos / sum) * 100).toFixed(1)),
+      Number(((neu / sum) * 100).toFixed(1)),
+      Number(((neg / sum) * 100).toFixed(1))
+    ];
+  }
+
+  // fallback for simple polarity value (-1 to 1)
+  const polarity = Number(sentiment) || 0;
+  const pos = polarity > 0 ? polarity * 100 : 0;
+  const neg = polarity < 0 ? -polarity * 100 : 0;
+  const neu = Math.max(0, 100 - pos - neg);
   const sum = pos + neg + neu || 1;
-  pos = (pos / sum) * 100;
-  neg = (neg / sum) * 100;
-  neu = (neu / sum) * 100;
-  return [Number(pos.toFixed(1)), Number(neu.toFixed(1)), Number(neg.toFixed(1))];
+  return [
+    Number(((pos / sum) * 100).toFixed(1)),
+    Number(((neu / sum) * 100).toFixed(1)),
+    Number(((neg / sum) * 100).toFixed(1))
+  ];
 }
 
 (async function () {
@@ -137,7 +152,8 @@ if (cached) {
   const kwList = resp?.keywords?.list || [];
   const themePoints = resp?.themes?.points || [];
 
-  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment?.polarity ?? 0);
+  const [posPct, neuPct, negPct] = sentimentFromPolarity(resp?.sentiment ?? 0);
+
 
 $("#summaryText").innerHTML = `
   <div class="summary-item">
