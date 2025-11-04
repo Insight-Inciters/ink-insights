@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="features.css">
 </head>
 
+
   
 <body>
   <!-- ====== HEADER ====== -->
@@ -16,7 +17,7 @@
       <div class="brand">
         <a href="index.html" aria-label="Go to Home">
           <img src="assests/Ink-logo.png" alt="Ink Insights Logo" />
-          <span class="txt"><span class="line1">Ink</span><span class="line2">Insights</span></span>
+          <span class="txt"><span class="line1">Ink Insights</span><span class="line2">Features</span></span>
         </a>
       </div>
       <nav class="navlinks" aria-label="Main">
@@ -64,27 +65,33 @@
       <div class="row">
         <button class="btn back" id="backKw" type="button">GO BACK</button>
         <span class="spacer"></span>
-        <button class="btn export" id="exportKw" type="button">EXPORT</button>
+        <div class="export-dropdown">
+  <button class="btn export" id="exportBtn" type="button">EXPORT ▼</button>
+  <div class="dropdown-menu" id="exportMenu">
+    <button id="exportPDF">Export as PDF</button>
+    <button id="exportJSON">Export as JSON</button>
+    <button id="exportCSV">Export as CSV</button>
+  </div>
+</div>
+
       </div>
 
       <h1 class="title" id="kw-title">Keyword &amp; Frequencies</h1>
       <div class="divider"></div>
       <p class="subtitle">See the words that define your writing. Get a quick overview of the most used or distinctive words, recurring patterns, or overused terms.</p>
-
+       
+       <h2 class=suggestion-heading>Overview</h2>
       <div class="panel green">
-        <h2>Overview</h2>
         <div class="m-badges">
           <span class="m-badge">Unique Words: <span class="value" id="kw-unique">00</span></span>
           <span class="m-badge">Top Keyword: <span class="value" id="kw-top">—</span></span>
         </div>
-        <div class="grid">
           <div class="chartbox pink" id="kw-frequency">Keyword Frequency Graph</div>
-          <div class="chartbox blue" id="kw-ngram">N-gram Graph</div>
         </div>
       </div>
 
+      <h2 class=suggestion-heading>Highlighted Word</h2>
       <div class="panel green">
-        <h2>Highlighted Word</h2>
         <div class="kw-highlight">
           <div class="kw-list">
             <h3>Keywords</h3>
@@ -97,9 +104,9 @@
         </div>
       </div>
 
-      <div class="panel green">
-        <h2>Suggestions</h2>
-        <div class="chartbox sage" id="kw-suggestions">Suggestions here.</div>
+      <div>
+        <h2 class = suggestion-heading >Suggestions</h2>
+        <div id="kw-suggestions"></div>
       </div>
     </section>
 
@@ -115,8 +122,8 @@
       <div class="divider"></div>
       <p class="subtitle">Uncover deeper themes within your text. Visualize how ideas group and connect.</p>
 
+      <h2 class=suggestion-heading>Overview</h2>
       <div class="panel pink">
-        <h2>Overview</h2>
         <div class="m-badges">
           <span class="m-badge">Clusters: <span class="value" id="th-count">00</span></span>
           <span class="m-badge">Top Theme: <span class="value" id="th-top">—</span></span>
@@ -125,9 +132,9 @@
         <div class="chartbox blue" id="th-desc">Graph</div>
       </div>
 
-      <div class="panel pink">
-        <h2>Suggestions</h2>
-        <div class="chartbox sage" id="th-suggestions">Suggestions here.</div>
+      <div>
+        <h2 class = suggestion-heading >Suggestions</h2>
+        <div id="th-suggestions"></div>
       </div>
     </section>
 
@@ -143,8 +150,8 @@
       <div class="divider"></div>
       <p class="subtitle">Understand the emotional balance of your writing across positive, neutral, and negative tones.</p>
 
+      <h2 class=suggestion-heading>Overview</h2>
       <div class="panel blue">
-        <h2>Overview</h2>
         <div class="m-badges">
           <span class="m-badge positive">Positive: <span class="value" id="se-pos">00%</span></span>
           <span class="m-badge neutral">Neutral: <span class="value" id="se-neu">00%</span></span>
@@ -156,9 +163,9 @@
         </div>
       </div>
 
-      <div class="panel blue">
-        <h2>Suggestions</h2>
-        <div class="chartbox sage" id="se-suggestions">Suggestions here.</div>
+      <div>
+        <h2 class = suggestion-heading >Suggestions</h2>
+        <div id="se-suggestions"></div>
       </div>
     </section>
 
@@ -168,14 +175,19 @@
         <button class="btn back" id="backEm" type="button">GO BACK</button>
         <span class="spacer"></span>
         <button class="btn export" id="exportEm" type="button">EXPORT</button>
+        <div id="exportMenu" class="dropdown-menu">
+        <button id="exportPDF" type="button">Export as PDF</button>
+        <button id="exportCSV" type="button">Export as CSV</button>
+        <button id="exportJSON" type="button">Export as JSON</button>
+      </div>
       </div>
 
       <h1 class="title" id="em-title">Emotional Patterns</h1>
       <div class="divider"></div>
       <p class="subtitle">Explore the emotional and sensory landscape of your story.</p>
 
+      <h2 class=suggestion-heading>Overview</h2>
       <div class="panel green">
-        <h2>Overview</h2>
         <div class="m-badges">
           <span class="m-badge">Dominant Emotion: <span class="value" id="em-dominant">—</span></span>
         </div>
@@ -186,12 +198,26 @@
         <div class="chartbox sage" id="em-arc">Emotional Arc Graph</div>
       </div>
 
-      <div class="panel green">
-        <h2>Suggestions</h2>
-        <div class="chartbox sage" id="em-suggestions">Suggestions here.</div>
+      <div>
+        <h2 class = suggestion-heading >Suggestions</h2>
+        <div id="em-suggestions"></div>
       </div>
     </section>
   </main>
+
+
+<script defer src="js/dashboard.js"></script>
+<script defer type="module" src="js/features.js"></script>
+
+
+<canvas id="kw-frequency"></canvas>
+<canvas id="kw-ngram"></canvas>
+<canvas id="th-graph"></canvas>
+<canvas id="th-desc"></canvas>
+<canvas id="se-donut"></canvas>
+<canvas id="se-timeline"></canvas>
+<canvas id="em-graph-1"></canvas>
+<canvas id="em-arc"></canvas>
 
 
 
@@ -299,6 +325,7 @@ function deleteData(){
 })();
 </script>
 
+
 <script>
 (function(){
   /* ===== Drawer & header behavior ===== */
@@ -359,6 +386,10 @@ function deleteData(){
     });
   });
 
+
+
+
+
   // init: prefer hash, then localStorage, else keywords
   const initial = (location.hash||'').replace('#','') || (localStorage.getItem('ink_target_section')||'keywords');
   // make sure only one visible at start
@@ -416,123 +447,80 @@ btn.addEventListener('click', ()=>{
 })();
 </script>
 
-<!-- Libraries (placed BEFORE module) -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
-
-<!-- Feature logic -->
-<script type="module" src="js/features.js"></script>
 
 <script>
-/* === Ink Insights: populate features from backend === */
-document.addEventListener("DOMContentLoaded", async () => {
-  const data = JSON.parse(localStorage.getItem("ink_results") || "{}");
-  if (!data || !data.keywords) {
-    console.warn("No results found in localStorage.");
-    return;
+document.addEventListener("DOMContentLoaded", () => {
+  const uniqueEl = document.getElementById("kw-unique");
+  const topEl = document.getElementById("kw-top");
+
+  if (!uniqueEl || !topEl) return;
+
+  // Try to read stored analysis first
+  const report = JSON.parse(
+    localStorage.getItem("ink_report") ||
+    localStorage.getItem("ink_results") ||
+    "null"
+  ) || {};
+  const kw = report.keywords || {};
+  const text = (localStorage.getItem("ink_text") || "").trim();
+
+  let uniqueCount = 0;
+  let topWord = "—";
+
+  // --- Priority 1: use backend results if they exist ---
+  if (kw.unique && kw.top) {
+    uniqueCount = kw.unique;
+    topWord = kw.top;
+
+  // --- Priority 2: calculate from keyword list if present ---
+  } else if (Array.isArray(kw.list) && kw.list.length) {
+    const tokens = kw.list.map(i => i.token || i.term || i.word).filter(Boolean);
+    uniqueCount = new Set(tokens.map(w => w.toLowerCase())).size;
+    const top = kw.list[0];
+    topWord = top.token || top.term || top.word || "—";
+
+  // --- Priority 3: derive from raw text if no keyword data ---
+  } else if (text) {
+    // Clean and split words (English letters only, case-insensitive)
+    const words = text.toLowerCase().match(/\b[a-z']+\b/g) || [];
+    const freq = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+
+    uniqueCount = Object.keys(freq).length;
+
+    // Find top keyword (highest count)
+    const topEntry = Object.entries(freq).sort((a, b) => b[1] - a[1])[0];
+    if (topEntry) topWord = topEntry[0];
   }
 
-  // ===== 1️⃣ Keywords & Frequencies =====
-  renderKeywords({
-    unique: data.keywords.unique,
-    top: data.keywords.top_keywords?.[0]?.word,
-    list: data.keywords.top_keywords?.map(k => ({ token: k.word, count: k.count })),
-    previewText: "",
-    previewHtml: {},
-  });
-
-  const kwBox = document.getElementById("kw-frequency");
-  const kwCanvas = document.createElement("canvas");
-  kwBox.innerHTML = "";
-  kwBox.appendChild(kwCanvas);
-  new Chart(kwCanvas, {
-    type: "bar",
-    data: {
-      labels: data.keywords.top_keywords.map(k => k.word),
-      datasets: [{
-        label: "Frequency",
-        data: data.keywords.top_keywords.map(k => k.count)
-      }]
-    },
-    options: { responsive: true, scales: { y: { beginAtZero: true } } }
-  });
-
-  document.getElementById("kw-suggestions").textContent = data.keywords.suggestions || "";
-
-  // ===== 2️⃣ Themes & Clusters =====
-  renderThemes({
-    clusters: data.themes.themes?.length || 0,
-    top_theme: data.themes.themes || [],
-  });
-
-  const thBox = document.getElementById("th-graph");
-  const thCanvas = document.createElement("canvas");
-  thBox.innerHTML = "";
-  thBox.appendChild(thCanvas);
-  new Chart(thCanvas, {
-    type: "pie",
-    data: {
-      labels: data.themes.themes,
-      datasets: [{
-        data: data.themes.themes.map(() => Math.floor(Math.random() * 10) + 1)
-      }]
-    },
-    options: { responsive: true }
-  });
-  document.getElementById("th-suggestions").textContent = data.themes.suggestions || "";
-
-  // ===== 3️⃣ Sentiments =====
-  renderSentiment({
-    pos: data.sentiment.positive,
-    neu: data.sentiment.neutral,
-    neg: data.sentiment.negative,
-  });
-
-  const seBox = document.getElementById("se-donut");
-  const seCanvas = document.createElement("canvas");
-  seBox.innerHTML = "";
-  seBox.appendChild(seCanvas);
-  new Chart(seCanvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Positive", "Neutral", "Negative"],
-      datasets: [{
-        data: [
-          data.sentiment.positive,
-          data.sentiment.neutral,
-          data.sentiment.negative
-        ]
-      }]
-    },
-    options: { responsive: true }
-  });
-  document.getElementById("se-suggestions").textContent = data.sentiment.suggestions || "";
-
-  // ===== 4️⃣ Emotions =====
-  renderEmotions({
-    dominant: data.emotions.dominant,
-  });
-
-  const emBox = document.getElementById("em-graph-1");
-  const emCanvas = document.createElement("canvas");
-  emBox.innerHTML = "";
-  emBox.appendChild(emCanvas);
-  const emoLabels = Object.keys(data.emotions.emotions || {});
-  const emoValues = Object.values(data.emotions.emotions || {});
-  new Chart(emCanvas, {
-    type: "radar",
-    data: {
-      labels: emoLabels,
-      datasets: [{
-        label: "Emotional Intensity",
-        data: emoValues
-      }]
-    },
-    options: { responsive: true }
-  });
-  document.getElementById("em-suggestions").textContent = data.emotions.suggestions || "";
+  // --- Display results ---
+  uniqueEl.textContent = uniqueCount.toLocaleString();
+  topEl.textContent = topWord.charAt(0).toUpperCase() + topWord.slice(1);
 });
 </script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll(".title, .suggestion-item, .suggestion-heading");
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target); // animate once
+      }
+    });
+  }, { threshold: 0.2 }); // triggers when 20% of card visible
+
+  cards.forEach(card => observer.observe(card));
+});
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script type="module" src="./viz.js"></script>
+<script type="module" src="js/features.js"></script>
+
 </body>
 </html>
