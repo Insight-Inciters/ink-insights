@@ -492,9 +492,20 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
 
   // Only preview once
   sessionStorage.setItem("fromPreview", "true");
-  window.open(pdfURL, "_blank", "noopener,noreferrer");
+  
+// ✅ Open preview in a single dedicated window (no duplicate tabs)
+let previewWin = window.open("", "InkPreview", "width=900,height=800");
+previewWin.document.title = "Ink Report Preview";
+previewWin.document.body.innerHTML = `
+  <iframe src="${pdfURL}" width="100%" height="100%" style="border:none;"></iframe>
+`;
 
-  postExportPrompt();
+// Optional: revoke after preview window closed
+previewWin.onbeforeunload = () => URL.revokeObjectURL(pdfURL);
+
+// continue normal post-export behavior
+postExportPrompt();
+
 
   // Cleanup
   setTimeout(() => URL.revokeObjectURL(pdfURL), 15000);
