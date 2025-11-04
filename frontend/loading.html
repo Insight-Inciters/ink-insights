@@ -16,20 +16,14 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
-    background:#0a0f1a; /* deep night */
+    background:#0a0f1a;
     color:var(--white);
     font-family:"Droid Serif", Georgia, serif;
     overflow:hidden;
   }
 
-  /* ============ STARRY BACKGROUND ============ */
-  #stars{
-    position:fixed; inset:0;
-    z-index:0;
-    display:block;
-  }
+  #stars{position:fixed;inset:0;z-index:0;display:block;}
 
-  /* ============ CENTER WRAPPER ============ */
   .wrap{
     position:relative;
     z-index:1;
@@ -55,7 +49,6 @@
   .dot:nth-child(3){animation-delay:.3s}
   @keyframes bob{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(-6px);opacity:.95}}
 
-  /* ============ PROGRESS BOX ============ */
   .progress{
     width:min(700px,90vw);
     background:rgba(255,255,255,.06);
@@ -132,7 +125,7 @@
       <div>Preparing your dashboard…</div>
       <div class="pct" id="pct">0%</div>
     </div>
-        <p class="load-msg" id="loadMsg">Initializing magic...</p>
+    <p class="load-msg" id="loadMsg">Initializing magic...</p>
   </section>
 
   <p class="tagline">Brew some tea while we unravel your story…</p>
@@ -174,14 +167,13 @@
   const fill=document.getElementById('fill');
   const pct=document.getElementById('pct');
   const bar=document.querySelector('.bar');
-  const duration=11000; // ~11s full animation
+  const duration=11000;
   const start=performance.now();
   let apiDone = false;
   let progress = 0;
 
   function easeInOutCubic(x){return x<0.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
 
-  // Smooth progress animation
   function step(ts){
     const p=Math.min((ts-start)/duration,1);
     const eased=easeInOutCubic(p);
@@ -205,10 +197,10 @@
   }
 
   try {
-    const res = await fetch("https://ink-insights-backend.vercel.app/api/upload", {
+    const res = await fetch("https://ink-insights-backend.vercel.app/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: meta.name || "uploaded.txt" })
+      body: JSON.stringify({ text, filename: meta.name })
     });
 
     if (!res.ok) {
@@ -222,10 +214,7 @@
     localStorage.setItem("ink_results", JSON.stringify(data));
     apiDone = true;
 
-    // If animation already finished, go now
-    if(progress >= 100){
-      finish();
-    }
+    if(progress >= 100){ finish(); }
 
   } catch (err) {
     console.error(err);
@@ -233,7 +222,6 @@
     window.location.href = "upload.html";
   }
 
-  // ===== When done, move to dashboard =====
   function finish(){
     setTimeout(()=>{ window.location.href = "dashboard.html"; }, 600);
   }
@@ -261,6 +249,5 @@
   setInterval(cycle, 3000);
 })();
 </script>
-
 </body>
 </html>
