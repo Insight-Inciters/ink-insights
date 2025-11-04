@@ -289,20 +289,6 @@
   animation: popIn .45s ease-out;
 }
 
-/* Title */
-.popup-box h2 {
-  position: relative;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Droid Serif", serif;
-  font-weight: 700;
-  font-size: 40px;
-  color: var(--dark-teal);
-}
-
-
 /* Animation Image */
 .popup-img {
   width: 100%;
@@ -438,54 +424,76 @@
   animation: stretchBounce 1s ease-out forwards;
 }
 
-/* New Animation for Letter Stretching and Bouncing */
-@keyframes stretchBounce {
+
+/* ======================= Animated Heading in Popup ======================= */
+.popup-box h2 {
+  position: relative;
+  margin-bottom: 30px;
+  font-family: "Droid Serif", serif;
+  font-weight: 700;
+  font-size: 40px; /* Adjusted font size */
+  color: var(--dark-teal);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensure no overflow of letters */
+}
+
+/* Style for the individual letters */
+.popup-box h2 span {
+  display: inline-block;
+  opacity: 0; /* Initially hidden */
+  transform: translateY(-20px); /* Start from top */
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+/* Animation for letters appearing one by one (with slight delays) */
+@keyframes fadeInUp {
   0% {
     opacity: 0;
-    transform: scale(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
+    transform: translateY(-20px); /* Move up from -20px */
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0); /* Final position */
   }
 }
 
-/* Adding a slight delay for each letter */
+/* Adding a delay to each letter */
 .popup-box h2 span:nth-child(1) {
-  animation-delay: 0s;
-}
-.popup-box h2 span:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.popup-box h2 span:nth-child(3) {
   animation-delay: 0.2s;
 }
-/* Continue for each letter... Adjust the delays as needed */
-
-/* Underline animation for h2 */
-@keyframes underline {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
+.popup-box h2 span:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.popup-box h2 span:nth-child(3) {
+  animation-delay: 0.6s;
 }
 
-/* Underline style */
+/* Underline style (animated) */
 .popup-box h2::after {
   content: "";
   display: block;
   position: absolute;
   bottom: -10px;
   left: 0;
-  width: 100%; /* Full width of the h2 */
+  width: 0%; /* Initially invisible */
   height: 4px;
   background-color: var(--accent-green, #609d9f); /* Custom color for underline */
   transform-origin: left center; /* Makes the animation scale from the left */
-  transform: scaleX(0); /* Initially invisible */
-  transition: transform 0.3s ease; /* Smooth transition */
+  animation: drawLine 1s ease-out forwards; /* Add line drawing animation */
 }
+
+/* Line drawing animation */
+@keyframes drawLine {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
 
 
 </style>
