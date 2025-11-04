@@ -59,24 +59,24 @@ function hasNonZero(arr) {
 
 
 
-/* ---------- sentiment % from backend data ---------- */
+/* ---------- sentiment % from backend data (fixed) ---------- */
 function sentimentFromBackend(sentiment = {}) {
   const polarity = Number(sentiment.polarity) || 0;      // -1 to +1
-  const subjectivity = Math.min(1, Math.max(0, Number(sentiment.subjectivity) || 0)); // 0 to 1
+  const subjectivity = Math.min(1, Math.max(0, Number(sentiment.subjectivity) || 0)); // 0–1
 
-  // Map polarity to raw positive / negative
+  // Raw positive / negative components
   const pos = polarity > 0 ? polarity : 0;
   const neg = polarity < 0 ? -polarity : 0;
 
-  // Adjust neutral based on subjectivity (more subjective => less neutral)
-  const neuBase = 1 - subjectivity;
+  // 🔸 Tweak 1: make neutral less overpowering
+  const neuBase = (1 - subjectivity) * 0.6;  // softer neutral weighting
+
+  // 🔸 Tweak 2: strengthen polarity weighting slightly
+  const posW = pos * (0.8 + 0.2 * subjectivity);
+  const negW = neg * (0.8 + 0.2 * subjectivity);
   const neu = Math.max(0, neuBase);
 
-  // Weight positive/negative strength by subjectivity (more subjective = stronger polarities)
-  const posW = pos * subjectivity;
-  const negW = neg * subjectivity;
-
-  // Normalize
+  // Normalize to percentage
   const sum = posW + negW + neu || 1;
   const posPct = (posW / sum) * 100;
   const negPct = (negW / sum) * 100;
@@ -88,6 +88,7 @@ function sentimentFromBackend(sentiment = {}) {
     +(negPct.toFixed(1))
   ];
 }
+
 
 
 
