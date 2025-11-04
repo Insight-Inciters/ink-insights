@@ -1,305 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ink Insights — Loading</title>
-<link rel="icon" href="assests/Ink-logo.png" type="image/png" /> 
-<style>
-  :root{
-    --teal:#005A63;
-    --green:#517A06;
-    --blue:#00A6FF;
-    --white:#fff;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ink Insights — Loading</title>
+  <link rel="icon" href="assests/Ink-logo.png" type="image/png" />
 
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    background:#0a0f1a;
-    color:var(--white);
-    font-family:"Droid Serif", Georgia, serif;
-    overflow:hidden;
-  }
+  <style>
+    :root {
+      --teal: #005A63;
+      --green: #517A06;
+      --blue: #00A6FF;
+      --white: #fff;
+    }
 
-  #stars{position:fixed;inset:0;z-index:0;display:block;}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .wrap{
-    position:relative;
-    z-index:1;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    gap:28px;
-  }
+    html, body {
+      height: 100%;
+    }
 
-  .title{
-    font-family:"Rockwell","Courier New",Courier,Georgia,serif;
-    font-weight:700;
-    font-size:clamp(40px,6vw,88px);
-    text-shadow:0 8px 18px rgba(0,0,0,.4);
-  }
+    body {
+      background: #0a0f1a;
+      color: var(--white);
+      font-family: "Droid Serif", Georgia, serif;
+      overflow: hidden;
+    }
 
-  .dots{display:inline-flex;gap:6px;margin-left:6px}
-  .dot{width:.45em;height:.45em;border-radius:50%;background:#fff;opacity:.45;animation:bob 1.2s infinite ease-in-out}
-  .dot:nth-child(2){animation-delay:.15s}
-  .dot:nth-child(3){animation-delay:.3s}
-  @keyframes bob{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(-6px);opacity:.95}}
+    #stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+    }
 
-  .progress{
-    width:min(700px,90vw);
-    background:rgba(255,255,255,.06);
-    border:2px dashed rgba(255,255,255,.25);
-    border-radius:18px;
-    padding:16px;
-    backdrop-filter:blur(2px);
-    box-shadow:0 10px 24px rgba(0,0,0,.3) inset;
-  }
-  .bar{
-    height:18px;
-    border-radius:12px;
-    background:rgba(255,255,255,.08);
-    overflow:hidden;
-    position:relative;
-  }
-  .fill{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,var(--blue),var(--green));
-    border-radius:12px;
-    box-shadow:0 0 14px rgba(0,166,255,.5);
-    transition:width .2s ease;
-  }
-  .fill::after{
-    content:"";
-    position:absolute;inset:0;
-    background:repeating-linear-gradient(45deg,rgba(255,255,255,.15) 0 10px,transparent 10px 22px);
-    mix-blend-mode:overlay;
-  }
+    .wrap {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 28px;
+    }
 
-  .load-msg {
-    margin-top: 10px;
-    font-style: italic;
-    color: #BBD3C4;
-    font-size: 1.1rem;
-    text-shadow: 0 4px 12px rgba(0,0,0,.3);
-    min-height: 1.4em;
-    transition: opacity .4s ease;
-  }
+    .title {
+      font-family: "Rockwell", "Courier New", Courier, Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(40px, 6vw, 88px);
+      text-shadow: 0 8px 18px rgba(0, 0, 0, .4);
+    }
 
-  .meta{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:10px;
-    color:rgba(255,255,255,.85);
-    font-family:"Rockwell","Courier New",Courier,Georgia,serif;
-  }
-  .pct{font-weight:700;letter-spacing:.5px}
+    .dots {
+      display: inline-flex;
+      gap: 6px;
+      margin-left: 6px;
+    }
 
-  .tagline{
-    font-style:italic;
-    color:#BBD3C4;
-    font-size:clamp(16px,2.6vw,24px);
-    text-shadow:0 4px 12px rgba(0,0,0,.3);
-  }
-</style>
+    .dot {
+      width: .45em;
+      height: .45em;
+      border-radius: 50%;
+      background: #fff;
+      opacity: .45;
+      animation: bob 1.2s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) { animation-delay: .15s; }
+    .dot:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); opacity: .45; }
+      50% { transform: translateY(-6px); opacity: .95; }
+    }
+
+    .progress {
+      width: min(700px, 90vw);
+      background: rgba(255, 255, 255, .06);
+      border: 2px dashed rgba(255, 255, 255, .25);
+      border-radius: 18px;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .3) inset;
+    }
+
+    .bar {
+      height: 18px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      border-radius: 12px;
+      box-shadow: 0 0 14px rgba(0, 166, 255, .5);
+      transition: width .2s ease;
+    }
+
+    .fill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, .15) 0 10px,
+        transparent 10px 22px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    .load-msg {
+      margin-top: 10px;
+      font-style: italic;
+      color: #BBD3C4;
+      font-size: 1.1rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+      min-height: 1.4em;
+      transition: opacity .4s ease;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      color: rgba(255, 255, 255, .85);
+      font-family: "Rockwell", "Courier New", Courier, Georgia, serif;
+    }
+
+    .pct {
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .tagline {
+      font-style: italic;
+      color: #BBD3C4;
+      font-size: clamp(16px, 2.6vw, 24px);
+      text-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+    }
+  </style>
 </head>
+
 <body>
-<canvas id="stars"></canvas>
+  <canvas id="stars"></canvas>
 
-<main class="wrap">
-  <h1 class="title">
-    Loading
-    <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-  </h1>
+  <main class="wrap">
+    <h1 class="title">
+      Loading
+      <span class="dots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </span>
+    </h1>
 
-  <section class="progress">
-    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      <div id="fill" class="fill"></div>
-    </div>
-    <div class="meta">
-      <div>Preparing your dashboard…</div>
-      <div class="pct" id="pct">0%</div>
-    </div>
-    <p class="load-msg" id="loadMsg">Initializing magic...</p>
-  </section>
+    <section class="progress">
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="fill" class="fill"></div>
+      </div>
 
-  <p class="tagline">Brew some tea while we unravel your story…</p>
-</main>
+      <div class="meta">
+        <div>Preparing your dashboard…</div>
+        <div class="pct" id="pct">0%</div>
+      </div>
 
-<script>
-/* ========= STARFIELD ========= */
-(function(){
-  const canvas=document.getElementById('stars');
-  const ctx=canvas.getContext('2d');
-  let W,H,stars=[];
-  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
-  window.addEventListener('resize',()=>{resize();makeStars();});
-  function rand(a,b){return Math.random()*(b-a)+a;}
-  function makeStars(){
-    stars=Array.from({length:160},()=>({
-      x:rand(0,W),
-      y:rand(0,H),
-      r:rand(0.4,1.5),
-      s:rand(0.5,1.5)
-    }));
-  }
-  function draw(t){
-    ctx.clearRect(0,0,W,H);
-    for(const s of stars){
-      const a=(Math.sin(t*0.002*s.s)+1)/2*0.6+0.3;
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${a})`;
-      ctx.fill();
-    }
-    requestAnimationFrame(draw);
-  }
-  resize();makeStars();requestAnimationFrame(draw);
-})();
+      <p class="load-msg" id="loadMsg">Initializing magic...</p>
+    </section>
 
-/* ========= LOADING PROGRESS & API CALL ========= */
-(async function () {
-  const fill = document.getElementById("fill");
-  const pct = document.getElementById("pct");
-  const bar = document.querySelector(".bar");
-  const msg = document.getElementById("loadMsg");
+    <p class="tagline">Brew some tea while we unravel your story…</p>
+  </main>
 
-  let progress = 0;
-  let apiDone = false;
-  let interval;
+  <script>
+    /* ========= STARFIELD ========= */
+    (function() {
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [];
 
-  // smooth progress animation
-  function updateBar(value) {
-    progress = Math.min(value, 100);
-    fill.style.width = progress + "%";
-    pct.textContent = progress + "%";
-    bar.setAttribute("aria-valuenow", progress);
-  }
-
-  // ⏩ Progressive timer — fills steadily until 90%
-  interval = setInterval(() => {
-    if (progress < 90) updateBar(progress + Math.random() * 3);
-  }, 200);
-
-  const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
-  const text = localStorage.getItem("ink_text") || "";
-
-  if (!text) {
-    alert("No text found. Please upload your file again.");
-    window.location.href = "upload.html";
-    return;
-  }
-
-  try {
-    const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: meta.name }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert("Error: " + (err.error || res.statusText));
-      window.location.href = "upload.html";
-      return;
-    }
-
-    const data = await res.json();
-    localStorage.setItem("ink_results", JSON.stringify(data));
-    apiDone = true;
-
-    // instantly finish progress
-    clearInterval(interval);
-    let done = progress;
-    const endAnim = setInterval(() => {
-      done += 5;
-      updateBar(done);
-      if (done >= 100) {
-        clearInterval(endAnim);
-        finish();
+      function resize() {
+        W = canvas.width = innerWidth;
+        H = canvas.height = innerHeight;
       }
-    }, 40);
-  } catch (err) {
-    console.error(err);
-    alert("Network or server error — please try again later.");
-    window.location.href = "upload.html";
-  }
 
-  function finish() {
-    msg.textContent = "Loading complete — launching dashboard...";
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 600);
-  }
-})();
+      window.addEventListener('resize', () => { resize(); makeStars(); });
 
-  // ===== BACKEND CALL =====
-  const meta = JSON.parse(localStorage.getItem("ink_report_meta")||"{}");
-  const text = localStorage.getItem("ink_text")||"";
+      function rand(a, b) { return Math.random() * (b - a) + a; }
 
-  if(!text){
-    alert("No text found. Please upload your file again.");
-    window.location.href = "upload.html";
-    return;
-  }
+      function makeStars() {
+        stars = Array.from({ length: 160 }, () => ({
+          x: rand(0, W),
+          y: rand(0, H),
+          r: rand(0.4, 1.5),
+          s: rand(0.5, 1.5)
+        }));
+      }
 
-  try {
-    const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: meta.name })
-    });
+      function draw(t) {
+        ctx.clearRect(0, 0, W, H);
+        for (const s of stars) {
+          const a = (Math.sin(t * 0.002 * s.s) + 1) / 2 * 0.6 + 0.3;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
 
-    if (!res.ok) {
-      const err = await res.json().catch(()=>({}));
-      alert("Error: " + (err.error || res.statusText));
-      window.location.href = "upload.html";
-      return;
-    }
+      resize();
+      makeStars();
+      requestAnimationFrame(draw);
+    })();
 
-    const data = await res.json();
-    localStorage.setItem("ink_results", JSON.stringify(data));
-    apiDone = true;
+    /* ========= LOADING PROGRESS & API CALL ========= */
+    (async function() {
+      const fill = document.getElementById('fill');
+      const pct = document.getElementById('pct');
+      const bar = document.querySelector('.bar');
+      const duration = 11000;
+      const start = performance.now();
+      let apiDone = false;
+      let progress = 0;
 
-    if(progress >= 100){ finish(); }
+      function easeInOutCubic(x) {
+        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+      }
 
-  } catch (err) {
-    console.error(err);
-    alert("Network or server error — please try again later.");
-    window.location.href = "upload.html";
-  }
+      function step(ts) {
+        const p = Math.min((ts - start) / duration, 1);
+        const eased = easeInOutCubic(p);
+        progress = Math.floor(eased * 100);
+        fill.style.width = progress + "%";
+        pct.textContent = progress + "%";
+        bar.setAttribute("aria-valuenow", progress);
 
-  function finish(){
-    setTimeout(()=>{ window.location.href = "dashboard.html"; }, 600);
-  }
-})();
+        if (p < 1) {
+          requestAnimationFrame(step);
+        } else if (apiDone) {
+          finish();
+        }
+      }
 
-/* ========= ROTATING MESSAGES ========= */
-(function(){
-  const messages = [
-    "Analyzing your literary patterns...",
-    "Mapping emotions and tone shifts...",
-    "Extracting key themes and motifs...",
-    "Almost ready — polishing insights..."
-  ];
-  const msgEl = document.getElementById('loadMsg');
-  let i = 0;
-  function cycle(){
-    msgEl.style.opacity = 0;
-    setTimeout(()=>{
-      msgEl.textContent = messages[i];
-      msgEl.style.opacity = 1;
-      i = (i + 1) % messages.length;
-    }, 400);
-  }
-  cycle();
-  setInterval(cycle, 3000);
-})();
-</script>
+      requestAnimationFrame(step);
+
+      // ===== BACKEND CALL =====
+      const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
+      const text = localStorage.getItem("ink_text") || "";
+
+      if (!text) {
+        alert("No text found. Please upload your file again.");
+        window.location.href = "upload.html";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, filename: meta.name })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert("Error: " + (err.error || res.statusText));
+          window.location.href = "upload.html";
+          return;
+        }
+
+        const data = await res.json();
+        localStorage.setItem("ink_results", JSON.stringify(data));
+        apiDone = true;
+
+        if (progress >= 100) { finish(); }
+
+      } catch (err) {
+        console.error(err);
+        alert("Network or server error — please try again later.");
+        window.location.href = "upload.html";
+      }
+
+      function finish() {
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
+      }
+    })();
+
+    /* ========= ROTATING MESSAGES ========= */
+    (function() {
+      const messages = [
+        "Analyzing your literary patterns...",
+        "Mapping emotions and tone shifts...",
+        "Extracting key themes and motifs...",
+        "Almost ready — polishing insights..."
+      ];
+
+      const msgEl = document.getElementById('loadMsg');
+      let i = 0;
+
+      function cycle() {
+        msgEl.style.opacity = 0;
+        setTimeout(() => {
+          msgEl.textContent = messages[i];
+          msgEl.style.opacity = 1;
+          i = (i + 1) % messages.length;
+        }, 400);
+      }
+
+      cycle();
+      setInterval(cycle, 3000);
+    })();
+  </script>
 </body>
 </html>
