@@ -672,29 +672,27 @@
   })();
 
    /* ---------- First Comer Popup ---------- */
-/* Remove the first-comer popup functionality */
 (function popupInit(){
   const popup = document.getElementById('welcomePopup');
   const closeBtn = popup.querySelector('.popup-close');
   const startBtn = popup.querySelector('.popup-btn');
 
-  // show popup only once per user
-  const hasSeen = localStorage.getItem('ink_welcome_seen');
-  if(!hasSeen){
-    popup.classList.add('show');
-  }
+  // Show the popup on every visit (always appears)
+  popup.classList.add('show');
 
+  // Function to close the popup
   function closePopup(){
     popup.classList.remove('show');
-    localStorage.setItem('ink_welcome_seen', 'true');
   }
 
+  // Event listeners to close the popup
   closeBtn.addEventListener('click', closePopup);
   startBtn.addEventListener('click', closePopup);
-  popup.addEventListener('click', e=>{
-    if(e.target === popup) closePopup();
+  popup.addEventListener('click', e => {
+    if (e.target === popup) closePopup();
   });
 })();
+
 
   </script>
 </body>
