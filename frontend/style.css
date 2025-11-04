@@ -1376,6 +1376,16 @@ footer {
     max-width: 220px;  /* ⬅️ tighter width cap for phones */
     margin: 10px auto 0;
   }
+  /* Specific fix for slide 4 & 5 images (jpg ones) */
+.features-slideshow .slide:nth-child(4) img,
+.features-slideshow .slide:nth-child(5) img {
+  width: 55% !important;     /* make slightly smaller */
+  max-width: 200px !important;
+  height: auto;
+  object-fit: contain;        /* ensures they don’t stretch or overflow */
+  margin: 0 auto;
+}
+
 }
 
 /* --- Product Demo section tweaks --- */
