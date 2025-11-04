@@ -405,35 +405,46 @@ function showDeleteOverlay(onDone) {
 
 
 
-// --- FINAL PDF Export: High Quality Direct Download ---
+// --- FINAL PDF Export: Dashboard layout (direct download only) ---
 document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   e.preventDefault();
 
+  // Ensure dependencies exist
   const { jsPDF } = window.jspdf;
   if (!window.html2canvas) {
     console.error("html2canvas not found — include via CDN before this script.");
     return;
   }
 
+  // Get metadata for title
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
   const docTitle = (meta.name?.replace(/\.[^/.]+$/, "") || "Your Text") + " Report";
 
+  // Target main dashboard
   const dashboard =
     document.querySelector(".dashboard-container") ||
     document.querySelector("main") ||
     document.body;
 
-  // Hide unwanted UI elements (menus, tooltips, delete buttons)
+  // Hide unwanted UI before capture
   const hiddenEls = [];
-  const hideEls = [".export-dropdown", "#deleteBtn", "#summaryText .info"];
-  hideEls.forEach((sel) => {
-    document.querySelectorAll(sel).forEach((el) => {
-      hiddenEls.push(el);
-      el.style.display = "none";
-    });
+  const exportMenu = document.querySelector(".export-dropdown");
+  const deleteBtn = document.querySelector("#deleteBtn");
+  const footerNote = Array.from(document.querySelectorAll("p, div, span"))
+    .find((el) => el.textContent?.includes("We automatically remove your report"));
+
+  // NEW → hide toolkits near summary (the "?" info icons)
+  const toolkits = document.querySelectorAll("#summaryText .info");
+  toolkits.forEach((el) => {
+    hiddenEls.push(el);
+    el.style.display = "none";
   });
 
-  // Temporary title overlay
+  if (exportMenu) { hiddenEls.push(exportMenu); exportMenu.style.display = "none"; }
+  if (deleteBtn) { hiddenEls.push(deleteBtn); deleteBtn.style.display = "none"; }
+  if (footerNote) { hiddenEls.push(footerNote); footerNote.style.display = "none"; }
+
+  // Add temporary top title for export
   const header = document.createElement("div");
   header.innerHTML = `
     <div style="
@@ -445,26 +456,30 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
       font-family: 'Helvetica Neue', sans-serif;
       font-weight: 700;
       font-size: 22px;
-      color: #1a1f71;">
+      color: #1a1f71;
+      letter-spacing: 0.5px;">
       ${docTitle}
-    </div>`;
+    </div>
+  `;
   document.body.appendChild(header);
-  await new Promise((r) => setTimeout(r, 200));
 
-  // Capture at higher scale for clarity
+  // Wait to ensure rendering
+  await new Promise((r) => setTimeout(r, 250));
+
+  // Capture screenshot
   const canvas = await html2canvas(dashboard, {
-    scale: 2,                 // ↑ crisp text & images
+    scale: 2,
     backgroundColor: "#ffffff",
     useCORS: true,
     scrollY: -window.scrollY,
   });
 
-  // Clean up overlay + restore UI
+  // Remove header and restore elements
   header.remove();
   hiddenEls.forEach((el) => (el.style.display = ""));
 
-  // Convert to mid-compression JPEG (sharp but smaller)
-  const imgData = canvas.toDataURL("image/jpeg", 0.85); // ↑ slightly higher quality
+  // Generate PDF
+  const imgData = canvas.toDataURL("image/png", 1.0);
   const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
 
   const pageW = pdf.internal.pageSize.getWidth();
@@ -472,29 +487,40 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
   const imgW = pageW;
   const imgH = (canvas.height * imgW) / canvas.width;
 
-  // Add image slices for multi-page export
+  // Add pages
   let y = 0;
   while (y < imgH) {
-    pdf.addImage(imgData, "JPEG", 0, -y, imgW, imgH, "", "FAST"); // "FAST" = efficient render
+    pdf.addImage(imgData, "PNG", 0, -y, imgW, imgH);
     y += pageH;
     if (y < imgH) pdf.addPage();
   }
 
-  // Footer on last page
+  // ✨ Branded footer only once on last page (dynamic filename)
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(10);
   pdf.setTextColor("#9C9B9B");
-  const baseName = meta.name?.replace(/\.[^/.]+$/, "") || "Untitled";
+
+  const baseName = (meta.name?.replace(/\.[^/.]+$/, "") || "Untitled");
   const footerText = `${baseName} Report — Produced using Ink Insights`;
   pdf.text(footerText, pageW / 2, pageH - 15, { align: "center" });
 
-  // ✅ Direct download (no preview)
-  const fileName = `${baseName || "Ink_Report"}.pdf`;
-  pdf.save(fileName);
+  // ✅ Direct download (no preview, no extra tab)
+  const fileName =
+    (meta.name?.replace(/\.[^/.]+$/, "") || "Ink_Report") + ".pdf";
+  const pdfBlob = pdf.output("blob");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(pdfBlob);
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 
-  // Trigger your post-export UI
+  // Clean up and show export prompt
   postExportPrompt();
+
+  setTimeout(() => URL.revokeObjectURL(a.href), 20000);
 });
+
 
 
 })();
