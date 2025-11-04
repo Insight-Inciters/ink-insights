@@ -58,32 +58,31 @@ function hasNonZero(arr) {
 }
 
 /* ---------- sentiment % from polarity ---------- */
+/* ---------- sentiment % from polarity ---------- */
 /* polarity ∈ [-1, 1]. Map to Positive/Neutral/Negative % */
 function sentimentFromPolarity(polarity) {
   const p = Number(polarity);
-
   let pos = 0, neu = 0, neg = 0;
 
-  // Strongly positive
   if (p > 0.2) {
+    // clearly positive
     pos = p * 100;
-    neg = 0;
     neu = 100 - pos;
-  }
-  // Strongly negative
-  else if (p < -0.2) {
+    neg = 0;
+  } else if (p < -0.2) {
+    // clearly negative
     neg = Math.abs(p) * 100;
-    pos = 0;
     neu = 100 - neg;
-  }
-  // Near zero → neutral
-  else {
-    neu = 100 - Math.abs(p) * 200; // fade into neutrality near 0
-    pos = (p > 0 ? p * 500 : 0);   // small bias toward one side
-    neg = (p < 0 ? -p * 500 : 0);
+    pos = 0;
+  } else {
+    // neutral zone: softly blend toward center
+    const abs = Math.abs(p);
+    neu = 100 - abs * 200;         // near 0 → ~100% neutral
+    pos = p > 0 ? abs * 100 : 0;   // small bias positive side
+    neg = p < 0 ? abs * 100 : 0;   // small bias negative side
   }
 
-  // Clamp + normalize
+  // normalize to total 100%
   const sum = pos + neu + neg || 1;
   pos = (pos / sum) * 100;
   neu = (neu / sum) * 100;
@@ -95,6 +94,7 @@ function sentimentFromPolarity(polarity) {
     Number(neg.toFixed(1))
   ];
 }
+
 
 
 (async function () {
