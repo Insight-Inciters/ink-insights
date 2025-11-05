@@ -606,27 +606,28 @@ function postExportPrompt() {
 
 })();
 
-/* =================== LEAVE / CLOSE TAB CONFIRMATION =================== */
-let leavePromptShown = false;
-
-function showLeavePrompt() {
-  if (leavePromptShown) return;
-  leavePromptShown = true;
-
+/* =================== LEAVE / CLOSE TAB WARNING =================== */
+window.addEventListener("beforeunload", function (e) {
+  // If there's report data present, show the styled prompt
   const hasReport =
     localStorage.getItem("ink_text") ||
     localStorage.getItem("ink_report") ||
     localStorage.getItem("ink_report_meta");
 
-  if (!hasReport) return;
+  if (!hasReport) return; // nothing to warn about
 
+  // Standard browser warning (required for beforeunload)
+  e.preventDefault();
+  e.returnValue = "";
+
+  // Custom styled prompt (same design system as export prompt)
   const box = document.createElement("div");
   box.className = "export-prompt";
   box.innerHTML = `
     <div class="prompt-overlay"></div>
     <div class="prompt-card">
       <h3>Are you leaving?</h3>
-      <p>Your report is still stored locally. Delete it before leaving for your privacy.</p>
+      <p>Your report is still saved in this browser. To protect your privacy, please delete it before leaving.</p>
       <div class="prompt-actions">
         <button id="stayHere" class="btn keep">Stay on Page</button>
         <button id="deleteBeforeLeave" class="btn delete">Delete Report</button>
@@ -639,38 +640,23 @@ function showLeavePrompt() {
   // Stay
   document.querySelector("#stayHere").onclick = () => {
     box.classList.remove("show");
-    setTimeout(() => {
-      box.remove();
-      leavePromptShown = false;
-    }, 300);
+    setTimeout(() => box.remove(), 400);
   };
 
-  // Delete report
+  // Delete + close
   document.querySelector("#deleteBeforeLeave").onclick = () => {
     box.classList.remove("show");
     setTimeout(() => {
       box.remove();
       showDeleteOverlay(() => {
         localStorage.clear();
+        // After deleting, actually allow tab to close
+        window.removeEventListener("beforeunload", arguments.callee);
         window.location.href = "upload.html";
       });
     }, 400);
   };
-}
-
-// Detect cursor leaving viewport at top edge (intent to close tab)
-document.addEventListener("mouseleave", (e) => {
-  if (e.clientY <= 0) showLeavePrompt();
 });
-
-// Detect reload or navigation attempts via key shortcuts
-window.addEventListener("keydown", (e) => {
-  if ((e.ctrlKey && e.key === "r") || e.key === "F5") {
-    e.preventDefault();
-    showLeavePrompt();
-  }
-});
-
 
 /* =================== START ANALYSIS CONFIRMATION =================== */
 document.addEventListener("DOMContentLoaded", () => {
