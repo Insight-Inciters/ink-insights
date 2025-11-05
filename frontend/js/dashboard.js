@@ -38,32 +38,38 @@ function hasNonZero(arr) {
 }
 
 
-/* ---------- sentiment % from backend data (final fixed) ---------- */
+/* ---------- sentiment % from backend data (improved & backend-aware) ---------- */
 function sentimentFromBackend(sentiment = {}) {
-  const polarity = Number(sentiment.polarity) || 0;
-  const subjectivity = Math.min(1, Math.max(0, Number(sentiment.subjectivity) || 0));
+  // Try reading values directly from backend
+  const posRaw = Number(sentiment.positive ?? 0);
+  const negRaw = Number(sentiment.negative ?? 0);
+  const neuRaw = Number(sentiment.neutral ?? 0);
 
-  const pos = polarity > 0 ? polarity : 0;
-  const neg = polarity < 0 ? -polarity : 0;
+  let pos = posRaw;
+  let neg = negRaw;
+  let neu = neuRaw;
 
-  const neuBase = (1 - subjectivity) * 0.4;
-  const posW = pos * (0.9 + 0.3 * subjectivity);
-  const negW = neg * (0.9 + 0.3 * subjectivity);
-  const neu = Math.max(0, neuBase);
+  // Fallback if backend only provided polarity
+  if (!pos && !neg && !neu) {
+    const polarity = Number(sentiment.polarity) || 0;
+    const subjectivity = Math.min(1, Math.max(0, Number(sentiment.subjectivity) || 0));
+    pos = polarity > 0 ? polarity : 0;
+    neg = polarity < 0 ? Math.abs(polarity) : 0;
+    neu = (1 - subjectivity) * 0.5;
+  }
 
-  let sum = posW + negW + neu || 1;
-
-  // --- 🔧 optional: enforce a visible minimum of 1% for each slice ---
-  let posPct = (posW / sum) * 100;
-  let negPct = (negW / sum) * 100;
+  const sum = pos + neg + neu || 1;
+  let posPct = (pos / sum) * 100;
+  let negPct = (neg / sum) * 100;
   let neuPct = (neu / sum) * 100;
 
-  const MIN_VISIBLE = 1; // minimum 1% for aesthetic visibility
-  if (negPct === 0) negPct = MIN_VISIBLE;
+  // enforce min visibility (cosmetic)
+  const MIN_VISIBLE = 1;
   if (posPct === 0) posPct = MIN_VISIBLE;
+  if (negPct === 0) negPct = MIN_VISIBLE;
   if (neuPct === 0) neuPct = MIN_VISIBLE;
 
-  // Re-normalize
+  // normalize
   const total = posPct + negPct + neuPct;
   posPct = (posPct / total) * 100;
   negPct = (negPct / total) * 100;
@@ -220,57 +226,47 @@ $("#summaryText").innerHTML = `
     }
   }
 
-  // --- Themes / Semantic clusters (bubble)
-  {
-    const clusters = {};
-    (themePoints || []).forEach(p => {
-      const cid = Number(p.cluster ?? 0);
-      (clusters[cid] ||= []).push({
-        x: Number(p.x) || 0,
-        y: Number(p.y) || 0,
-        r: Math.max(6, Math.min(18, Number(p.count || 1) * 1.2)),
-        label: p.label || "(unknown)"
-      });
-    });
+ // --- Themes / Semantic clusters (3-word grouped bubbles) ---
+{
+  const clusters = resp?.themes?.clusters || resp?.themes?.points || [];
+  const ok = Array.isArray(clusters) && clusters.length > 0;
 
-    const clusterKeys = Object.keys(clusters);
-    const ok = clusterKeys.length > 0;
+  if (ok) {
+    setChartStateByCanvas("#themesChart", { loading: false, hasData: true });
+    const el = document.querySelector("#themesChart");
 
-    if (ok) {
-      setChartStateByCanvas("#themesChart", { loading: false, hasData: true });
-      const el = document.querySelector("#themesChart");
-      const datasets = clusterKeys.map(cid => ({
-        label: `Cluster ${cid}`,
-        data: clusters[cid],
-        backgroundColor: `hsl(${(cid * 60) % 360}, 70%, 65%)`,
-        borderColor: `hsl(${(cid * 60) % 360}, 70%, 45%)`,
-      }));
+    const datasets = clusters.map((c, i) => ({
+      label: c.label || `Cluster ${c.id ?? c.cluster ?? i}`,
+      data: [{
+        x: Number(c.x) || (i * 0.5),
+        y: Number(c.y) || (i * 0.5),
+        r: Math.max(10, Math.min(25, Number(c.count || 5) * 1.5))
+      }],
+      backgroundColor: `hsl(${(i * 60) % 360}, 70%, 65%)`,
+      borderColor: `hsl(${(i * 60) % 360}, 70%, 45%)`,
+    }));
 
-      const chart = new Chart(el, {
-        type: "bubble",
-        data: { datasets },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: "bottom" },
-            title: { display: true, text: "Semantic Clusters" },
-            tooltip: {
-              callbacks: {
-                label: ctx => ctx.raw.label || ""
-              }
+    new Chart(el, {
+      type: "bubble",
+      data: { datasets },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          title: { display: true, text: "Semantic Clusters (Top 3 Words Each)" },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.dataset.label
             }
-          },
-          scales: {
-            x: { beginAtZero: true },
-            y: { beginAtZero: true }
           }
-        }
-      });
-      charts.push(chart);
-    } else {
-      setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
-    }
+        },
+        scales: { x: { beginAtZero: true }, y: { beginAtZero: true } }
+      }
+    });
+  } else {
+    setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
   }
+}
 
 
 
