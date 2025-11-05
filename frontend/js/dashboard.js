@@ -227,23 +227,27 @@ $("#summaryText").innerHTML = `
   }
 
  // --- Themes / Semantic clusters (3-word grouped bubbles) ---
+// --- Themes / Semantic Clusters Only ---
 {
-  const clusters = resp?.themes?.clusters || resp?.themes?.points || [];
+  const clusters = resp?.themes?.clusters || [];
   const ok = Array.isArray(clusters) && clusters.length > 0;
 
   if (ok) {
     setChartStateByCanvas("#themesChart", { loading: false, hasData: true });
+
     const el = document.querySelector("#themesChart");
 
     const datasets = clusters.map((c, i) => ({
-      label: c.label || `Cluster ${c.id ?? c.cluster ?? i}`,
+      label: `Cluster ${i + 1}`,  // ✅ legend name
+      realLabel: c.label,         // ✅ preserve real meaning
       data: [{
-        x: Number(c.x) || (i * 0.5),
-        y: Number(c.y) || (i * 0.5),
-        r: Math.max(10, Math.min(25, Number(c.count || 5) * 1.5))
+        x: Number(c.x),
+        y: Number(c.y),
+        r: Math.max(12, Math.min(32, Number(c.count) * 2)) // bigger bubble scaling
       }],
-      backgroundColor: `hsl(${(i * 60) % 360}, 70%, 65%)`,
-      borderColor: `hsl(${(i * 60) % 360}, 70%, 45%)`,
+      backgroundColor: `hsl(${(i * 70) % 360}, 70%, 65%)`,
+      borderColor: `hsl(${(i * 70) % 360}, 70%, 45%)`,
+      borderWidth: 2
     }));
 
     new Chart(el, {
@@ -253,20 +257,25 @@ $("#summaryText").innerHTML = `
         responsive: true,
         plugins: {
           legend: { position: "bottom" },
-          title: { display: true, text: "Semantic Clusters (Top 3 Words Each)" },
+          title: { display: true, text: "Semantic Themes" },
           tooltip: {
             callbacks: {
-              label: ctx => ctx.dataset.label
+              label: (ctx) =>
+                `${ctx.dataset.label}: ${ctx.dataset.realLabel} (words: ${ctx.raw.r})`
             }
           }
         },
-        scales: { x: { beginAtZero: true }, y: { beginAtZero: true } }
+        scales: {
+          x: { beginAtZero: true, min: 0, max: 1 },
+          y: { beginAtZero: true, min: 0, max: 1 }
+        }
       }
     });
   } else {
     setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
   }
 }
+
 
 
 window.charts = charts;
