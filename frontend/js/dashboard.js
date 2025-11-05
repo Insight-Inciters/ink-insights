@@ -226,7 +226,7 @@ $("#summaryText").innerHTML = `
     }
   }
 
- // --- Themes / Semantic clusters (3-word grouped bubbles) ---
+
 // --- Themes / Semantic Clusters Only ---
 {
   const clusters = resp?.themes?.clusters || [];
@@ -237,18 +237,24 @@ $("#summaryText").innerHTML = `
 
     const el = document.querySelector("#themesChart");
 
+    const points = resp?.themes?.points || [];
+    const clusterColors = clusters.map((_, i) => `hsl(${(i * 70) % 360}, 70%, 65%)`);
+
     const datasets = clusters.map((c, i) => ({
-      label: `Cluster ${i + 1}`,  // ✅ legend name
-      realLabel: c.label,         // ✅ preserve real meaning
-      data: [{
-        x: Number(c.x),
-        y: Number(c.y),
-        r: Math.max(12, Math.min(32, Number(c.count) * 2)) // bigger bubble scaling
-      }],
-      backgroundColor: `hsl(${(i * 70) % 360}, 70%, 65%)`,
-      borderColor: `hsl(${(i * 70) % 360}, 70%, 45%)`,
-      borderWidth: 2
+      label: `Cluster ${i + 1}`,
+      data: points
+        .filter(p => p.cluster === c.id)
+        .map(p => ({
+          x: Number(p.x),
+          y: Number(p.y),
+          r: Math.max(5, Math.min(20, p.count * 3)), // smaller bubbles for keywords
+          label: p.label
+        })),
+      backgroundColor: clusterColors[i],
+      borderColor: clusterColors[i].replace("65%", "45%"),
+      borderWidth: 1
     }));
+
 
     new Chart(el, {
       type: "bubble",
@@ -280,6 +286,12 @@ $("#summaryText").innerHTML = `
 
 window.charts = charts;
 
+onClick: (e, elements) => {
+  if (!elements.length) return;
+  const idx = elements[0].datasetIndex;
+  const cluster = clusters[idx];
+  alert(`Cluster ${idx + 1}:\n${cluster.label}\n(${cluster.count} keywords)`);
+}
 
 
 /* ============== DELETE (Confirmation + Loading Overlay) ============== */
