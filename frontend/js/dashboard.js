@@ -111,6 +111,8 @@ if (!text) {
   );
 
 
+let resp;
+  
 const cached = localStorage.getItem("ink_report");
 if (cached) {
   try {
@@ -135,13 +137,30 @@ if (cached) {
       const e = await r.json().catch(() => ({}));
       throw new Error(e.error || `Request failed (${r.status})`);
     }
+    
     resp = await r.json();
+resp.keywords = resp.keywords?.list
+  ? resp.keywords
+  : { list: resp.keywords || [] };
+
+resp.themes = resp.themes?.points
+  ? resp.themes
+  : { points: resp.themes?.points || [], clusters: resp.themes?.clusters || [] };
+
+resp.emotions = resp.emotions?.breakdown
+  ? resp.emotions
+  : { breakdown: resp.emotions || {} };
+
+console.log("✅ Backend response normalized:", resp);
+
   } catch (err) {
     console.error(err);
     alert("Analysis failed. Please try again.");
     return;
   }
 
+
+  
   // cache response
   localStorage.setItem("ink_report", JSON.stringify(resp));
   window.inkReport = resp;
