@@ -656,7 +656,7 @@ function showLeavePrompt() {
   document.body.appendChild(box);
   setTimeout(() => box.classList.add("show"), 50);
 
-  // Stay
+  // Stay on page
   document.querySelector("#stayHere").onclick = () => {
     box.classList.remove("show");
     setTimeout(() => {
@@ -665,20 +665,42 @@ function showLeavePrompt() {
     }, 300);
   };
 
-  // Delete report
+  // ✅ Delete report → show progress overlay + full cleanup before leaving
   document.querySelector("#deleteBeforeLeave").onclick = () => {
     box.classList.remove("show");
     setTimeout(() => {
       box.remove();
+
+      // show the same animated delete overlay
       showDeleteOverlay(() => {
-        localStorage.clear();
+        // clear data
+        ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+          localStorage.removeItem(k)
+        );
+
+        // destroy charts safely if available
+        destroyCharts?.(window.charts || []);
+        ["#keywordsChart", "#themesChart", "#sentimentChart", "#emotionsChart"].forEach(sel => {
+          const c = document.querySelector(sel);
+          if (c) c.replaceWith(c.cloneNode(false));
+          setChartStateByCanvas(sel, { loading: true, hasData: false });
+        });
+
+        // reset summary
+        $("#summaryText")?.textContent = "";
+        $("#summaryEmpty")?.style && ($("#summaryEmpty").style.display = "block");
+        $("#fn").textContent = "none";
+        $("#wc").textContent = "0000";
+        $("#rt").textContent = "00 min";
+
+        // ✅ redirect after progress animation
         window.location.href = "upload.html";
       });
     }, 400);
   };
 }
 
-// Detect cursor leaving viewport at top edge (intent to close tab)
+// Detect cursor leaving viewport (intent to close tab)
 document.addEventListener("mouseleave", (e) => {
   if (e.clientY <= 0) showLeavePrompt();
 });
