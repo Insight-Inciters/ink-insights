@@ -757,7 +757,7 @@ function showLeavePrompt() {
       });
     }, 400);
   };
-
+}
 // Detect cursor leaving viewport (intent to close tab)
 document.addEventListener("mouseleave", (e) => {
   if (e.clientY <= 0) showLeavePrompt();
