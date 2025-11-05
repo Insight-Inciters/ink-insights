@@ -8,26 +8,6 @@ import {
   destroyCharts
 } from "./viz.js";
 
-// --- Auto-delete report data when the user starts a NEW visit ---
-(() => {
-  const REPORT_KEYS = ["ink_text", "ink_report_meta", "ink_report", "ink_results"];
-
-  const fromPreview = sessionStorage.getItem("fromPreview") === "true";
-  const sessionActive = sessionStorage.getItem("ink_session_active") === "1";
-
-  // Brand-new visit (no active session) and not coming from a preview tab:
-  if (!sessionActive && !fromPreview) {
-    REPORT_KEYS.forEach(k => localStorage.removeItem(k));
-    // console.log("🧹 Local report data cleared for privacy.");
-  }
-
-  // Mark this browser tab's session as active
-  sessionStorage.setItem("ink_session_active", "1");
-  // Clear the preview flag (only used during exports)
-  sessionStorage.removeItem("fromPreview");
-})();
-
-
 
 /* ---------- helpers for empty/loading state per chart ---------- */
 function setChartStateByCanvas(canvasSelector, { loading, hasData }) {
@@ -56,7 +36,6 @@ function setChartStateByCanvas(canvasSelector, { loading, hasData }) {
 function hasNonZero(arr) {
   return Array.isArray(arr) && arr.some(v => (typeof v === "number" ? v : 0) > 0);
 }
-
 
 
 /* ---------- sentiment % from backend data (final fixed) ---------- */
@@ -96,10 +75,6 @@ function sentimentFromBackend(sentiment = {}) {
     +(negPct.toFixed(1))
   ];
 }
-
-
-
-
 
 
 
@@ -626,6 +601,57 @@ function postExportPrompt() {
 
 
 
+/* =================== LEAVE / CLOSE TAB WARNING =================== */
+window.addEventListener("beforeunload", function (e) {
+  // If there's report data present, show the styled prompt
+  const hasReport =
+    localStorage.getItem("ink_text") ||
+    localStorage.getItem("ink_report") ||
+    localStorage.getItem("ink_report_meta");
+
+  if (!hasReport) return; // nothing to warn about
+
+  // Standard browser warning (required for beforeunload)
+  e.preventDefault();
+  e.returnValue = "";
+
+  // Custom styled prompt (same design system as export prompt)
+  const box = document.createElement("div");
+  box.className = "export-prompt";
+  box.innerHTML = `
+    <div class="prompt-overlay"></div>
+    <div class="prompt-card">
+      <h3>Are you leaving?</h3>
+      <p>Your report is still saved in this browser. To protect your privacy, please delete it before leaving.</p>
+      <div class="prompt-actions">
+        <button id="stayHere" class="btn keep">Stay on Page</button>
+        <button id="deleteBeforeLeave" class="btn delete">Delete Report</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(box);
+  setTimeout(() => box.classList.add("show"), 50);
+
+  // Stay
+  document.querySelector("#stayHere").onclick = () => {
+    box.classList.remove("show");
+    setTimeout(() => box.remove(), 400);
+  };
+
+  // Delete + close
+  document.querySelector("#deleteBeforeLeave").onclick = () => {
+    box.classList.remove("show");
+    setTimeout(() => {
+      box.remove();
+      showDeleteOverlay(() => {
+        localStorage.clear();
+        // After deleting, actually allow tab to close
+        window.removeEventListener("beforeunload", arguments.callee);
+        window.location.href = "upload.html";
+      });
+    }, 400);
+  };
+});
 
   
 
