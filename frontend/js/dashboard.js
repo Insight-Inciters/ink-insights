@@ -125,8 +125,6 @@ if (cached) {
   }
 }
 
-  
-  let resp;
   try {
     const r = await fetch(API, {
       method: "POST",
