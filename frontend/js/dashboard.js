@@ -97,11 +97,13 @@ function sentimentFromBackend(sentiment = {}) {
   $("#wc").textContent = (meta.words || 0).toLocaleString();
   $("#rt").textContent = `${Math.max(1, Math.ceil((meta.words || 0) / 200))} min`;
 
-  if (!text) {
-    alert("No text found. Please upload a .txt file first.");
+if (!text) {
+  showSuccessPrompt("No text found. Please upload a .txt file first.", () => {
     window.location.href = "upload.html";
-    return;
-  }
+  });
+  return;
+}
+
 
   // initial loading visuals
   ["#keywordsChart", "#themesChart", "#sentimentChart", "#emotionsChart"].forEach(sel =>
@@ -377,18 +379,60 @@ function showDeleteOverlay(onDone) {
 
     overlay.classList.add("fade-out");
 
-    // ✅ use the callback if provided, otherwise fallback to default redirect
-    setTimeout(() => {
-      if (typeof onDone === "function") {
-        onDone();
-      } else {
-        window.location.href = "upload.html";
-      }
-    }, 900);
+// ✅ use the callback if provided, otherwise show success box first
+setTimeout(() => {
+  if (typeof onDone === "function") {
+    onDone();
+  } else {
+    // show success message before redirect
+    showSuccessPrompt("Your report was successfully deleted.", () => {
+      window.location.href = "upload.html";
+    });
+  }
+}, 900);
+
   }, 7000); // shorter, smoother animation (optional)
 }
 
 
+/* =================== SUCCESS MESSAGE PROMPT =================== */
+function showSuccessPrompt(message = "Action completed successfully.", onClose) {
+  document.querySelector(".export-prompt")?.remove();
+
+  const box = document.createElement("div");
+  box.className = "export-prompt";
+  box.innerHTML = `
+    <div class="prompt-overlay"></div>
+    <div class="prompt-card">
+      <h3>Success</h3>
+      <p>${message}</p>
+      <div class="prompt-actions">
+        <button id="okSuccess" class="btn keep">OK</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(box);
+  setTimeout(() => box.classList.add("show"), 50);
+
+  // OK closes box and optionally redirects or triggers callback
+  document.querySelector("#okSuccess").onclick = () => {
+    box.classList.remove("show");
+    setTimeout(() => {
+      box.remove();
+      if (typeof onClose === "function") onClose();
+    }, 300);
+  };
+
+  // Clicking overlay also closes it
+  box.querySelector(".prompt-overlay").addEventListener("click", () => {
+    document.querySelector("#okSuccess").click();
+  });
+}
+
+
+
+
+  
 
 
   /* =================== EXPORT HANDLERS =================== */
