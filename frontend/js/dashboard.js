@@ -109,13 +109,13 @@ function sentimentFromBackend(sentiment = {}) {
   );
 
 
-  // ✅ New: Use cached report immediately if available
 const cached = localStorage.getItem("ink_report");
 if (cached) {
   try {
     const cachedData = JSON.parse(cached);
-    renderDashboard(cachedData); // <-- we’ll define this below
+    // Load cached report immediately while new one is fetched
     console.log("⚡ Loaded from cache while fetching new analysis...");
+    resp = cachedData; // ✅ reuses same rendering logic below
   } catch (e) {
     console.warn("Cached report invalid, ignoring.");
   }
@@ -269,6 +269,7 @@ $("#summaryText").innerHTML = `
 }
 
 
+window.charts = charts;
 
 
 
