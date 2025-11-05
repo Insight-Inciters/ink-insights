@@ -6,7 +6,7 @@ import {
   renderBubble,
   renderLine,
   destroyCharts
-} from "./viz.js";
+} from "js/viz.js";
 
 
 /* ---------- helpers for empty/loading state per chart ---------- */
