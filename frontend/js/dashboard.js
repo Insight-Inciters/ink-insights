@@ -258,42 +258,42 @@ $("#summaryText").innerHTML = `
     }));
 
 
-    new Chart(el, {
-      type: "bubble",
-      data: { datasets },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "bottom" },
-          title: { display: true, text: "Semantic Themes" },
-          tooltip: {
-            callbacks: {
-              label: (ctx) =>
-                `${ctx.dataset.label}: ${ctx.dataset.realLabel} (words: ${ctx.raw.r})`
-            }
+new Chart(el, {
+  type: "bubble",
+  data: { datasets },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: "bottom" },
+      title: { display: true, text: "Semantic Themes" },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const d = ctx.raw;
+            return `${ctx.dataset.label}: ${d.label} (count: ${d.r})`;
           }
-        },
-        scales: {
-          x: { beginAtZero: true, min: 0, max: 1 },
-          y: { beginAtZero: true, min: 0, max: 1 }
         }
       }
-    });
-  } else {
-    setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
+    },
+    scales: {
+      x: { beginAtZero: true, min: 0, max: 1 },
+      y: { beginAtZero: true, min: 0, max: 1 }
+    },
+    // ✅ this is where it belongs
+    onClick: (e, elements) => {
+      if (!elements.length) return;
+      const dsIndex = elements[0].datasetIndex;
+      const cluster = clusters[dsIndex];
+      showSuccessPrompt(
+        `Cluster ${dsIndex + 1}: ${cluster.label || "(no label)"}`
+      );
+    }
   }
-}
+});
 
 
 
 window.charts = charts;
-
-onClick: (e, elements) => {
-  if (!elements.length) return;
-  const idx = elements[0].datasetIndex;
-  const cluster = clusters[idx];
-  alert(`Cluster ${idx + 1}:\n${cluster.label}\n(${cluster.count} keywords)`);
-}
 
 
 /* ============== DELETE (Confirmation + Loading Overlay) ============== */
@@ -430,9 +430,6 @@ function showSuccessPrompt(message = "Action completed successfully.", onClose) 
 }
 
 
-
-
-  
 
 
   /* =================== EXPORT HANDLERS =================== */
