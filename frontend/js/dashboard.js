@@ -266,7 +266,7 @@ $("#summaryText").innerHTML = `
         .map(p => ({
           x: Number(p.x),
           y: Number(p.y),
-          r: Math.max(5, Math.min(20, p.count * 3)), // smaller bubbles for keywords
+          r: Math.max(5, Math.min(20, p.count * 3)),
           label: p.label
         })),
       backgroundColor: clusterColors[i],
@@ -274,42 +274,43 @@ $("#summaryText").innerHTML = `
       borderWidth: 1
     }));
 
-
-new Chart(el, {
-  type: "bubble",
-  data: { datasets },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: "bottom" },
-      title: { display: true, text: "Semantic Themes" },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => {
-            const d = ctx.raw;
-            return `${ctx.dataset.label}: ${d.label} (count: ${d.r})`;
+    new Chart(el, {
+      type: "bubble",
+      data: { datasets },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          title: { display: true, text: "Semantic Themes" },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const d = ctx.raw;
+                return `${ctx.dataset.label}: ${d.label} (count: ${d.r})`;
+              }
+            }
           }
+        },
+        scales: {
+          x: { beginAtZero: true, min: 0, max: 1 },
+          y: { beginAtZero: true, min: 0, max: 1 }
+        },
+        onClick: (e, elements) => {
+          if (!elements.length) return;
+          const dsIndex = elements[0].datasetIndex;
+          const cluster = clusters[dsIndex];
+          showSuccessPrompt(
+            `Cluster ${dsIndex + 1}: ${cluster.label || "(no label)"}`
+          );
         }
       }
-    },
-    scales: {
-      x: { beginAtZero: true, min: 0, max: 1 },
-      y: { beginAtZero: true, min: 0, max: 1 }
-    },
-    // ✅ this is where it belongs
-    onClick: (e, elements) => {
-      if (!elements.length) return;
-      const dsIndex = elements[0].datasetIndex;
-      const cluster = clusters[dsIndex];
-      showSuccessPrompt(
-        `Cluster ${dsIndex + 1}: ${cluster.label || "(no label)"}`
-      );
-    }
+    });
+  } else {
+    setChartStateByCanvas("#themesChart", { loading: true, hasData: false });
   }
-});
+}
 
-
-
+// ✅ this line comes after everything is closed properly
 window.charts = charts;
 
 
