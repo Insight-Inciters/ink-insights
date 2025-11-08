@@ -240,7 +240,7 @@
     }
 
     // === Start backend analysis ===
-    fetch("http://127.0.0.1:8000/analyze", {
+    fetch("https://ink-insights-backend.onrender.com/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, filename: meta.name })
@@ -258,7 +258,7 @@
     // === Poll progress endpoint ===
     async function pollProgress() {
       try {
-        const res = await fetch("http://127.0.0.1:8000/progress");
+        const res = await fetch("https://ink-insights-backend.onrender.com/progress");
         const data = await res.json();
 
         if (data && data.percent !== undefined) {
