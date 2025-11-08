@@ -122,6 +122,7 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 .lead-strong{font-size:3.2rem;font-weight:800;color:#0c2f33}
 .tagline{margin-top:14px;font-size:1.1rem;color:#285a5d;max-width:48ch}
 .hero-actions{margin-top:22px;display:flex;gap:14px}
+
 /* ====== HERO BUTTONS ====== */
 .btn {
   display: inline-block;
@@ -172,7 +173,6 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   box-shadow: 0 6px 16px rgba(0, 90, 99, 0.25);
 }
 
-}
 
 .btn.primary::before {
   content: "";
@@ -194,6 +194,8 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 .btn.primary:hover::before {
   left: 150%;
 }
+
+
 
 
 /* --- Ghost button (LEARN MORE) --- */
@@ -241,6 +243,24 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   outline: 2px dashed var(--blue);
   outline-offset: 4px;
 }
+
+
+
+.btn.primary:hover {
+  background: linear-gradient(90deg, var(--dark-teal), var(--blue), var(--pink));
+  background-size: 300%;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 166, 255, 0.3);
+  animation: btnPulse 3s linear infinite;
+}
+
+@keyframes btnPulse {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+
+
 
 
 /* ===== HERO TAGS ===== */
@@ -322,19 +342,14 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 }
 
 /* Image container + credit text */
-.writer-image {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
+/* Image on the right */
 .writer-image img {
   width: 480px;
-  max-width: 100%;
+  height: auto;
   border-radius: 8px;
-  display: block;
-  margin: 0 auto;
 }
+
 
 
 .img-credit {
@@ -379,7 +394,7 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
     font-size: 18px;
   }
   .writer-row img {
-    width: 90%;
+    width: 80%;
   }
 }
 
@@ -427,7 +442,6 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 
 @media (max-width: 900px) {
   .writer-row { flex-direction: column; gap: 30px; }
-  .writer-image img { width: 100%; max-width: 420px; height: auto; }
   .writer-text { text-align: left; max-width: 90%; font-size: 18px; margin: 0 auto; }
   .writer-text p { text-align: left; }
 }
@@ -580,6 +594,20 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 .reveal--v2 .icon-masks{width:190px;right:-10px;top:200px}
 .reveal--v2 .icon-stars{width:130px;left:6%;top:330px}
 .reveal--v2 .icon-hearts{width:170px;right:6%;top:430px}
+
+
+/* Override for Typewriter image (white background) */
+.ink-insights .img-credit {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.ink-insights .img-credit a {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ink-insights .img-credit a:hover {
+  color: #000;
+}
 
 
 
@@ -1474,12 +1502,7 @@ footer {
     text-align: left;
   }
 
-  .writer-image img {
-    width: 100%; /* Ensure image fits within container */
-    max-width: 450px; /* Max width for image */
-    height: auto;
-    border-radius: 8px;
-  }
+
 
   /* ===== ABOUT INSIGHTS SECTION ===== */
   .ink-insights {
@@ -1549,5 +1572,4 @@ footer {
     font-size: 16px; /* Adjust paragraph font size */
   }
 }
-
 
