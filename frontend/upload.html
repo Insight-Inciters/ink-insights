@@ -259,6 +259,193 @@
 }
 
 
+
+
+/* ================= Export Prompt ================= */
+.export-prompt {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none; /* ADD THIS */
+  transition: opacity 0.3s ease;
+}
+.export-prompt.show {
+  opacity: 1;
+  pointer-events: auto; /* ADD THIS */
+}
+
+
+.prompt-overlay {
+  position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(3px);
+}
+
+/* ---------- Prompt Card ---------- */
+.prompt-card {
+  position: relative; background: #fff; padding: 32px 42px; border-radius: 18px; max-width: 440px; box-shadow: 0 6px 22px rgba(0, 0, 0, 0.15); text-align: center; z-index: 2; border: 3px dashed var(--teal);
+}
+
+/* ---------- Typography ---------- */
+.prompt-card h3 {
+  margin-bottom: 10px; color: var(--teal); font-family: 'Droid Serif', serif; font-weight: 700; font-size: 1.5rem;
+}
+.prompt-card p {
+  color: #9C9B9B; margin-bottom: 24px; line-height: 1.6; font-family: 'Rockwell', serif;
+}
+
+/* ---------- Actions (Buttons) ---------- */
+.prompt-actions {
+  display: flex; justify-content: center; gap: 14px;
+}
+
+.prompt-actions .btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: all 0.25s ease; font-weight: 500; letter-spacing: 0.2px;
+}
+
+/* Continue button (primary) */
+.prompt-actions .btn.keep {
+  background: var(--teal); color: #fff; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.prompt-actions .btn.keep:hover {
+  background: var(--white); border: var(--teal); color: var(--teal); box-shadow: 0 0 12px var(--teal); transform: translateY(-2px);
+}
+
+/* Delete button (dashed border + hover transition) */
+.prompt-actions .btn.delete {
+  background: var(--danger-15); color: var(--danger); border: 2px dashed var(--danger); padding: 7px 15px;
+}
+.prompt-actions .btn.delete:hover {
+  background: var(--danger); color: #fff; box-shadow: 0 0 12px var(--danger); transform: translateY(-2px);
+}
+
+/* ---------- Mobile Responsiveness ---------- */
+
+@media(max-width:500px){
+  .prompt-card { max-height: 90vh; overflow-y: auto; }
+}
+
+  .prompt-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .prompt-card p {
+    font-size: 0.9rem; line-height: 1.4;
+  }
+
+  .prompt-actions {
+    flex-direction: column; gap: 10px;
+  }
+
+  .prompt-actions .btn {
+    width: 100%; font-size: 0.9rem; padding: 9px 0;
+  }
+}
+
+.export-prompt {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.export-prompt.show {
+  opacity: 1;
+}
+
+/* --- Fancy Slide-Up Animation for Prompt --- */
+.export-prompt.show .prompt-card {
+  animation: slideUp 0.4s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+    box-shadow: 0 0 0 rgba(37,120,129,0);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 0 12px rgba(37,120,129,.25);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 8px rgba(37,120,129,.20);
+  }
+}
+
+/* ---------- Success Prompt Styles (Separate Boxes) ---------- */
+.loading-bar-wrap {
+  width: 100%;
+  height: 12px;
+  border: 2px dashed var(--teal);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0, 128, 128, 0.05);
+  margin: 20px 0;
+}
+
+.loading-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--teal), var(--blue));
+  animation: loadBar 3s ease-in-out forwards;
+  border-radius: inherit;
+  box-shadow: 0 0 8px rgba(0, 128, 128, 0.4);
+}
+
+@keyframes loadBar {
+  0% { width: 0%; opacity: 1; }
+  90% { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0.4; }
+}
+
+/* Hidden state for both cards */
+#successFinishCard {
+  display: none;
+  animation: fadeUp 0.8s ease forwards;
+  transform: scale(0.85);
+  opacity: 0;
+}
+
+#successLoadingCard {
+  animation: popIn 0.4s ease-out;
+}
+
+@keyframes fadeUp {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Add glow flash when complete */
+.glow-flash {
+  animation: glowFlash 1s ease-in-out forwards;
+}
+@keyframes glowFlash {
+  0% { box-shadow: 0 0 0 rgba(0,128,128,0); }
+  50% { box-shadow: 0 0 18px rgba(0,255,200,0.7); }
+  100% { box-shadow: 0 0 0 rgba(0,128,128,0); }
+}
+
+/* Subtle delay fade-out for loading card */
+.fade-out {
+  animation: fadeOut 0.4s ease forwards;
+}
+@keyframes fadeOut {
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+/* Distinguish the success card with color and shadow */
+.success-card {
+  border: 3px dashed var(--teal);
+  box-shadow: 0 6px 20px rgba(0,128,128,0.25);
+}
+
+
+
+
 /* ======================= FIRST-COMER POPUP ======================= */
 .popup-overlay {
   position: fixed;
@@ -299,9 +486,80 @@
   font-family: "Droid Serif", serif;
   font-weight: 700;
   font-size: 40px;
-  color: var(--dark-teal);
+  color: #fff;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
+
+/* Animated pastel underline */
+.popup-box h2::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 80%;
+  height: 5px;
+  border-radius: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    #ffb6c1,
+    #fdfd96,
+    #a7f0ba,
+    #a1eafb,
+    #d1a1fb,
+    #ffb6c1
+  );
+  background-size: 300%;
+  animation: pastelUnderline 6s linear infinite;
+}
+
+/* Smooth pastel movement */
+@keyframes pastelUnderline {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+
+.popup-box {
+  position: relative;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Pastel gradient border (animated) */
+.popup-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 3px; /* border thickness */
+  background: linear-gradient(
+    90deg,
+    #ffb6c1,
+    #fdfd96,
+    #a7f0ba,
+    #a1eafb,
+    #d1a1fb,
+    #ffb6c1
+  );
+  background-size: 300% 300%;
+  animation: pastelBorderFlow 6s linear infinite;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none; /* prevents blocking inner content */
+}
+
+/* Animation same as underline */
+@keyframes pastelBorderFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
 
 
 /* Animation Image */
@@ -488,6 +746,9 @@
   100% { transform: scaleX(1); }
 }
 
+
+
+
 </style>
 </head>
 <body>
@@ -580,7 +841,12 @@
         <p>✅ Your text is automatically deleted after analysis.<br>✅ We never store or share your content.<br>✅ Your data stays 100% private and secure.</p>
       </article>
     </section>
+
+
   </main>
+
+
+
 
 
 <!-- ======================= POPUP ======================= -->
@@ -594,6 +860,108 @@
 </div>
 
  
+
+<!-- ======================= FILE ISSUE PROMPT ======================= -->
+<div id="filePrompt" class="export-prompt">
+  <div class="prompt-overlay"></div>
+  <div class="prompt-card">
+    <h3>Oops! File Issue Detected</h3>
+    <p id="filePromptMessage">
+      Your file exceeds the 5,000-word limit. Please upload a shorter file.
+    </p>
+    <div class="prompt-actions">
+      <button class="btn keep" id="promptOkBtn">Okay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= FILE SUCCESS PROMPT ======================= -->
+<div id="fileSuccess" class="export-prompt">
+  <div class="prompt-overlay"></div>
+
+  <!-- Loading Card -->
+  <div class="prompt-card" id="successLoadingCard">
+    <h3>Importing File</h3>
+    <p>We are loading your file...</p>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <!-- Separate Success Card -->
+  <div class="prompt-card success-card" id="successFinishCard">
+    <h3>Success! 🎉</h3>
+    <p>Your file was imported successfully.</p>
+    <div class="prompt-actions">
+      <button class="btn keep" id="successOkBtn">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- File Issue Prompt ---------- */
+function showFilePrompt(message) {
+  const prompt = document.getElementById("filePrompt");
+  const msg = document.getElementById("filePromptMessage");
+  msg.textContent = message || "There was a problem with your file.";
+  
+  prompt.classList.add("show");
+  
+  // Close logic
+  document.getElementById("promptOkBtn").addEventListener("click", () => {
+    prompt.classList.remove("show");
+  });
+  prompt.querySelector(".prompt-overlay").addEventListener("click", () => {
+    prompt.classList.remove("show");
+  });
+}
+
+</script>
+
+
+<script>
+/* ---------- File Success Prompt (Separate Cards) ---------- */
+function showSuccessPrompt() {
+  const overlay = document.getElementById("fileSuccess");
+  const loadCard = document.getElementById("successLoadingCard");
+  const doneCard = document.getElementById("successFinishCard");
+  const bar = overlay.querySelector(".loading-bar");
+
+  // Reset animations
+  bar.style.animation = "none";
+  void bar.offsetWidth;
+  bar.style.animation = "";
+  bar.classList.remove("glow-flash");
+
+  // Show overlay and first card
+  overlay.classList.add("show");
+  loadCard.style.display = "block";
+  doneCard.style.display = "none";
+
+  // After bar finishes, transition to success
+  setTimeout(() => {
+    bar.classList.add("glow-flash");
+    setTimeout(() => {
+      loadCard.classList.add("fade-out");
+      setTimeout(() => {
+        loadCard.style.display = "none";
+        doneCard.style.display = "block";
+      }, 400);
+    }, 400);
+  }, 3000);
+}
+
+// Close manually
+document.getElementById("successOkBtn").addEventListener("click", () => {
+  document.getElementById("fileSuccess").classList.remove("show");
+});
+document.querySelector("#fileSuccess .prompt-overlay").addEventListener("click", () => {
+  document.getElementById("fileSuccess").classList.remove("show");
+});
+</script>
+
+
+
  
   <script>
   (function(){
@@ -658,19 +1026,30 @@
       if(f) handleFile(f);
     });
 
-    function handleFile(file){
-      if(!/\.txt$/i.test(file.name)){ alert('Please upload only .txt files.'); return; }
-      const reader=new FileReader();
-      reader.onload= e=>{
-        const text = e.target.result || '';
-        const words = countWords(text);
-        if(words>5000){ alert('The word limit is 5,000. Please upload a shorter file.'); }
-        store(text, file.name);
-      };
-      reader.readAsText(file);
-      // allow selecting the same file again
-      els.fileInput.value='';
+function handleFile(file){
+  if(!/\.txt$/i.test(file.name)){
+    showFilePrompt("Please upload only text (.txt) files.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result || '';
+    const words = countWords(text);
+
+    if (words > 5000) {
+      showFilePrompt("Your file exceeds the 5,000-word limit. Please upload a shorter file.");
+      return;
     }
+
+    store(text, file.name);
+    showSuccessPrompt(); // show the fancy success popup
+  };
+  reader.readAsText(file);
+  els.fileInput.value = '';
+}
+
+
 
     /* GET RESULTS interactions: ripple + behavior */
     function setRipplePosition(e){
@@ -772,7 +1151,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
   </script>
+
+
+  
+
+
+
 </body>
 </html>
