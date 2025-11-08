@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -237,6 +238,23 @@ ul{margin:0 0 10px 20px} li{margin:6px 0}
 }
 
 
+/* ACTIVE NAV LINK */
+.navlinks a[aria-current="page"] {
+text-shadow:0 0 10px rgba(255,255,255,.35)
+}
+
+.navlinks a[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: #fff;
+}
+
+.drawer .menu a[aria-current="page"] {
+  border-color: var(--dark-teal);
+  color: var(--dark-teal);
+  font-weight: 700;
+}
+
+
 /* ================= FOOTER ================= */
 footer{
   background:var(--dark-teal);
@@ -321,7 +339,7 @@ footer{
     <a href="dashboard.html">Dashboard</a>
     <a href="about.html">About Us</a>
     <a href="faq.html">FAQ/Help</a>
-    <a href="contact.html">Contact</a>
+    <a href="contact.html" aria-current="page">Contact</a>
   </nav>
   <div class="drawer-cta-wrap"><a class="drawer-cta" href="upload.html">START ANALYSIS</a></div>
 </aside>
@@ -380,8 +398,8 @@ footer{
       <p>Privacy-first data analysis, designed for writers.</p>
     </div>
     <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Use</a>
+      <a href="faq.html">Privacy Policy</a>
+      <a href="faq.html#terms-use">Terms of Use</a>
       <a href="contact.html">Contact</a>
     </div>
   </div>
