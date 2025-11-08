@@ -60,164 +60,290 @@
       <button class="feature-tab" role="tab" data-target="emotions" aria-controls="emotions" aria-selected="false" tabindex="-1">EMOTIONAL</button>
     </div>
 
-    <!-- ====== KEYWORDS ====== -->
-    <section id="keywords" class="feature-section" aria-labelledby="kw-title" role="tabpanel" tabindex="0">
-      <div class="row">
-        <button class="btn back" id="backKw" type="button">GO BACK</button>
-        <span class="spacer"></span>
-        <div class="export-dropdown">
-  <button class="btn export" id="exportBtn" type="button">EXPORT ▼</button>
-  <div class="dropdown-menu" id="exportMenu">
-    <button id="exportPDF">Export as PDF</button>
-    <button id="exportJSON">Export as JSON</button>
-    <button id="exportCSV">Export as CSV</button>
+<!-- ====== KEYWORDS ====== -->
+<section id="keywords" class="feature-section" aria-labelledby="kw-title" role="tabpanel" tabindex="0">
+  <div class="row">
+    <button class="btn back" id="backKw" type="button">GO BACK</button>
+    <span class="spacer"></span>
+
+<div class="export-dropdown">
+  <button class="btn export" id="exportKw" type="button">EXPORT▾</button>
+  <div class="dropdown-menu">
+    <button id="exportCSV" type="button">Export as CSV</button>
+    <button id="exportJSON" type="button">Export as JSON</button>
+  </div>
+</div>
+  </div>
+
+  <h1 class="title" id="kw-title">Keyword &amp; Frequencies</h1>
+  <div class="divider"></div>
+  <p class="tagline">
+  See the words that define your writing. <br>
+  Get a quick overview of your most used and most distinctive words, discover recurring patterns or overused terms in seconds.
+  </p>
+
+  <h2 class="suggestion-heading">Overview</h2>
+  <div class="panel green">
+    <div class="m-badges">
+      <span class="m-badge">Unique Words: <span class="value" id="kw-unique">00</span></span>
+      <span class="m-badge">Top Keyword: <span class="value" id="kw-top">—</span></span>
+    </div>
+
+    <div class="chartbox pink">
+      <canvas id="keywordsChart"></canvas>
+    </div>
+  </div>
+    <!-- ✅ Add below Keywords chart -->
+  <div id="kw-description" class="sentiment-summary-box"></div>
+</div>
+
+  <!-- ====== NEW: KEYNESS CHART SECTION ====== -->
+  <h2 class="suggestion-heading">Distinctive Words (Keyness)</h2>
+  <div class="panel green">
+    <div class="chartbox pink">
+      <canvas id="keynessChart"></canvas>
+    </div>
+  </div>
+
+    <div id="keyness-description" class="sentiment-summary-box"></div>
+</div>
+
+  <!-- ====== HIGHLIGHTED WORDS SECTION ====== -->
+<section class="highlighted-section">
+  <h2 class="suggestion-heading">Highlighted Word</h2>
+  <div class="highlight-grid">
+    <!-- Keywords Box -->
+    <div class="highlight-card highlight-keywords">
+      <h4>Keywords</h4>
+      <div class="kw-content" id="kw-list"></div>
+    </div>
+
+    <!-- Document Box -->
+    <div class="highlight-card highlight-doc">
+      <h4>Your Document</h4>
+      <div class="color-options">
+        <div class="color-circle" data-color="#fdfd96"></div>
+        <div class="color-circle" data-color="#a7f0ba"></div>
+        <div class="color-circle" data-color="#a1eafb"></div>
+        <div class="color-circle" data-color="#ffb6c1"></div>
+        <div class="color-circle" data-color="#d1a1fb"></div>
+      </div>
+      <div class="kw-doc-scroll" id="kw-doc"></div>
+    </div>
+  </div>
+</section>
+
+
+  <div>
+    <h2 class="suggestion-heading">Suggestions</h2>
+    <div id="kw-suggestions"></div>
+  </div>
+</section>
+
+
+    <!-- ====== THEMES ====== -->
+<section id="themes" class="feature-section" aria-labelledby="th-title" role="tabpanel" tabindex="0">
+  <div class="row">
+    <button class="btn back" id="backTh" type="button">GO BACK</button>
+    <span class="spacer"></span>
+
+<div class="export-dropdown">
+  <button class="btn export" id="exportTh" type="button">EXPORT▾</button>
+  <div class="dropdown-menu">
+    <button id="exportCSV" type="button">Export as CSV</button>
+    <button id="exportJSON" type="button">Export as JSON</button>
+  </div>
+</div>
+  </div>
+
+  <h1 class="title" id="th-title">Themes &amp; Clusters</h1>
+  <div class="divider"></div>
+  <p class="tagline">
+    Uncover the deeper themes within your text. <br>
+Your writing is grouped into meaningful topics, helping you visualize the main ideas and how they connect across your work.</p>
+
+  <h2 class="suggestion-heading">Overview</h2>
+  <div class="panel green">
+    <div class="m-badges">
+      <span class="m-badge">Clusters: <span class="value" id="th-count">00</span></span>
+      <span class="m-badge">Top Theme: <span class="value" id="th-top">—</span></span>
+    </div>
+
+    <div class="chartbox pink">
+        <canvas id="themesChart"></canvas>
+          <div class="empty-note">No theme data available.</div>
+    </div>
+  </div>
+
+      <div id="th-description"  class="sentiment-summary-box"></div>
+
+  <!-- THEME CLUSTERS BOXES -->
+  <h2 class="suggestion-heading" style="margin-top: 2rem;">Theme Clusters</h2>
+
+  <div class="cluster-container" id="clustersBox">
+    <div id="clustersGrid" class="cluster-grid"></div>
+  </div>
+
+  <div>
+    <h2 class="suggestion-heading">Suggestions</h2>
+    <div id="th-suggestions"></div>
+  </div>
+</section>
+
+
+
+<!-- ====== SENTIMENT ====== -->
+<section
+  id="sentiment"
+  class="feature-section"
+  aria-labelledby="se-title"
+  role="tabpanel"
+  tabindex="0"
+>
+  <!-- Header Row -->
+  <div class="row">
+    <button class="btn back" id="backSe" type="button">GO BACK</button>
+    <span class="spacer"></span>
+
+<div class="export-dropdown">
+  <button class="btn export" id="exportSe" type="button">EXPORT▾</button>
+  <div class="dropdown-menu">
+    <button id="exportCSV" type="button">Export as CSV</button>
+    <button id="exportJSON" type="button">Export as JSON</button>
+  </div>
+</div>
+  </div>
+
+  <!-- Title -->
+  <h1 class="title" id="se-title">Sentiments Overview</h1>
+  <div class="divider"></div>
+  <p class="tagline">
+Understand the emotional balance of your writing. <br>
+View the ratio of positive, neutral, and negative tones to reflect on mood consistency and emotional contrast throughout your text.
+  </p>
+
+<!-- ===== Overview Panel ===== -->
+<h2 class="suggestion-heading">Overview</h2>
+<div class="panel green sentiment-overview">
+  <div class="m-badges">
+    <span class="m-badge positive">
+      Positive: <span class="value" id="se-pos">00%</span>
+    </span>
+    <span class="m-badge neutral">
+      Neutral: <span class="value" id="se-neu">00%</span>
+    </span>
+    <span class="m-badge negative">
+      Negative: <span class="value" id="se-neg">00%</span>
+    </span>
+  </div>
+
+  <!-- Chart + Description side by side -->
+  <div class="sentiment-overview-grid">
+    <!-- Chart -->
+    <div class="chartbox pink center">
+      <canvas id="sentimentChart"></canvas>
+    </div>
+
+    <!-- Sentiment Description -->
+    <div id="sentimentDescBox" class="sentiment-card shape-pos highlight-card">
+      <h4>Sentiment Insight</h4>
+      <p id="sentimentDescText">Analyzing your text’s emotional balance...</p>
+    </div>
   </div>
 </div>
 
-      </div>
-
-      <h1 class="title" id="kw-title">Keyword &amp; Frequencies</h1>
-      <div class="divider"></div>
-      <p class="subtitle">See the words that define your writing. Get a quick overview of the most used or distinctive words, recurring patterns, or overused terms.</p>
-       
-       <h2 class=suggestion-heading>Overview</h2>
-      <div class="panel green">
-        <div class="m-badges">
-          <span class="m-badge">Unique Words: <span class="value" id="kw-unique">00</span></span>
-          <span class="m-badge">Top Keyword: <span class="value" id="kw-top">—</span></span>
-        </div>
-          <div class="chartbox pink" id="kw-frequency">Keyword Frequency Graph</div>
-        </div>
-      </div>
-
-      <h2 class=suggestion-heading>Highlighted Word</h2>
-      <div class="panel green">
-        <div class="kw-highlight">
-          <div class="kw-list">
-            <h3>Keywords</h3>
-            <div class="kw-scroll" id="kw-list"></div>
-          </div>
-          <div class="kw-doc">
-            <h3>Your Document</h3>
-            <div class="kw-scroll" id="kw-doc">Select a keyword to preview text with <mark>highlights</mark>. This area scrolls; content does not expand the box.</div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class = suggestion-heading >Suggestions</h2>
-        <div id="kw-suggestions"></div>
-      </div>
-    </section>
-
-    <!-- ====== THEMES ====== -->
-    <section id="themes" class="feature-section" aria-labelledby="th-title" role="tabpanel" tabindex="0">
-      <div class="row">
-        <button class="btn back" id="backTh" type="button">GO BACK</button>
-        <span class="spacer"></span>
-        <button class="btn export" id="exportTh" type="button">EXPORT</button>
-      </div>
-
-      <h1 class="title" id="th-title">Themes &amp; Clusters</h1>
-      <div class="divider"></div>
-      <p class="subtitle">Uncover deeper themes within your text. Visualize how ideas group and connect.</p>
-
-      <h2 class=suggestion-heading>Overview</h2>
-      <div class="panel pink">
-        <div class="m-badges">
-          <span class="m-badge">Clusters: <span class="value" id="th-count">00</span></span>
-          <span class="m-badge">Top Theme: <span class="value" id="th-top">—</span></span>
-        </div>
-        <div class="chartbox pink" id="th-graph">Graph</div>
-        <div class="chartbox blue" id="th-desc">Graph</div>
-      </div>
-
-      <div>
-        <h2 class = suggestion-heading >Suggestions</h2>
-        <div id="th-suggestions"></div>
-      </div>
-    </section>
-
-    <!-- ====== SENTIMENT ====== -->
-    <section id="sentiment" class="feature-section" aria-labelledby="se-title" role="tabpanel" tabindex="0">
-      <div class="row">
-        <button class="btn back" id="backSe" type="button">GO BACK</button>
-        <span class="spacer"></span>
-        <button class="btn export" id="exportSe" type="button">EXPORT</button>
-      </div>
-
-      <h1 class="title" id="se-title">Sentiments</h1>
-      <div class="divider"></div>
-      <p class="subtitle">Understand the emotional balance of your writing across positive, neutral, and negative tones.</p>
-
-      <h2 class=suggestion-heading>Overview</h2>
-      <div class="panel blue">
-        <div class="m-badges">
-          <span class="m-badge positive">Positive: <span class="value" id="se-pos">00%</span></span>
-          <span class="m-badge neutral">Neutral: <span class="value" id="se-neu">00%</span></span>
-          <span class="m-badge negative">Negative: <span class="value" id="se-neg">00%</span></span>
-        </div>
-        <div class="grid">
-          <div class="chartbox pink" id="se-donut">Donut Graph</div>
-          <div class="chartbox blue" id="se-timeline">Timeline Graph</div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class = suggestion-heading >Suggestions</h2>
-        <div id="se-suggestions"></div>
-      </div>
-    </section>
-
-    <!-- ====== EMOTIONS ====== -->
-    <section id="emotions" class="feature-section" aria-labelledby="em-title" role="tabpanel" tabindex="0">
-      <div class="row">
-        <button class="btn back" id="backEm" type="button">GO BACK</button>
-        <span class="spacer"></span>
-        <button class="btn export" id="exportEm" type="button">EXPORT</button>
-        <div id="exportMenu" class="dropdown-menu">
-        <button id="exportPDF" type="button">Export as PDF</button>
-        <button id="exportCSV" type="button">Export as CSV</button>
-        <button id="exportJSON" type="button">Export as JSON</button>
-      </div>
-      </div>
-
-      <h1 class="title" id="em-title">Emotional Patterns</h1>
-      <div class="divider"></div>
-      <p class="subtitle">Explore the emotional and sensory landscape of your story.</p>
-
-      <h2 class=suggestion-heading>Overview</h2>
-      <div class="panel green">
-        <div class="m-badges">
-          <span class="m-badge">Dominant Emotion: <span class="value" id="em-dominant">—</span></span>
-        </div>
-        <div class="grid">
-          <div class="chartbox pink" id="em-graph-1">Graph</div>
-          <div class="chartbox blue" id="em-graph-2">Graph</div>
-        </div>
-        <div class="chartbox sage" id="em-arc">Emotional Arc Graph</div>
-      </div>
-
-      <div>
-        <h2 class = suggestion-heading >Suggestions</h2>
-        <div id="em-suggestions"></div>
-      </div>
-    </section>
-  </main>
 
 
-<script defer src="js/dashboard.js"></script>
-<script defer type="module" src="js/features.js"></script>
+<!-- Explanation Panel -->
+<h2 class="suggestion-heading">Explanation of the Results</h2>
+<div id="explanationPanel">
+  <div id="sentimentClustersGrid" class="sentiment-cluster-grid"></div>
+</div>
+  <div id="sentimentExplanationSummary" class="sentiment-summary-box"></div>
+
+  <!-- ===== Timeline Panel ===== -->
+  <h2 class="suggestion-heading">Sentiment Timeline</h2>
+  <div>
+    <div class="chartbox pink">
+      <canvas id="se-timeline"></canvas>
+    </div>
+    <div id="sentimentTimelineSummary" class="sentiment-summary-box"></div>
+  </div>
+
+  <!-- ===== Suggestions Panel ===== -->
+  <div>
+    <h2 class="suggestion-heading">Suggestions</h2>
+    <div id="se-suggestions"></div>
+  </div>
+</section>
 
 
-<canvas id="kw-frequency"></canvas>
-<canvas id="kw-ngram"></canvas>
-<canvas id="th-graph"></canvas>
-<canvas id="th-desc"></canvas>
-<canvas id="se-donut"></canvas>
-<canvas id="se-timeline"></canvas>
-<canvas id="em-graph-1"></canvas>
-<canvas id="em-arc"></canvas>
+
+
+<!-- ====== EMOTIONS ====== -->
+<section id="emotions" class="feature-section" aria-labelledby="em-title" role="tabpanel" tabindex="0">
+  <!-- Top Row: Navigation Buttons -->
+  <div class="row">
+    <button class="btn back" id="backEm" type="button">GO BACK</button>
+    <span class="spacer"></span>
+
+<div class="export-dropdown">
+  <button class="btn export" id="exportEm" type="button">EXPORT▾</button>
+  <div class="dropdown-menu">
+    <button id="exportCSV" type="button">Export as CSV</button>
+    <button id="exportJSON" type="button">Export as JSON</button>
+  </div>
+</div>
+
+  </div>
+
+  <!-- Section Title -->
+  <h1 class="title" id="em-title">Emotional Patterns</h1>
+  <div class="divider"></div>
+  <p class="tagline">
+Explore the emotional and sensory landscape of your story. <br>
+Analyze how your words evoke the five core emotions and senses, giving you insight into tone and atmosphere.
+  </p>
+
+  <!-- ===== Overview Panel ===== -->
+<h2 class="suggestion-heading">Overview</h2>
+<div class="panel green" id="emotionsOverview">
+  <div class="m-badges">
+    <span class="m-badge">Dominant Emotion: <span class="value" id="em-dominant">—</span></span>
+  </div>
+
+  <!-- Chart + Highlights side-by-side -->
+  <div class="grid emotions-grid">
+    <div class="chartbox pink">
+      <canvas id="emotionsChart"></canvas>
+    </div>
+
+    <!-- Emotional Highlights Card -->
+    <div id="sentimentHighlights" class="sentiment-card shape-pos highlight-card">
+      <h4>Emotional Highlights</h4>
+      <p id="sentimentHighlightsText">Loading highlights...</p>
+    </div>
+  </div>
+</div>
+
+
+  <!-- ===== Explanation Panel ===== -->
+  <h2 class="suggestion-heading">Explanation of the Emotional Results</h2>
+  <div id="emotionsExplanationGrid" class="sentiment-cluster-grid">
+  </div>
+
+     <div id="emotionsExplanationSummary" class="sentiment-summary-box"></div>
+
+
+
+  <!-- ===== Suggestions Panel ===== -->
+  <h2 class="suggestion-heading">Suggestions</h2>
+  <div id="em-suggestions"></div>
+</section>
+
+
+</main>
+
 
 
 
@@ -228,8 +354,8 @@
       <p>Privacy-first data analysis, designed for writers.</p>
     </div>
     <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Use</a>
+      <a href="faq.html">Privacy Policy</a>
+      <a href="faq.html#terms-use">Terms of Use</a>
       <a href="contact.html">Contact</a>
     </div>
   </div>
@@ -239,197 +365,113 @@
 </footer>
 
 
-<script>
-(function(){
-  // Dropdown open/close
-  const exportBtn = document.getElementById('exportBtn');
-  const exportDropdown = document.querySelector('.export-dropdown');
-  const exportMenu = document.getElementById('exportMenu');
 
-  exportBtn.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    exportDropdown.classList.toggle('show');
-  });
-
-  document.addEventListener('click', ()=>exportDropdown.classList.remove('show'));
-
-  // Export handlers
-  const exportPDF = document.getElementById('exportPDF');
-  const exportCSV = document.getElementById('exportCSV');
-
-  exportPDF.addEventListener('click', ()=>{
-    exportDropdown.classList.remove('show');
-    openPDFPreview();
-  });
-
-  exportCSV.addEventListener('click', ()=>{
-    exportDropdown.classList.remove('show');
-    exportAsCSV();
-  });
-
-  // PDF preview function
-  function openPDFPreview(){
-    // This uses html2canvas + jsPDF (already loaded)
-    const main = document.querySelector('main');
-    html2canvas(main).then(canvas=>{
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jspdf.jsPDF({orientation: 'p', unit: 'pt', format: 'a4'});
-      const width = pdf.internal.pageSize.getWidth();
-      const height = pdf.internal.pageSize.getHeight();
-      const ratio = Math.min(width / canvas.width, height / canvas.height);
-      pdf.addImage(imgData, 'PNG', 20, 20, canvas.width * ratio - 40, canvas.height * ratio - 40);
-      pdf.output('dataurlnewwindow'); // open preview tab
-      askDeletePermission();
-    });
-  }
-
-  // CSV export function
-  function exportAsCSV(){
-    const content = document.querySelector('#summaryText')?.innerText || "No data";
-    const blob = new Blob([content], {type: 'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'ink-insights-export.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-    askDeletePermission();
-  }
-
-  // Ask permission to delete data
-  function askDeletePermission(){
-    setTimeout(()=>{
-      if(confirm("Export completed.\nWould you like to delete your data now?")){
-        deleteData();
-      }
-    }, 400);
-  }
-
-function deleteData(){
-  // clear summary & show empty note
-  document.getElementById('summaryText').innerText = "";
-  document.getElementById('summaryEmpty').style.display = "block";
-
-  // optional: clear badges too
-  document.getElementById('fn').innerText = "none";
-  document.getElementById('wc').innerText = "0000";
-  document.getElementById('rt').innerText = "00 min";
-
-  // success confirmation
-  setTimeout(()=>{
-    alert("✅ Your data has been deleted successfully.");
-  }, 300);
-}
-
-
-})();
-</script>
 
 
 <script>
 (function(){
   /* ===== Drawer & header behavior ===== */
   const els = {
-    drawer:document.getElementById('drawer'),
-    hamb:document.getElementById('hamb'),
-    scrim:document.getElementById('scrim'),
+    drawer: document.getElementById('drawer'),
+    hamb: document.getElementById('hamb'),
+    scrim: document.getElementById('scrim'),
   };
-  function openDrawer(){els.drawer.classList.add('open');els.drawer.setAttribute('aria-hidden','false');els.scrim.classList.add('show');els.scrim.setAttribute('aria-hidden','false');els.hamb.classList.add('open');els.hamb.setAttribute('aria-expanded','true')}
-  function closeDrawer(){els.drawer.classList.remove('open');els.drawer.setAttribute('aria-hidden','true');els.scrim.classList.remove('show');els.scrim.setAttribute('aria-hidden','true');els.hamb.classList.remove('open');els.hamb.setAttribute('aria-expanded','false')}
-  function toggleDrawer(){(els.drawer.classList.contains('open')?closeDrawer:openDrawer)()}
-  els.hamb.addEventListener('click',toggleDrawer);
-  els.hamb.addEventListener('keypress',e=>{if(e.key==='Enter'||e.key===' ') toggleDrawer();});
-  els.scrim.addEventListener('click',closeDrawer);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape') closeDrawer();});
 
-  /* ===== Tab system: single-page switcher (centered options) ===== */
-  const tabs = Array.from(document.querySelectorAll('.feature-tab'));
-  const sections = Array.from(document.querySelectorAll('.feature-section'));
-  const idToTab = Object.fromEntries(tabs.map(t=>[t.dataset.target, t]));
-
-  function activate(targetId, {focusPanel=false} = {}){
-    // toggle tab active styles + ARIA
-    tabs.forEach(t=>{
-      const on = (t.dataset.target === targetId);
-      t.classList.toggle('active', on);
-      t.setAttribute('aria-selected', on ? 'true' : 'false');
-      t.tabIndex = on ? 0 : -1;
-    });
-    // show only one section
-    sections.forEach(s=>{
-      s.classList.toggle('active', s.id === targetId);
-      s.hidden = (s.id !== targetId);
-    });
-    // persist selection for roundtrips
-    try{ localStorage.setItem('ink_target_section', targetId); }catch{}
-    // update URL hash without jump
-    history.replaceState(null,'',`#${targetId}`);
-    // optional focus for accessibility
-    if(focusPanel){ document.getElementById(targetId).focus({preventScroll:true}); }
+  function openDrawer(){
+    els.drawer.classList.add('open');
+    els.drawer.setAttribute('aria-hidden','false');
+    els.scrim.classList.add('show');
+    els.scrim.setAttribute('aria-hidden','false');
+    els.hamb.classList.add('open');
+    els.hamb.setAttribute('aria-expanded','true');
   }
 
-  // click/keyboard handlers
-  tabs.forEach((tab, idx)=>{
-    tab.addEventListener('click', ()=> activate(tab.dataset.target, {focusPanel:true}));
-    tab.addEventListener('keydown', e=>{
-      const k=e.key;
-      let nextIdx = idx;
-      if(k==='ArrowRight') nextIdx = (idx+1)%tabs.length;
-      else if(k==='ArrowLeft') nextIdx = (idx-1+tabs.length)%tabs.length;
-      else if(k==='Home') nextIdx = 0;
-      else if(k==='End') nextIdx = tabs.length-1;
-      else if(k==='Enter' || k===' ') { activate(tab.dataset.target, {focusPanel:true}); return; }
-      else return;
+  function closeDrawer(){
+    els.drawer.classList.remove('open');
+    els.drawer.setAttribute('aria-hidden','true');
+    els.scrim.classList.remove('show');
+    els.scrim.setAttribute('aria-hidden','true');
+    els.hamb.classList.remove('open');
+    els.hamb.setAttribute('aria-expanded','false');
+  }
+
+  function toggleDrawer(){
+    (els.drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+  }
+
+  els.hamb.addEventListener('click', toggleDrawer);
+  els.hamb.addEventListener('keypress', e => {
+    if (e.key === 'Enter' || e.key === ' ') toggleDrawer();
+  });
+  els.scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  /* ===== Tab system ===== */
+  const tabs = Array.from(document.querySelectorAll('.feature-tab'));
+  const sections = Array.from(document.querySelectorAll('.feature-section'));
+
+  function activate(targetId, {focusPanel=false} = {}) {
+    tabs.forEach(t => {
+      const active = (t.dataset.target === targetId);
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-selected', active);
+      t.tabIndex = active ? 0 : -1;
+    });
+
+    sections.forEach(s => {
+      const active = (s.id === targetId);
+      s.classList.toggle('active', active);
+      s.hidden = !active;
+    });
+
+    try { localStorage.setItem('ink_target_section', targetId); } catch {}
+    history.replaceState(null, '', `#${targetId}`);
+    if (focusPanel) document.getElementById(targetId)?.focus({preventScroll:true});
+  }
+
+  tabs.forEach((tab, idx) => {
+    tab.addEventListener('click', () => activate(tab.dataset.target, {focusPanel:true}));
+    tab.addEventListener('keydown', e => {
+      const keys = ['ArrowRight','ArrowLeft','Home','End','Enter',' '];
+      if (!keys.includes(e.key)) return;
       e.preventDefault();
+      if (e.key === 'Enter' || e.key === ' ') return activate(tab.dataset.target, {focusPanel:true});
+      let nextIdx = idx;
+      if (e.key === 'ArrowRight') nextIdx = (idx+1)%tabs.length;
+      if (e.key === 'ArrowLeft') nextIdx = (idx-1+tabs.length)%tabs.length;
+      if (e.key === 'Home') nextIdx = 0;
+      if (e.key === 'End') nextIdx = tabs.length-1;
       tabs[nextIdx].focus();
       activate(tabs[nextIdx].dataset.target);
     });
   });
 
-
-
-
-
-  // init: prefer hash, then localStorage, else keywords
-  const initial = (location.hash||'').replace('#','') || (localStorage.getItem('ink_target_section')||'keywords');
-  // make sure only one visible at start
-  sections.forEach(s=>{ s.hidden = true; s.classList.remove('active'); });
+  // Initial section
+  const initial = (location.hash||'').replace('#','') || (localStorage.getItem('ink_target_section') || 'keywords');
+  sections.forEach(s => { s.hidden = true; s.classList.remove('active'); });
   activate(initial);
 
-  // Back buttons
-btn.addEventListener('click', ()=>{
-  // Always go to dashboard if not returning from it directly
-  if (document.referrer && document.referrer.includes('dashboard.html')) {
-    history.back();
-  } else {
+// Back buttons — always go to dashboard
+['backKw', 'backTh', 'backSe', 'backEm'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('click', () => {
     window.location.href = 'dashboard.html';
-  }
+  });
 });
 
 
-  // ===== API render stubs (same as before) =====
+  /* ===== API render stubs ===== */
   window.renderKeywords = function(data){
     document.getElementById('kw-unique').textContent = (data.unique ?? 0).toLocaleString();
     document.getElementById('kw-top').textContent = data.top ?? '—';
-    const list = document.getElementById('kw-list');
-    list.innerHTML = '';
-    (data.list||[]).forEach(item=>{
-      const a = document.createElement('a');
-      a.href="#";
-      a.textContent = `${item.token} — ${item.count}`;
-      a.style.display='block'; a.style.padding='6px 2px';
-      a.addEventListener('click', (e)=>{
-        e.preventDefault();
-        const doc = data.previewHtml?.[item.token] || (data.previewText || '').replace(new RegExp(`\\b(${item.token})\\b`,'gi'),'<mark>$1</mark>');
-        document.getElementById('kw-doc').innerHTML = doc || '<em>No preview available.</em>';
-      });
-      list.appendChild(a);
-    });
   };
 
   window.renderThemes = function(data){
     document.getElementById('th-count').textContent = data.clusters ?? 0;
-    document.getElementById('th-top').textContent = Array.isArray(data.top_theme)? data.top_theme.join('/') : (data.top_theme||'—');
+    document.getElementById('th-top').textContent = Array.isArray(data.top_theme)? data.top_theme.join('/') : (data.top_theme || '—');
   };
 
   window.renderSentiment = function(data){
@@ -442,67 +484,15 @@ btn.addEventListener('click', ()=>{
     document.getElementById('em-dominant').textContent = data.dominant || '—';
   };
 
-  // Demo exports (disable in prod)
-  document.querySelectorAll('.btn.export').forEach(b=>b.addEventListener('click',()=>alert('Export is disabled in demo mode. Connect jsPDF or your backend to enable.')));
+
 })();
 </script>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const uniqueEl = document.getElementById("kw-unique");
-  const topEl = document.getElementById("kw-top");
-
-  if (!uniqueEl || !topEl) return;
-
-  // Try to read stored analysis first
-  const report = JSON.parse(
-    localStorage.getItem("ink_report") ||
-    localStorage.getItem("ink_results") ||
-    "null"
-  ) || {};
-  const kw = report.keywords || {};
-  const text = (localStorage.getItem("ink_text") || "").trim();
-
-  let uniqueCount = 0;
-  let topWord = "—";
-
-  // --- Priority 1: use backend results if they exist ---
-  if (kw.unique && kw.top) {
-    uniqueCount = kw.unique;
-    topWord = kw.top;
-
-  // --- Priority 2: calculate from keyword list if present ---
-  } else if (Array.isArray(kw.list) && kw.list.length) {
-    const tokens = kw.list.map(i => i.token || i.term || i.word).filter(Boolean);
-    uniqueCount = new Set(tokens.map(w => w.toLowerCase())).size;
-    const top = kw.list[0];
-    topWord = top.token || top.term || top.word || "—";
-
-  // --- Priority 3: derive from raw text if no keyword data ---
-  } else if (text) {
-    // Clean and split words (English letters only, case-insensitive)
-    const words = text.toLowerCase().match(/\b[a-z']+\b/g) || [];
-    const freq = {};
-    for (const w of words) freq[w] = (freq[w] || 0) + 1;
-
-    uniqueCount = Object.keys(freq).length;
-
-    // Find top keyword (highest count)
-    const topEntry = Object.entries(freq).sort((a, b) => b[1] - a[1])[0];
-    if (topEntry) topWord = topEntry[0];
-  }
-
-  // --- Display results ---
-  uniqueEl.textContent = uniqueCount.toLocaleString();
-  topEl.textContent = topWord.charAt(0).toUpperCase() + topWord.slice(1);
-});
-</script>
-
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const cards = document.querySelectorAll(".title, .suggestion-item, .suggestion-heading");
+  const cards = document.querySelectorAll(".title, .suggestion-item, .suggestion-heading, .sentiment-card, .sentiment-summary-box");
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -519,8 +509,340 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script type="module" src="./viz.js"></script>
-<script type="module" src="js/features.js"></script>
+<script type="module" src="features.js"></script>
+
+
+<script>
+/* =================== SAFE LEAVE / NAVIGATION HANDLER — FEATURES PAGE =================== */
+
+let leavePromptShown = false;
+let pendingLeaveURL = null;
+
+function hasReport() {
+  return (
+    localStorage.getItem("ink_text") ||
+    localStorage.getItem("ink_report") ||
+    localStorage.getItem("ink_report_meta")
+  );
+}
+
+/* ---------- Shared cleanup ---------- */
+function cleanupPrompt(box) {
+  box.classList.remove("show");
+  setTimeout(() => {
+    box.remove();
+    leavePromptShown = false;
+  }, 300);
+}
+
+/* ---------- Success Prompt ---------- */
+function showSuccessPrompt(message = "Action completed successfully.", onClose, title = "Success") {
+  document.querySelector(".export-prompt")?.remove();
+
+  const box = document.createElement("div");
+  box.className = "export-prompt";
+  box.innerHTML = `
+    <div class="prompt-overlay"></div>
+    <div class="prompt-card">
+      <h3>${title}</h3>
+      <p>${message}</p>
+      <div class="prompt-actions">
+        <button id="okSuccess" class="btn keep">OK</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(box);
+  setTimeout(() => box.classList.add("show"), 50);
+
+  document.querySelector("#okSuccess").onclick = () => {
+    box.classList.remove("show");
+    setTimeout(() => {
+      box.remove();
+      if (typeof onClose === "function") onClose();
+    }, 300);
+  };
+
+  box.querySelector(".prompt-overlay").addEventListener("click", () => {
+    document.querySelector("#okSuccess").click();
+  });
+}
+
+/* ---------- Loading Bar + Success Message ---------- */
+function showDeleteProcess(onDone) {
+  document.querySelector(".delete-overlay")?.remove();
+
+  const overlay = document.createElement("div");
+  overlay.className = "delete-overlay";
+  overlay.innerHTML = `
+    <div class="delete-box">
+      <h3>Your data is being deleted...</h3>
+      <div class="progress-bar"><div class="bar-fill"></div></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const fill = overlay.querySelector(".bar-fill");
+  if (fill) setTimeout(() => (fill.style.width = "100%"), 100);
+
+  const $ = (s) => document.querySelector(s);
+  const safe = (fn) => { try { fn(); } catch (e) { console.warn(e); } };
+
+  // total animation ~7s
+  setTimeout(() => {
+    // clear local storage
+    safe(() => {
+      ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+        localStorage.removeItem(k)
+      );
+    });
+
+    // destroy charts safely
+    safe(() => {
+      if (typeof destroyCharts === "function") destroyCharts(window.charts || []);
+    });
+
+    // reset canvases
+    ["#keywordsChart", "#themesChart", "#sentimentChart", "#emotionsChart"].forEach(sel => {
+      safe(() => {
+        const c = document.querySelector(sel);
+        if (c) c.replaceWith(c.cloneNode(false));
+        if (typeof setChartStateByCanvas === "function") {
+          setChartStateByCanvas(sel, { loading: true, hasData: false });
+        }
+      });
+    });
+
+    // reset summary UI
+    safe(() => {
+      if ($("#summaryText")) $("#summaryText").textContent = "";
+      if ($("#summaryEmpty")) $("#summaryEmpty").style.display = "block";
+      if ($("#fn")) $("#fn").textContent = "none";
+      if ($("#wc")) $("#wc").textContent = "0000";
+      if ($("#rt")) $("#rt").textContent = "00 min";
+    });
+
+    // fade out overlay and show success
+    overlay.classList.add("fade-out");
+    setTimeout(() => {
+      overlay.remove();
+      showSuccessPrompt(
+        "Your report was successfully deleted.",
+        () => {
+          setTimeout(() => {
+            if (typeof onDone === "function") onDone();
+            else window.location.href = "upload.html";
+          }, 400);
+        },
+        "Success"
+      );
+    }, 800);
+  }, 7000);
+}
+
+/* ---------- Page Navigation Prompt ---------- */
+function showLeavePrompt(onDelete = null, onStay = null) {
+  if (leavePromptShown || !hasReport()) return;
+  leavePromptShown = true;
+
+  const box = document.createElement("div");
+  box.className = "export-prompt";
+  box.innerHTML = `
+    <div class="prompt-overlay"></div>
+    <div class="prompt-card">
+      <h3>Leave this page?</h3>
+      <p>Your analysis data is still stored locally. Would you like to delete it before leaving this page?</p>
+      <div class="prompt-actions">
+        <button id="stayHere" class="btn keep">Stay on Dashboard</button>
+        <button id="deleteBeforeLeave" class="btn delete">Delete Data & Leave</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(box);
+  setTimeout(() => box.classList.add("show"), 50);
+
+  document.querySelector("#stayHere").onclick = () => {
+    cleanupPrompt(box);
+    pendingLeaveURL = null;
+    if (onStay) onStay();
+  };
+
+  document.querySelector("#deleteBeforeLeave").onclick = () => {
+    cleanupPrompt(box);
+    showDeleteProcess(() => {
+      if (onDelete) onDelete();
+      else if (pendingLeaveURL) window.location.href = pendingLeaveURL;
+      else window.location.href = "upload.html";
+    });
+  };
+}
+
+/* ---------- Mouse Leave (Tab Exit) Prompt ---------- */
+function showExitIntentPrompt() {
+  if (leavePromptShown || !hasReport()) return;
+  leavePromptShown = true;
+
+  const box = document.createElement("div");
+  box.className = "export-prompt";
+  box.innerHTML = `
+    <div class="prompt-overlay"></div>
+    <div class="prompt-card">
+      <h3>Are you leaving?</h3>
+      <p>Your analysis data is saved locally. Would you like to delete it before leaving the website?</p>
+      <div class="prompt-actions">
+        <button id="stayHere" class="btn keep">Stay on Page</button>
+        <button id="deleteBeforeLeave" class="btn delete">Delete Data</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(box);
+  setTimeout(() => box.classList.add("show"), 50);
+
+  document.querySelector("#stayHere").onclick = () => cleanupPrompt(box);
+  document.querySelector("#deleteBeforeLeave").onclick = () => {
+    cleanupPrompt(box);
+    showDeleteProcess(() => window.location.href = "upload.html");
+  };
+}
+
+/* ---------- Intercept navigation links ---------- */
+document.addEventListener("click", (e) => {
+  const link = e.target.closest("a[href]");
+  if (!link) return;
+
+  const href = link.getAttribute("href");
+  if (!href) return;
+
+  if (href.startsWith("#") || href.startsWith("javascript:")) return;
+  if (href.includes("features.html")) return;
+
+  const protectedPages = ["index.html", "about.html", "faq.html", "contact.html"];
+  const shouldPrompt = protectedPages.some(page => href.includes(page));
+
+  if (shouldPrompt && hasReport()) {
+    e.preventDefault();
+    pendingLeaveURL = href;
+    showLeavePrompt(
+      () => (window.location.href = pendingLeaveURL),
+      () => (pendingLeaveURL = null)
+    );
+  }
+});
+
+/* ---------- Optional soft exit-intent ---------- */
+let lastPromptTime = 0;
+document.addEventListener("mouseleave", (e) => {
+  const now = Date.now();
+  if (e.clientY <= 0 && now - lastPromptTime > 1000 && hasReport()) {
+    showExitIntentPrompt();
+    lastPromptTime = now;
+  }
+});
+
+/* ---------- Restore cached results ---------- */
+window.addEventListener("DOMContentLoaded", () => {
+  try {
+    const hasCachedResults = localStorage.getItem("ink_results");
+    if (hasCachedResults) {
+      if (typeof window.skipBackendProcessing === "function") {
+        window.skipBackendProcessing();
+      }
+      const cachedResults = JSON.parse(hasCachedResults);
+      if (typeof window.renderCachedResults === "function") {
+        window.renderCachedResults(cachedResults);
+      }
+    }
+  } catch (err) {
+    console.warn("Features reload cache restore failed:", err);
+  }
+});
+</script>
+
+
+<script>
+/* =================== START ANALYSIS CONFIRMATION =================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const startBtns = document.querySelectorAll(".nav-cta, .drawer-cta");
+  if (!startBtns.length) return;
+
+  startBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      const hasOldData =
+        localStorage.getItem("ink_text") ||
+        localStorage.getItem("ink_report_meta") ||
+        localStorage.getItem("ink_report") ||
+        localStorage.getItem("ink_results");
+
+      if (hasOldData) {
+        const box = document.createElement("div");
+        box.className = "confirm-delete";
+        box.innerHTML = `
+          <div class="prompt-overlay"></div>
+          <div class="prompt-card">
+            <h3>Start a New Analysis?</h3>
+            <p>Starting another analysis will delete your existing report data. Do you wish to continue?</p>
+            <div class="prompt-actions">
+              <button id="cancelNew" class="btn keep">Cancel</button>
+              <button id="confirmNew" class="btn delete">Yes, Start New</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(box);
+        setTimeout(() => box.classList.add("show"), 50);
+
+        // cancel
+        box.querySelector("#cancelNew").addEventListener("click", () => {
+          box.classList.remove("show");
+          setTimeout(() => box.remove(), 300);
+        });
+
+        // click outside to close
+        box.querySelector(".prompt-overlay").addEventListener("click", () => {
+          box.classList.remove("show");
+          setTimeout(() => box.remove(), 300);
+        });
+
+        // ✅ confirm → show loading overlay
+        box.querySelector("#confirmNew").addEventListener("click", () => {
+          box.classList.remove("show");
+          setTimeout(() => {
+            box.remove();
+
+            const overlay = document.createElement("div");
+            overlay.className = "delete-overlay";
+            overlay.innerHTML = `
+              <div class="delete-box">
+                <h3>Your data is being deleted...</h3>
+                <div class="progress-bar"><div class="bar-fill"></div></div>
+              </div>
+            `;
+            document.body.appendChild(overlay);
+
+            const fill = overlay.querySelector(".bar-fill");
+            setTimeout(() => (fill.style.width = "100%"), 100);
+
+            // clear storage + redirect
+            setTimeout(() => {
+              ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+                localStorage.removeItem(k)
+              );
+
+              overlay.classList.add("fade-out");
+              setTimeout(() => {
+                window.location.href = "upload.html";
+              }, 900);
+            }, 7000);
+          }, 300);
+        });
+      } else {
+        window.location.href = "upload.html";
+      }
+    });
+  });
+});
+</script>
+
 
 </body>
 </html>
