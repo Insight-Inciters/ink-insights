@@ -1,4 +1,3 @@
-
 :root {
   --dark-teal:#005A63; --teal:#257881;
   --warm-green:#517A06; --warm-green-20:rgba(81,122,6,.20); --warm-green-30:rgba(81,122,6,.30);
@@ -10,7 +9,9 @@
   --warm-green-10: rgba(81,122,6,0.10);
   --pink-10: rgba(255,32,146,0.10);
   --blue-10: rgba(0,166,255,0.10);
-
+    --sentiment-positive: #2e8b57;
+  --sentiment-neutral: #888888;
+  --sentiment-negative: #c62828;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -131,6 +132,15 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   .btn.back{background:#fff;color:var(--dark-teal);border-color:var(--dark-teal)}
   .btn.back:hover{background:var(--dark-teal);color:#fff;transform:translateY(-2px)}
 
+
+.tagline{
+  font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;
+  font-weight:400; color:var(--dark-grey); font-style:italic; margin:0 0 8px
+}
+
+
+
+
   /* ====== Feature pills — CENTERED ====== */
 .feature-tabs{
   display:flex;
@@ -203,6 +213,210 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
 }
 
 
+/* === Sentiment Overview Layout Fix === */
+.sentiment-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.sentiment-overview-grid .chartbox {
+  height: auto;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.highlight-card {
+  background: var(--soft-green);
+  border: 2px solid var(--dark-teal);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Rockwell", serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.highlight-card h4 {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  color: var(--dark-teal);
+}
+
+.highlight-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #003a3a;
+}
+
+@media (max-width: 860px) {
+  .sentiment-overview-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .highlight-card {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+}
+
+/* === Highlighted Word Layout === */
+.highlight-grid {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+
+/* Base box design */
+.highlight-card {
+  border: 3px dashed var(--blue);
+  border-radius: 14px;
+  padding: 20px;
+  min-height: 300px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+/* === Specific Sizes === */
+.highlight-keywords {
+  width: 280px;             /* smaller width */
+  border-color: var(--blue);
+}
+
+.highlight-doc {
+  flex: 1;                  /* take remaining space */
+  min-width: 520px;         /* make it wide */
+  max-width: 700px;
+  border-color: var(--pink);
+}
+
+/* === Titles === */
+.highlight-card h4 {
+  text-align: center;
+  font-family: "Agency FB", "Rockwell", sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #000;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* === Keyword List === */
+.kw-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.kw-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: background-color 0.25s ease;
+  font-family: "Rockwell", serif;
+  font-size: 1rem;
+}
+.kw-item:hover {
+  background-color: #f4f4f4;
+}
+.kw-item.active {
+  background-color: #d9d9d9;
+  font-weight: bold;
+}
+
+/* === Color Picker Circles === */
+.color-options {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.color-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.color-circle:hover {
+  transform: scale(1.15);
+  border-color: var(--dark-teal);
+}
+.color-circle.active {
+  border-color: var(--dark-teal);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+}
+
+/* === Document Scroll Box === */
+.kw-doc-scroll {
+  flex: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 12px;
+  line-height: 1.65;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  font-family: "Rockwell", serif;
+  font-size: 0.95rem;
+}
+.kw-doc-scroll mark {
+  background-color: #fdfd96; /* default yellow */
+  border-radius: 4px;
+  padding: 0 3px;
+}
+
+
+
+/* Emotional Highlights Box Style */
+.emotions sentiment-card.highlight-card {
+  width: 450px; /* Increase width */
+  padding: 20px;
+  background-color: #f8f8f8;
+  border: 2px solid #2e8b57;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px;
+}
+
+.sentiment-card.highlight-card h4 {
+  color: #2e8b57;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sentiment-card.highlight-card p {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+
+
+
+
+
 
 
   /* ====== Panels ====== */
@@ -217,13 +431,9 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   }
 
   /* Chart placeholders */
-  .chartbox{
-    --stripe: rgba(0,0,0,.06);
-    border-radius:18px;margin:10px 12px 10px;min-height:220px;display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden;border:3px dashed var(--dark-teal);
-    background:repeating-linear-gradient(45deg, var(--stripe) 0 12px, transparent 12px 24px);
-  }
-  .chartbox.pink{ border-color:var(--pink); background:background:var(--white);}
-  .chartbox.sage{ border-color:var(--warm-green); background:background:var(--white);}
+
+  .chartbox.pink{ border-color:var(--pink); background:var(--white);}
+  .chartbox.sage{ border-color:var(--warm-green); background:var(--white);}
   .chartbox.blue{ border-color:var(--blue); background:var(--white);}
 
   /* Two-column grid for graphs */
@@ -246,10 +456,10 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   /* Mini badges */
   .m-badges{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 4px}
   .m-badge{
-    display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:28px;border:2px dashed var(--warm-green);background:var(--warm-green-30);
-    color:var(--warm-green);font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;font-weight:400
+    display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:28px;border:2px dashed var(--blue);background:var(--blue-30);
+    color:var(--blue);font-family:"Rockwell","AmericanTypewriter","Courier New",Courier,Georgia,serif;font-weight:400
   }
-  .m-badge .value{color:#fff}
+  .m-badge .value{color:#000000}
 
 
   /* === Sentiment color variants === */
@@ -275,42 +485,6 @@ box-shadow:-10px 0 24px rgba(0,0,0,.28);transition:right .35s cubic-bezier(.22,1
   /* ====== Single-page switching ====== */
   .feature-section{display:none}          /* hidden by default */
   .feature-section.active{display:block}  /* only active section shows */
-
-
-
-
-/* ============ EXPORT DROPDOWN ============ */
-.export-dropdown { position: relative; display: inline-block; }
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  background: #fff;
-  border: 2px dashed var(--dark-teal);
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  min-width: 180px;
-  z-index: 20;
-  overflow: hidden;
-}
-.dropdown-menu button {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 10px 14px;
-  text-align: left;
-  font-family: "Rockwell","Courier New",Courier,serif;
-  color: var(--dark-teal);
-  font-size: 15px;
-  cursor: pointer;
-  transition: background .2s ease;
-}
-.dropdown-menu button:hover { background: rgba(0,90,99,0.08); }
-.export-dropdown.show .dropdown-menu {
-  display: block;
-  animation: fadeIn .15s ease;
-}
-
 
 
 
@@ -366,6 +540,7 @@ footer{
   .footer-brand h1{font-size:44px;text-align:center;}
   .footer-container{flex-direction:column;align-items:center;text-align:center;}
 }
+
 
 
 
@@ -463,6 +638,53 @@ mark.hl-word {
 @media (max-width: 860px) { .chartbox { height: 220px; } }
 
 
+.emotion-card {
+  background: rgba(255,255,255,0.9);
+}
+#emotionsExplanationGrid {
+  margin-top: 8px;
+}
+
+
+
+/* === Overview Description Box (Sentiment / Emotion) === */
+#sentimentDescBox,
+#emotionDescBox {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--sentiment-color, #2e8b57);
+  border-radius: 24px 4px 24px 4px; /* two-corner curve */
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+/* Subtle color glow (matches tone color) */
+#sentimentDescBox::before,
+#emotionDescBox::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--sentiment-color, #2e8b57) 35%, transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+/* Glow intensifies slightly on hover */
+#sentimentDescBox:hover::before,
+#emotionDescBox:hover::before {
+  opacity: 0.9;
+}
+
+#sentimentDescBox:hover,
+#emotionDescBox:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 14px 3px color-mix(in srgb, var(--sentiment-color, #2e8b57) 40%, transparent);
+}
+
+
 
 
 /* ================= Suggestion Heading ================= */
@@ -508,6 +730,30 @@ mark.hl-word {
 
 .suggestion-heading.visible::after {
   width: 100px; /* adjust as needed */
+}
+
+
+
+.timeline-toggle {
+  text-align: right;
+  margin: 0.5rem 0 0.5rem;
+}
+
+.small-toggle {
+  background: linear-gradient(90deg, #1e88e5, #6ca0dc);
+  border: none;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: "Rockwell", serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.small-toggle:hover {
+  background: linear-gradient(90deg, #1976d2, #5087c8);
+  transform: translateY(-2px);
 }
 
 
@@ -560,9 +806,6 @@ mark.hl-word {
   background: var(--blue-20);
   border-color: var(--blue-30);
 }
-
-
-
 
 
 
@@ -632,61 +875,1001 @@ mark.hl-word {
 }
 
 
+/* ===== Sentiment Summary Boxes ===== */
+.sentiment-summary-box {
+  flex: 1 1 100%;
+  max-width: 800px;
+  margin: 1.8rem auto;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border: 3px dashed var(--teal, #1e88e5);
+  border-radius: 18px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  font-family: "Rockwell", "Courier New", serif;
+  text-align: center;
+  line-height: 1.55;
+  color: #2a2a2a;
+  animation: fadeInUp 0.8s ease both;
+}
 
 
 
-/* ===== Delete Overlay (Blurred Progress State) ===== */
-.delete-overlay {
+
+/* === Cluster Cards === */
+.cluster-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.cluster-card {
+  --cluster-color: var(--pink);
+  flex: 1 1 300px;
+  max-width: 340px;
+  background: #ffffff;
+  border: 3px solid var(--cluster-color);
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cluster-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Distinct corner shapes */
+.shape-a { border-radius: 24px 6px 24px 6px; }
+.shape-b { border-radius: 6px 24px 6px 24px; }
+.shape-c { border-radius: 30px 10px 10px 30px; }
+.shape-d { border-radius: 10px 30px 30px 10px; }
+
+/* Title */
+.cluster-title {
+  font-family: "Agency FB", "Rockwell", serif;
+  font-size: 1.25rem;
+  text-align: center;
+  color: var(--cluster-color);
+  text-decoration: underline;
+  margin-bottom: 0.5rem;
+}
+
+/* Table */
+.cluster-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Rockwell", "Courier New", serif;
+  margin-bottom: 0.5rem;
+}
+
+.cluster-table thead th {
+  background: color-mix(in oklab, var(--cluster-color) 20%, white);
+  color: var(--cluster-color);
+  border-bottom: 2px solid var(--cluster-color);
+  padding: 6px;
+  text-align: center;
+}
+
+.cluster-table td {
+  padding: 6px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.cluster-table tbody tr:nth-child(even) td {
+  background: color-mix(in oklab, var(--cluster-color) 10%, white);
+}
+
+/* Footer bullet line */
+.cluster-phrase {
+  margin-top: 6px;
+  padding: 8px;
+  text-align: center;
+  border: 2px dashed var(--cluster-color);
+  font-family: "Rockwell", serif;
+  font-size: 0.95rem;
+  background: color-mix(in oklab, var(--cluster-color) 6%, white);
+  border-radius: 8px;
+}
+
+.cluster-phrase {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 36px;
+}
+
+
+
+.cluster-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12),
+              0 0 0 3px color-mix(in oklab, var(--cluster-color) 30%, white);
+}
+
+
+.word-pill {
+  background: color-mix(in oklab, var(--cluster-color) 10%, white);
+  border: 1px solid var(--cluster-color);
+  border-radius: 12px;
+  padding: 2px 8px;
+  margin: 2px;
+  font-size: 0.9rem;
+}
+
+
+
+/* ===== Cluster Animation ===== */
+.cluster-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.cluster-card {
+  opacity: 0;
+  transform: translateY(30px) scale(0.97);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.cluster-card.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Sentiment Layout Fix */
+.sentiment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+
+.explanation-box {
+  text-align: left;
+}
+
+.explanation-box h3 {
+  margin-top: 0;
+  color: #005555;
+}
+
+.sentiment-words {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background: #fafafa;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+
+.sentiment-words p {
+  margin: 0.2rem 0;
+}
+
+
+
+/* ==== Sentiment Layout Fix ==== */
+.sentiment-overview .chartbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+#explanationPanel {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.explanation-card {
+  background: #fdfdfd;
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  max-width: stretch;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.explanation-card:hover {
+  background: #f8fff8;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transform: translateY(-3px);
+}
+
+.explanation-card p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.sentiment-words {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 0.8rem;
+}
+
+.swatch {
+  font-weight: 700;
+}
+
+.swatch.pos { color: #2e8b57; }
+.swatch.neu { color: #555; }
+.swatch.neg { color: #c62828; }
+
+
+
+/* === Sentiment Explanation Cluster Boxes (Cluster Theme Style) === */
+
+.sentiment-cluster-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  align-items: stretch;
+  margin-top: 1.5rem;
+}
+
+/* Core Card Design (inherits from cluster style) */
+.sentiment-card {
+  flex: 1 1 300px;
+  max-width: 340px;
+  background: #ffffff;
+  border: 3px solid var(--sentiment-color, #ccc);
+  padding: 1.2rem 1rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  opacity: 0;
+  transform: translateY(30px) scale(0.97);
+}
+
+/* Smooth appear animation */
+.sentiment-card.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.sentiment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12),
+              0 0 0 3px color-mix(in oklab, var(--sentiment-color, #ccc) 30%, white);
+}
+
+/* Distinct corner shapes like cluster cards */
+.shape-pos { border-radius: 24px 6px 24px 6px; }
+.shape-neu { border-radius: 6px 24px 6px 24px; }
+.shape-neg { border-radius: 30px 10px 10px 30px; }
+
+/* Title */
+.sentiment-card h4 {
+  font-family: "Agency FB", "Rockwell", serif;
+  font-size: 1.25rem;
+  text-align: center;
+  color: var(--sentiment-color, #333);
+  text-decoration: underline;
+  margin-bottom: 0.4rem;
+}
+
+/* Tone summary */
+.sentiment-tone {
+  font-family: "Rockwell", "Courier New", serif;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 0.8rem;
+  color: #333;
+}
+
+/* Word pills area */
+.sentiment-words {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  border: 2px dashed color-mix(in oklab, var(--sentiment-color, #ccc) 50%, white);
+  padding-top: 0.8rem;
+  background: color-mix(in oklab, var(--sentiment-color, #ccc) 5%, white);
+  border-radius: 8px;
+}
+
+/* Individual word bubble/pill */
+.sentiment-words .word-pill {
+  background: color-mix(in oklab, var(--sentiment-color, #ccc) 10%, white);
+  border: 1px solid var(--sentiment-color, #ccc);
+  border-radius: 12px;
+  padding: 4px 10px;
+  margin: 2px;
+  font-size: 0.9rem;
+  color: var(--sentiment-color, #333);
+  font-family: "Rockwell", serif;
+}
+
+/* Animation when appearing */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =================== LEAVE / DELETE PROMPT (Dashboard-Matching Vertical Layout) =================== */
+
+.export-prompt {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-
-.delete-overlay.fade-out {
   opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.export-prompt.show { opacity: 1; }
+
+/* Blurred dark background */
+.prompt-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
 }
 
-.delete-box {
-  background: rgba(255, 255, 255, 0.85);
-  border: 2px dashed var(--teal);
-  border-radius: 16px;
-  padding: 40px 50px;
+/* Prompt card */
+.prompt-card {
+  position: relative;
+  background: #fff;
+  border: 3px dashed var(--teal);
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  max-width: 400px;
+  padding: 34px 44px;
+  max-width: 420px;
   width: 90%;
+  z-index: 2;
+  animation: slideUp 0.4s cubic-bezier(.22,1,.36,1);
 }
 
-.delete-box h3 {
+/* Heading and message */
+.prompt-card h3 {
   font-family: "Droid Serif", serif;
-  font-size: 1.3rem;
-  color: var(--dark-teal);
-  margin-bottom: 22px;
+  font-weight: 700;
+  color: var(--teal);
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+.prompt-card p {
+  font-family: "Rockwell","Courier New",serif;
+  font-size: 0.95rem;
+  color: #8c8c8c;
+  margin-bottom: 26px;
+  line-height: 1.5;
+}
+
+/* Vertical button stack */
+.prompt-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Shared button style */
+.prompt-actions .btn {
+  font-family: "Rockwell","Courier New",serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 260px;
+  padding: 11px 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
   letter-spacing: 0.3px;
 }
 
-.progress-bar {
-  width: 100%;
-  height: 10px;
-  border-radius: 6px;
-  background: rgba(0, 90, 99, 0.15);
-  overflow: hidden;
+/* Primary teal button (Stay) */
+.prompt-actions .btn.keep {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.prompt-actions .btn.keep:hover {
+  background: #fff;
+  color: var(--teal);
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--teal);
 }
 
-.bar-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--teal), var(--blue));
-  border-radius: 6px;
-  transition: width 7s ease;
+/* Secondary red button (Delete) */
+.prompt-actions .btn.delete {
+  background: var(--danger-15);
+  color: var(--danger);
+  border: 2px dashed var(--danger);
+}
+.prompt-actions .btn.delete:hover {
+  background: var(--danger);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--danger);
+}
+
+/* Animation (matches dashboard) */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.96);
+    box-shadow: 0 0 0 rgba(37,120,129,0);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 0 12px rgba(37,120,129,.25);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 8px rgba(37,120,129,.18);
+  }
+}
+
+/* Responsive layout */
+@media (max-width: 500px) {
+  .prompt-card {
+    padding: 28px 30px;
+    width: 92%;
+  }
+  .prompt-actions .btn {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 10px 0;
+  }
+}
 
 #kw-list a.selected { background:#e0e0e0; border-radius:6px; padding:2px 6px; color:#000; }
 mark.hl-word { background:#cfd8dc; color:#000; border-radius:3px; cursor:pointer; }
 .syn-box { position:absolute; background:#fff; border:1px solid #aaa; border-radius:6px; padding:6px 10px; font-size:13px; color:#333; box-shadow:0 2px 8px rgba(0,0,0,.15); z-index:9999; }
+
+
+
+/* Success prompt box */
+.export-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.export-prompt.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.prompt-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.chart-header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.chart-tooltip, .chart-download {
+  background: rgba(255,255,255,0.9);
+  border: 2px dashed var(--dark-teal);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark-teal);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.3s ease;
+}
+.chart-tooltip:hover, .chart-download:hover {
+  background: var(--dark-teal);
+  color: #fff;
+}
+.chart-desc {
+  text-align: center;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--dark-grey);
+  margin-top: 10px;
+}
+
+
+.chart-description {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  background: #f8f8f8;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+}
+
+
+
+/* === Show More / Less Button === */
+.small-toggle {
+  background: #fff;
+  color: #000;
+  border: 1px dashed #000;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-family: "Rockwell", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.small-toggle:hover {
+  background: #000;
+  color: #fff;
+  border: 1px dashed #000;
+}
+
+.small-toggle:active {
+  transform: scale(0.96);
+}
+
+.small-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Fit inside cluster cards nicely */
+.cluster-card .small-toggle {
+  margin-top: 8px;
+  margin-bottom: 6px;
+  align-self: center;
+}
+
+
+/* === Responsive Fix: Highlight Words Section === */
+@media (max-width: 860px) {
+  .highlight-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .highlight-keywords,
+  .highlight-doc {
+    width: 90%;
+    min-width: auto;
+    max-width: 95%;
+  }
+
+  .highlight-card {
+    padding: 16px;
+    min-height: unset;
+  }
+
+  .kw-doc-scroll {
+    max-height: 300px;
+    font-size: 0.9rem;
+  }
+
+  .highlight-card h4 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .highlight-card {
+    padding: 12px;
+  }
+  .kw-item {
+    font-size: 0.9rem;
+  }
+  .kw-doc-scroll {
+    padding: 10px;
+    max-height: 260px;
+  }
+}
+
+.emotion-card {
+  position: relative;
+  border: 2px solid var(--sentiment-color);
+  border-radius: 24px 4px 24px 4px; /* two-corner curve */
+  background: #fff;
+  padding: 1rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.emotion-card:hover {
+  transform: translateY(-3px);
+  border-radius: 4px 24px 4px 24px; /* flips corners on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.emotion-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--sentiment-color) 0%, transparent 70%);
+  opacity: 0.1;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.emotion-card:hover::before {
+  opacity: 0.25;
+}
+
+.sentiment-card {
+  position: relative;
+  border: 2px solid var(--sentiment-color);
+  border-radius: 24px 4px 24px 4px; /* two curved corners */
+  background: #fff;
+  padding: 1rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.sentiment-card:hover {
+  transform: translateY(-3px);
+  border-radius: 4px 24px 4px 24px; /* flips corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sentiment-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--sentiment-color) 0%, transparent 70%);
+  opacity: 0.1;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sentiment-card:hover::before {
+  opacity: 0.25;
+}
+
+
+/* === Emotion & Sentiment Cards with Glow Border === */
+.emotion-card,
+.sentiment-card {
+  position: relative;
+  border: 2px solid var(--sentiment-color);
+  border-radius: 24px 4px 24px 4px; /* two corner curve */
+  background: #fff;
+  padding: 1rem;
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Glow effect on hover */
+.emotion-card:hover,
+.sentiment-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 12px 3px color-mix(in srgb, var(--sentiment-color) 60%, transparent);
+}
+
+
+/* === Overview Highlight Box (Emotions Overview) === */
+#sentimentHighlights {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--sentiment-color, #6a1b9a);
+  border-radius: 24px 4px 24px 4px; /* same curve style */
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+/* Subtle tone-colored glow */
+#sentimentHighlights::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--sentiment-color, #6a1b9a) 35%, transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+/* Glow on hover */
+#sentimentHighlights:hover::before {
+  opacity: 0.9;
+}
+
+#sentimentHighlights:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 14px 3px color-mix(in srgb, var(--sentiment-color, #6a1b9a) 40%, transparent);
+}
+
+/* === Highlighted Words Section Cards === */
+.highlight-card {
+  position: relative;
+  background: #fff;
+  border-radius: 24px 4px 24px 4px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+/* Common glow behavior */
+.highlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover lift + glow */
+.highlight-card:hover {
+  transform: translateY(-3px);
+}
+
+/* ========================= */
+/* 🎯 Individual Styles */
+/* ========================= */
+
+/* Keywords Box */
+.highlight-keywords {
+  border: 2px solid var(--blue);
+}
+.highlight-keywords::before {
+  box-shadow: 0 0 10px 2px rgba(161, 234, 251, 0.4);
+}
+.highlight-keywords:hover {
+  box-shadow: 0 0 14px 3px rgba(161, 234, 251, 0.5);
+}
+
+/* Document Box */
+.highlight-doc {
+  border: 2px solid var(--blue);
+}
+.highlight-doc::before {
+  box-shadow: 0 0 10px 2px rgba(161, 234, 251, 0.4);
+}
+.highlight-doc:hover {
+  box-shadow: 0 0 14px 3px rgba(161, 234, 251, 0.5);
+}
+
+/* Headings inside Highlight Cards */
+.highlight-card h4 {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.35rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Pink underline for Keywords */
+.highlight-keywords h4::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 60%;                /* how long the line is */
+  height: 3px;
+  background: var(--blue);
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+/* Sky-blue underline for Your Document */
+.highlight-doc h4::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 60%;
+  height: 3px;
+  background: #000;
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+
+/* === EXPORT DROPDOWN STYLING === */
+
+.export-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background: #ffffff;
+  border: 2px dashed var(--dark-teal);
+  border-radius: 10px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  overflow: hidden;
+  animation: fadeIn 0.25s ease;
+}
+
+.export-dropdown.open .dropdown-menu {
+  display: block;
+}
+
+/* Dropdown menu buttons */
+.export-dropdown .dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1.2rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #003838;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.export-dropdown .dropdown-menu button:hover {
+  background: #e6f4f4;
+  color: #002c2c;
+}
+
+/* Simple fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.prompt-card.success {
+  border: 2px solid #a7f0ba;
+  box-shadow: 0 0 15px rgba(167, 240, 186, 0.4);
+  background: linear-gradient(135deg, #eafff2, #f9fff9);
+}
+
+.prompt-card.success h3 {
+  color: #2e8b57;
+}
+
+
+/* ================= Export Prompt ================= */
+.export-prompt {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.3s ease;
+}
+.export-prompt.show { opacity: 1; }
+
+.prompt-overlay {
+  position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(3px);
+}
+
+/* ---------- Prompt Card ---------- */
+.prompt-card {
+  position: relative; background: #fff; padding: 32px 42px; border-radius: 18px; max-width: 440px; box-shadow: 0 6px 22px rgba(0, 0, 0, 0.15); text-align: center; z-index: 2; border: 3px dashed var(--teal);
+}
+
+/* ---------- Typography ---------- */
+.prompt-card h3 {
+  margin-bottom: 10px; color: var(--teal); font-family: 'Droid Serif', serif; font-weight: 700; font-size: 1.5rem;
+}
+.prompt-card p {
+  color: #9C9B9B; margin-bottom: 24px; line-height: 1.6; font-family: 'Rockwell', serif;
+}
+
+/* ---------- Actions (Buttons) ---------- */
+.prompt-actions {
+  display: flex; justify-content: center; gap: 14px;
+}
+
+.prompt-actions .btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: all 0.25s ease; font-weight: 500; letter-spacing: 0.2px;
+}
+
+/* Continue button (primary) */
+.prompt-actions .btn.keep {
+  background: var(--teal); color: #fff; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.prompt-actions .btn.keep:hover {
+  background: var(--white); border: var(--teal); color: var(--teal); box-shadow: 0 0 12px var(--teal); transform: translateY(-2px);
+}
+
+/* Delete button (dashed border + hover transition) */
+.prompt-actions .btn.delete {
+  background: var(--danger-15); color: var(--danger); border: 2px dashed var(--danger); padding: 7px 15px;
+}
+.prompt-actions .btn.delete:hover {
+  background: var(--danger); color: #fff; box-shadow: 0 0 12px var(--danger); transform: translateY(-2px);
+}
+
+/* ---------- Mobile Responsiveness ---------- */
+
+@media(max-width:500px){
+  .prompt-card { max-height: 90vh; overflow-y: auto; }
+}
+
+  .prompt-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .prompt-card p {
+    font-size: 0.9rem; line-height: 1.4;
+  }
+
+  .prompt-actions {
+    flex-direction: column; gap: 10px;
+  }
+
+  .prompt-actions .btn {
+    width: 100%; font-size: 0.9rem; padding: 9px 0;
+  }
+}
+
+.export-prompt {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.export-prompt.show {
+  opacity: 1;
+}
+
+/* --- Fancy Slide-Up Animation for Prompt --- */
+.export-prompt.show .prompt-card {
+  animation: slideUp 0.4s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+    box-shadow: 0 0 0 rgba(37,120,129,0);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 0 12px rgba(37,120,129,.25);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 8px rgba(37,120,129,.20);
+  }
+}
