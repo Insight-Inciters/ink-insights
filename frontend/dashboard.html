@@ -9,6 +9,25 @@
 <link rel="stylesheet" href="dashboard.css">
 </head>
 
+<style>
+/* ACTIVE NAV LINK */
+.navlinks a[aria-current="page"] {
+text-shadow:0 0 10px rgba(255,255,255,.35)
+}
+
+.navlinks a[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: #fff;
+}
+
+
+.drawer .menu a[aria-current="page"] {
+  border-color: var(--dark-teal);
+  color: var(--dark-teal);
+  font-weight: 700;
+}
+</style>
+
 <body>
 
 <!-- ================= HEADER ================= -->
@@ -18,8 +37,8 @@
       <a href="index.html">
         <img src="assests/Ink-logo.png" alt="Ink Insights Logo" />
         <span class="txt">
-          <span class="line1">Ink</span>
-          <span class="line2">Insights</span>
+          <span class="line1">Ink Insights</span>
+          <span class="line2">Dashboard</span>
         </span>
       </a>
     </div>
@@ -148,8 +167,8 @@
       <p>Privacy-first data analysis, designed for writers.</p>
     </div>
     <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Use</a>
+      <a href="faq.html">Privacy Policy</a>
+      <a href="faq.html#terms-use">Terms of Use</a>
       <a href="contact.html">Contact</a>
     </div>
   </div>
@@ -160,9 +179,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 
 
 
@@ -231,7 +247,261 @@
 })();
 </script>
 
+
+
 <!-- Modular Dashboard -->
-<script type="module" src="js/dashboard.js"></script>
+<script type="module" src="dashboard.js"></script>
+
+
+<script>
+  // =================== SAFE LEAVE / NAVIGATION HANDLER ===================
+
+  let leavePromptShown = false;
+  let pendingLeaveURL = null;
+
+  function hasReport() {
+    return (
+      localStorage.getItem("ink_text") ||
+      localStorage.getItem("ink_report") ||
+      localStorage.getItem("ink_report_meta")
+    );
+  }
+
+  // ---------- Shared cleanup ----------
+  function cleanupPrompt(box) {
+    box.classList.remove("show");
+    setTimeout(() => {
+      box.remove();
+      leavePromptShown = false;
+    }, 300);
+  }
+
+  // ---------- Success Prompt ----------
+  function showSuccessPrompt(message = "Action completed successfully.", onClose, title = "Success") {
+    document.querySelector(".export-prompt")?.remove();
+
+    const box = document.createElement("div");
+    box.className = "export-prompt";
+    box.innerHTML = `
+      <div class="prompt-overlay"></div>
+      <div class="prompt-card">
+        <h3>${title}</h3>
+        <p>${message}</p>
+        <div class="prompt-actions">
+          <button id="okSuccess" class="btn keep">OK</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(box);
+    setTimeout(() => box.classList.add("show"), 50);
+
+    document.querySelector("#okSuccess").onclick = () => {
+      box.classList.remove("show");
+      setTimeout(() => {
+        box.remove();
+        if (typeof onClose === "function") onClose();
+      }, 300);
+    };
+
+    box.querySelector(".prompt-overlay").addEventListener("click", () => {
+      document.querySelector("#okSuccess").click();
+    });
+  }
+
+  // ---------- Loading Bar + Success Message ----------
+  function showDeleteProcess(onDone) {
+    document.querySelector(".delete-overlay")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.className = "delete-overlay";
+    overlay.innerHTML = `
+      <div class="delete-box">
+        <h3>Your data is being deleted...</h3>
+        <div class="progress-bar"><div class="bar-fill"></div></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // start progress animation
+    const fill = overlay.querySelector(".bar-fill");
+    if (fill) setTimeout(() => (fill.style.width = "100%"), 100);
+
+    // helper utilities
+    const $ = (s) => document.querySelector(s);
+    const safe = (fn) => { try { fn(); } catch (e) { console.warn(e); } };
+
+    // total animation ~7s
+    setTimeout(() => {
+      // clear local storage
+      safe(() => {
+        ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
+          localStorage.removeItem(k)
+        );
+      });
+
+      // destroy charts safely
+      safe(() => {
+        if (typeof destroyCharts === "function") destroyCharts(window.charts || []);
+      });
+
+      // reset canvases
+      ["#keywordsChart", "#themesChart", "#sentimentChart", "#emotionsChart"].forEach(sel => {
+        safe(() => {
+          const c = document.querySelector(sel);
+          if (c) c.replaceWith(c.cloneNode(false));
+          if (typeof setChartStateByCanvas === "function") {
+            setChartStateByCanvas(sel, { loading: true, hasData: false });
+          }
+        });
+      });
+
+      // reset summary UI
+      safe(() => {
+        if ($("#summaryText")) $("#summaryText").textContent = "";
+        if ($("#summaryEmpty")) $("#summaryEmpty").style.display = "block";
+        if ($("#fn")) $("#fn").textContent = "none";
+        if ($("#wc")) $("#wc").textContent = "0000";
+        if ($("#rt")) $("#rt").textContent = "00 min";
+      });
+
+      // fade out overlay and show success
+      overlay.classList.add("fade-out");
+      setTimeout(() => {
+        overlay.remove();
+        showSuccessPrompt(
+          "Your report was successfully deleted.",
+          () => {
+            setTimeout(() => {
+              if (typeof onDone === "function") onDone();
+              else window.location.href = "upload.html";
+            }, 400);
+          },
+          "Success"
+        );
+      }, 800);
+    }, 7000);
+  }
+
+  // ---------- Page Navigation Prompt ----------
+  function showLeavePrompt(onDelete = null, onStay = null) {
+    if (leavePromptShown || !hasReport()) return;
+    leavePromptShown = true;
+
+    const box = document.createElement("div");
+    box.className = "export-prompt";
+    box.innerHTML = `
+      <div class="prompt-overlay"></div>
+      <div class="prompt-card">
+        <h3>Leave dashboard?</h3>
+        <p>Your analysis data is still stored locally. Would you like to delete it before leaving this page?</p>
+        <div class="prompt-actions">
+          <button id="stayHere" class="btn keep">Stay on Dashboard</button>
+          <button id="deleteBeforeLeave" class="btn delete">Delete Data & Leave</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(box);
+    setTimeout(() => box.classList.add("show"), 50);
+
+    document.querySelector("#stayHere").onclick = () => {
+      cleanupPrompt(box);
+      pendingLeaveURL = null;
+      if (onStay) onStay();
+    };
+
+    document.querySelector("#deleteBeforeLeave").onclick = () => {
+      cleanupPrompt(box);
+      showDeleteProcess(() => {
+        if (onDelete) onDelete();
+        else if (pendingLeaveURL) window.location.href = pendingLeaveURL;
+        else window.location.href = "upload.html";
+      });
+    };
+  }
+
+  // ---------- Mouse Leave (Tab Exit) Prompt ----------
+  function showExitIntentPrompt() {
+    if (leavePromptShown || !hasReport()) return;
+    leavePromptShown = true;
+
+    const box = document.createElement("div");
+    box.className = "export-prompt";
+    box.innerHTML = `
+      <div class="prompt-overlay"></div>
+      <div class="prompt-card">
+        <h3>Are you leaving?</h3>
+        <p>Your analysis data is saved locally. Would you like to delete it before leaving the dashboard?</p>
+        <div class="prompt-actions">
+          <button id="stayHere" class="btn keep">Stay on Page</button>
+          <button id="deleteBeforeLeave" class="btn delete">Delete Data</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(box);
+    setTimeout(() => box.classList.add("show"), 50);
+
+    document.querySelector("#stayHere").onclick = () => cleanupPrompt(box);
+    document.querySelector("#deleteBeforeLeave").onclick = () => {
+      cleanupPrompt(box);
+      showDeleteProcess(() => window.location.href = "upload.html");
+    };
+  }
+
+  // --- Intercept internal navigation links ---
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest("a[href]");
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+    if (!href) return;
+
+    if (href.startsWith("#") || href.startsWith("javascript:")) return;
+    if (href.includes("features.html")) return;
+
+    const protectedPages = ["index.html", "about.html", "faq.html", "contact.html"];
+    const shouldPrompt = protectedPages.some(page => href.includes(page));
+
+    if (shouldPrompt && hasReport()) {
+      e.preventDefault();
+      pendingLeaveURL = href;
+      showLeavePrompt(
+        () => (window.location.href = pendingLeaveURL),
+        () => (pendingLeaveURL = null)
+      );
+    }
+  });
+
+  // --- Optional soft exit-intent (cursor leaves window top) ---
+  let lastPromptTime = 0;
+  document.addEventListener("mouseleave", (e) => {
+    const now = Date.now();
+    if (e.clientY <= 0 && now - lastPromptTime > 1000 && hasReport()) {
+      showExitIntentPrompt();
+      lastPromptTime = now;
+    }
+  });
+
+  // --- On reload, restore cached results ---
+  window.addEventListener("DOMContentLoaded", () => {
+    try {
+      const hasCachedResults = localStorage.getItem("ink_results");
+      if (hasCachedResults) {
+        if (typeof window.skipBackendProcessing === "function") {
+          window.skipBackendProcessing();
+        }
+        const cachedResults = JSON.parse(hasCachedResults);
+        if (typeof window.renderCachedResults === "function") {
+          window.renderCachedResults(cachedResults);
+        }
+      }
+    } catch (err) {
+      console.warn("Dashboard reload cache restore failed:", err);
+    }
+  });
+</script>
+
+
+
+
 </body>
 </html>
