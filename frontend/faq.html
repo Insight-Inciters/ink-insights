@@ -16,6 +16,24 @@
 body{font-family:"Droid Serif",Georgia,serif;color:var(--ink);background:var(--bg);line-height:1.6}
 a{text-decoration:none;color:inherit}
 
+/* ACTIVE NAV LINK */
+.navlinks a[aria-current="page"] {
+text-shadow:0 0 10px rgba(255,255,255,.35)
+}
+
+.navlinks a[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: #fff;
+}
+
+
+.drawer .menu a[aria-current="page"] {
+  border-color: var(--dark-teal);
+  color: var(--dark-teal);
+  font-weight: 700;
+}
+
+
 /* ================= HEADER ================= */
 .navbar{
   background:var(--dark-teal);
@@ -291,7 +309,7 @@ footer{background:var(--dark-teal);color:#fff;font-family:"Rockwell","Courier Ne
     <div class="a">A controlled NLP pipeline focused on speed and privacy.</div>
   </details>
 
-  <h2 class="cat">Pricing & Terms</h2>
+  <h2 id="terms-use" class="cat">Pricing & Terms</h2>
 
   <details>
     <summary><span class="q"><span class="chev">›</span>Is it free?</span></summary>
@@ -326,8 +344,8 @@ footer{background:var(--dark-teal);color:#fff;font-family:"Rockwell","Courier Ne
       <p>Privacy-first data analysis, designed for writers.</p>
     </div>
     <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Use</a>
+      <a href="faq.html">Privacy Policy</a>
+      <a href="faq.html#terms-use">Terms of Use</a>
       <a href="contact.html">Contact</a>
     </div>
   </div>
