@@ -13,6 +13,26 @@
 
 
 </head>
+
+<style>
+/* ACTIVE NAV LINK */
+.navlinks a[aria-current="page"] {
+text-shadow:0 0 10px rgba(255,255,255,.35)
+}
+
+.navlinks a[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: #fff;
+}
+
+
+.drawer .menu a[aria-current="page"] {
+  border-color: var(--dark-teal);
+  color: var(--dark-teal);
+  font-weight: 700;
+}
+</style>
+
 <body>
 
   <!-- ======================= HEADER ======================= -->
@@ -50,7 +70,7 @@
   <aside id="drawer" class="drawer" aria-hidden="true">
     <div class="menu-title">Menu</div>
     <nav class="menu">
-      <a href="index.html">Home</a>
+      <a href="index.html" aria-current="page">Home</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="about.html">About Us</a>
       <a href="faq.html">FAQ/Help</a>
@@ -90,7 +110,7 @@
 
 
   <!-- ======================= WRITER STRUGGLES ======================= -->
-<section class="writer-struggles">
+<section id="about-insights" class="writer-struggles">
   <h2>Writer Struggles</h2>
   <div class="writer-row">
     <div class="writer-image">
@@ -117,7 +137,7 @@
 
 
   <!-- ======================= INK INSIGHTS (ABOUT) ======================= -->
- <section id="about-insights" class="ink-insights">
+ <section class="ink-insights">
   <h2>Ink Insights</h2>
   <div class="ii-row">
     <div class="ii-copy">
@@ -131,6 +151,7 @@
     </div>
     <div class="ii-image">
       <img src="assests/TruthTypewriter.jpg" alt="Typewriter printing TRUTH" />
+       <p class="img-credit">Image courtesy of <a href="https://pixabay.com/" target="_blank">Pixabay</a></p>
     </div>
   </div>
 </section>
@@ -210,6 +231,7 @@
   <div class="slide" style="--bg-color:#8C331C;">
     <div class="slide-left">
       <img src="assests/feature2a.jpg" alt="Feature image">
+      <p class="img-credit">Image courtesy of <a href="https://www.pexels.com/" target="_blank">Pexels</a></p>
       <div class="slide-desc">
         <ul class="feature-points">
           <li>Highlights the most common and meaningful words in your text.</li>
@@ -235,6 +257,7 @@
     </div>
     <div class="slide-right">
       <img src="assests/feature3b.jpg" alt="Feature image">
+      <p class="img-credit">Image courtesy of <a href="https://www.pexels.com/" target="_blank">Pexels</a></p>
       <div class="slide-desc">
         <ul class="feature-points">
           <li>Groups related words into visual clusters based on meaning.</li>
@@ -250,6 +273,7 @@
   <div class="slide" style="--bg-color:#8C331C;">
     <div class="slide-left">
       <img src="assests/feature4a.jpg" alt="Feature image">
+      <p class="img-credit">Image courtesy of <a href="https://www.pexels.com/" target="_blank">Pexels</a></p>
       <div class="slide-desc">
         <ul class="feature-points">
           <li>Reveals the emotional tone of your text as positive, neutral, or negative.</li>
@@ -275,6 +299,7 @@
     </div>
     <div class="slide-right">
       <img src="assests/feature5b.jpg" alt="Feature image">
+      <p class="img-credit">Image courtesy of <a href="https://www.pexels.com/" target="_blank">Pexels</a></p>
       <div class="slide-desc">
         <ul class="feature-points">
           <li>Reveals the emotional tone of your text as positive, neutral, or negative.</li>
@@ -289,14 +314,6 @@
   <button class="nav prev">&#10094;</button>
   <button class="nav next">&#10095;</button>
 </section>
-
-
-
-
-
-
-
-
 
   <!-- ======================= HOW IT WORKS (vertical steps + animation) ======================= -->
   <section class="how-vertical fade-in">
@@ -346,8 +363,6 @@
 </section>
 
 
-
-
   <!-- ======================= PRIVACY ======================= -->
 <section class="privacy-section fade-in">
   <h2>Privacy Guaranteed</h2>
@@ -372,8 +387,8 @@
     </div>
 
     <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Use</a>
+      <a href="faq.html">Privacy Policy</a>
+      <a href="faq.html#terms-use">Terms of Use</a>
       <a href="contact.html">Contact</a>
     </div>
   </div>
@@ -543,5 +558,7 @@ window.addEventListener("load", () => {
 });
 
   </script>
+
+
 </body>
 </html>
