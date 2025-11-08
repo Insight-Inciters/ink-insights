@@ -8,6 +8,7 @@
   --ink:#0b2f33; --bg:#fff;
 }
 
+
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.6}
 html{scroll-behavior:smooth}
@@ -685,5 +686,9 @@ footer {
   border-radius: 6px;
   transition: width 7s ease;
 }
+
+
+
+
 
 @keyframes fadeIn { from {opacity: 0; transform: translateY(-4px);} to {opacity: 1; transform: translateY(0);} }
