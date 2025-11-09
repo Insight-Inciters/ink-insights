@@ -379,7 +379,7 @@
 .loading-bar-wrap {
   width: 100%;
   height: 12px;
-  border: 2px dashed var(--teal);
+  border: 2px solid var(--teal);
   border-radius: 10px;
   overflow: hidden;
   background: rgba(0, 128, 128, 0.05);
@@ -999,34 +999,8 @@ document.querySelector("#fileSuccess .prompt-overlay").addEventListener("click",
       }
     }
 
-    function store(text, name){
-      const words = countWords(text);
-      try{
-        localStorage.setItem('ink_text', text);
-        localStorage.setItem('ink_report_meta', JSON.stringify({ name, words, ts: Date.now() }));
-      }catch{}
-      els.fileName.textContent = name || '—';
-      els.wordCount.textContent = words.toLocaleString();
-      const ok = (words && words<=5000);
-      setBtnEnabled(ok);
-    }
 
-    /* Dropzone interactions */
-    ['dragenter','dragover'].forEach(evt=>{
-      els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; els.dropzone.classList.add('drag'); });
-    });
-    ['dragleave','drop'].forEach(evt=>{
-      els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); els.dropzone.classList.remove('drag'); });
-    });
-    els.dropzone.addEventListener('drop', e=>{ const f=e.dataTransfer.files?.[0]; if(f) handleFile(f); });
-
-    /* File input change */
-    els.fileInput.addEventListener('change', ()=>{
-      const f=els.fileInput.files?.[0];
-      if(f) handleFile(f);
-    });
-
-function handleFile(file){
+  function handleFile(file){
   if(!/\.txt$/i.test(file.name)){
     showFilePrompt("Please upload only text (.txt) files.");
     return;
@@ -1048,6 +1022,58 @@ function handleFile(file){
   reader.readAsText(file);
   els.fileInput.value = '';
 }
+
+
+    function store(text, name){
+      const words = countWords(text);
+      try{
+        localStorage.setItem('ink_text', text);
+        localStorage.setItem('ink_report_meta', JSON.stringify({ name, words, ts: Date.now() }));
+      }catch{}
+      els.fileName.textContent = name || '—';
+      els.wordCount.textContent = words.toLocaleString();
+      const ok = (words && words<=5000);
+      setBtnEnabled(ok);
+    }
+
+
+// Start backend analysis in background to save time
+(async () => {
+  try {
+    const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, filename: file.name })
+    });
+
+    if (!res.ok) {
+      console.error("Backend analysis failed:", res.statusText);
+      return;
+    }
+
+    const data = await res.json();
+    localStorage.setItem("ink_results", JSON.stringify(data));
+    console.log("✅ Analysis preloaded successfully.");
+  } catch (err) {
+    console.error("⚠️ Preload error:", err);
+  }
+})();
+
+
+    /* Dropzone interactions */
+    ['dragenter','dragover'].forEach(evt=>{
+      els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; els.dropzone.classList.add('drag'); });
+    });
+    ['dragleave','drop'].forEach(evt=>{
+      els.dropzone.addEventListener(evt, e=>{ e.preventDefault(); els.dropzone.classList.remove('drag'); });
+    });
+    els.dropzone.addEventListener('drop', e=>{ const f=e.dataTransfer.files?.[0]; if(f) handleFile(f); });
+
+    /* File input change */
+    els.fileInput.addEventListener('change', ()=>{
+      const f=els.fileInput.files?.[0];
+      if(f) handleFile(f);
+    });
 
 
 
@@ -1152,11 +1178,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   </script>
-
-
-  
-
-
 
 </body>
 </html>
