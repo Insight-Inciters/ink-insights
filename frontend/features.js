@@ -76,65 +76,6 @@ function renderSuggestions(selector, suggestions) {
 }
 
 
-function showDeleteOverlay(onDone) {
-  // remove any existing overlay
-  document.querySelector(".delete-overlay")?.remove();
-
-  const overlay = document.createElement("div");
-  overlay.className = "delete-overlay";
-  overlay.innerHTML = `
-    <div class="delete-box">
-      <h3>Your data is being deleted...</h3>
-      <div class="progress-bar"><div class="bar-fill"></div></div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-
-  // start progress animation
-  const fill = overlay.querySelector(".bar-fill");
-  setTimeout(() => (fill.style.width = "100%"), 100);
-
-  // clear storage after a short delay
-  setTimeout(() => {
-    ["ink_text", "ink_report_meta", "ink_report", "ink_results"].forEach(k =>
-      localStorage.removeItem(k)
-    );
-
-    destroyCharts?.(window.charts || []);
-    ["#keywordsChart", "#themesChart", "#sentimentChart", "#emotionsChart"].forEach(sel => {
-      const c = document.querySelector(sel);
-      if (c) c.replaceWith(c.cloneNode(false));
-      setChartStateByCanvas(sel, { loading: true, hasData: false });
-    });
-
-    $("#summaryText").textContent = "";
-    $("#summaryEmpty").style.display = "block";
-    $("#fn").textContent = "none";
-    $("#wc").textContent = "0000";
-    $("#rt").textContent = "00 min";
-
-    overlay.classList.add("fade-out");
-
-// ✅ use the callback if provided, otherwise show success box first
-setTimeout(() => {
-  if (typeof onDone === "function") {
-    onDone();
-  } else {
-    // show success message before redirect
-    showSuccessPrompt(
-      "Your report was successfully deleted.",
-      () => {
-        window.location.href = "upload.html";
-      },
-      "Success"
-    );
-  }
-}, 900);
-
-}, 7000); // shorter, smoother animation (optional)
-}
-
-
 
 /* ---------- Default suggestions ---------- */
 const DEFAULT_SUGGESTIONS = {
@@ -1044,6 +985,10 @@ if (summary) {
 })();
 
 
+document.querySelectorAll(".export-success, .export-prompt").forEach(el => el.remove());
+
+
+
 // ========== UNIVERSAL EXPORT HELPERS ==========
 
 // ✅ CSV Export
@@ -1073,211 +1018,209 @@ function exportToJSON(filename, data) {
   URL.revokeObjectURL(url);
 }
 
-
-/* ====== KEYWORDS EXPORT ====== */
-document.getElementById("exportKwCSV")?.addEventListener("click", () => {
-  const kwData = report.keywords || {};
-  const freqList = kwData.list || [];
-  const keynessList = (report.keyness && report.keyness.list) || [];
-
-  const headers = ["Keyword", "Frequency", "Keyness Score"];
-  const rows = freqList.map(k => {
-    const keyness = keynessList.find(x => x.token === k.word)?.score || "";
-    return [k.word, k.count, keyness];
-  });
-
-  rows.unshift(["Top Keyword", kwData.top || "—", ""], ["Unique Words", kwData.unique || 0, ""]);
-  exportToCSV("keywords_analysis.csv", headers, rows);
-  showExportSuccess("keywords_analysis.csv");
-});
-
-document.getElementById("exportKwJSON")?.addEventListener("click", () => {
-  const exportData = {
-    meta: {
-      uniqueWords: report.keywords?.unique || 0,
-      topKeyword: report.keywords?.top || "—"
-    },
-    keywords: report.keywords?.list || [],
-    keyness: report.keyness?.list || []
-  };
-  exportToJSON("keywords_analysis.json", exportData);
-  showExportSuccess("keywords_analysis.json");
-});
-
-
-/* ====== THEMES EXPORT ====== */
-document.getElementById("exportThCSV")?.addEventListener("click", () => {
-  const themes = report.themes || {};
-  const clusters = themes.clusters || [];
-
-  const headers = ["Theme", "Size", "Top Keywords"];
-  const rows = clusters.map(c => [c.label, c.size || c.count || 0, (c.keywords || []).join(" | ")]);
-  rows.unshift(["Top Theme", themes.top || "—", ""], ["Cluster Count", themes.count || 0, ""]);
-
-  exportToCSV("themes_clusters.csv", headers, rows);
-  showExportSuccess("themes_clusters.csv");
-});
-
-document.getElementById("exportThJSON")?.addEventListener("click", () => {
-  const data = {
-    count: report.themes?.count || 0,
-    top: report.themes?.top || "—",
-    clusters: report.themes?.clusters || []
-  };
-  exportToJSON("themes_clusters.json", data);
-  showExportSuccess("themes_clusters.json");
-});
-
-
-/* ====== SENTIMENT EXPORT ====== */
-document.getElementById("exportSeCSV")?.addEventListener("click", () => {
-  const se = report.sentiment || {};
-  const timeline = se.timeline || [];
-
-  const headers = ["Section", "Positive %", "Neutral %", "Negative %"];
-  const rows = timeline.map((t, i) => [`Section ${i + 1}`, t.pos, t.neu, t.neg]);
-
-  const summary = [
-    ["Positive", document.getElementById("se-pos")?.textContent || "—"],
-    ["Neutral", document.getElementById("se-neu")?.textContent || "—"],
-    ["Negative", document.getElementById("se-neg")?.textContent || "—"],
-  ];
-
-  exportToCSV("sentiment_analysis.csv", headers, [...summary, [], ...rows]);
-  showExportSuccess("sentiment_analysis.csv");
-});
-
-document.getElementById("exportSeJSON")?.addEventListener("click", () => {
-  const data = {
-    overall: {
-      positive: document.getElementById("se-pos")?.textContent || "—",
-      neutral: document.getElementById("se-neu")?.textContent || "—",
-      negative: document.getElementById("se-neg")?.textContent || "—"
-    },
-    timeline: report.sentiment?.timeline || [],
-    clusters: report.sentiment?.clusters || []
-  };
-  exportToJSON("sentiment_analysis.json", data);
-  showExportSuccess("sentiment_analysis.json");
-});
-
-
-/* ====== EMOTIONS EXPORT ====== */
-document.getElementById("exportEmCSV")?.addEventListener("click", () => {
-  const em = report.emotions || {};
-  const breakdown = em.breakdown || {};
-  const dominant = em.dominant || "—";
-
-  const headers = ["Emotion", "Percentage"];
-  const rows = Object.entries(breakdown).map(([label, value]) => [label, value]);
-  rows.unshift(["Dominant Emotion", dominant]);
-  exportToCSV("emotions_analysis.csv", headers, rows);
-  showExportSuccess("emotions_analysis.csv");
-});
-
-document.getElementById("exportEmJSON")?.addEventListener("click", () => {
-  const em = report.emotions || {};
-  const data = {
-    dominant: em.dominant || "—",
-    breakdown: em.breakdown || {},
-    suggestions: em.suggestions || []
-  };
-  exportToJSON("emotions_analysis.json", data);
-  showExportSuccess("emotions_analysis.json");
-});
-
-
-// === Dropdown toggle ===
-document.querySelectorAll('.export-dropdown').forEach(drop => {
-  const toggle = drop.querySelector('.btn.export');
-  const menu = drop.querySelector('.dropdown-menu');
-
-  toggle.addEventListener('click', e => {
-    e.stopPropagation();
-    drop.classList.toggle('open');
-  });
-
-  document.addEventListener('click', e => {
-    if (!drop.contains(e.target)) drop.classList.remove('open');
-  });
-});
-
-
-// ===== Success Prompt for Exports =====
 function showExportSuccess(filename) {
+  // cleanup first
+  document.querySelectorAll(".export-prompt, .prompt-overlay").forEach(el => el.remove());
+
   const box = document.createElement("div");
   box.className = "export-success";
   box.innerHTML = `
     <div class="prompt-overlay"></div>
     <div class="prompt-card success" role="dialog" aria-modal="true">
       <h3>✅ Export Successful</h3>
-      <p>Your file <strong>${filename}</strong> has been generated successfully!</p>
+      <p>Your file <strong>${filename}</strong> has been downloaded successfully!</p>
       <div class="prompt-actions">
         <button id="okExport" class="btn keep">Continue</button>
       </div>
     </div>
   `;
   document.body.appendChild(box);
-  setTimeout(() => box.classList.add("show"), 50);
 
-  const okBtn = box.querySelector("#okExport");
-  const overlay = box.querySelector(".prompt-overlay");
+  setTimeout(() => box.classList.add("show"), 50);
 
   const close = () => {
     box.classList.remove("show");
-    setTimeout(() => {
-      box.remove();
-      postExportPrompt();
-    }, 350);
+    setTimeout(() => box.remove(), 300);
   };
 
-  okBtn.addEventListener("click", close);
-  overlay.addEventListener("click", close);
+  box.querySelector("#okExport").addEventListener("click", close);
+  box.querySelector(".prompt-overlay").addEventListener("click", close);
+
+  // Auto-close after 2s
+  setTimeout(() => {
+    if (document.body.contains(box)) close();
+  }, 2000);
 }
 
 
-// --- Post Export Prompt ---
-function postExportPrompt() {
+// ====== EXPORT LISTENERS ======
+document.addEventListener("DOMContentLoaded", () => {
+  const report = JSON.parse(localStorage.getItem("ink_results") || "{}");
+
+  /* ===== KEYWORDS ===== */
+  document.getElementById("exportKwCSV")?.addEventListener("click", () => {
+    showExportSuccess("keywords_analysis.csv");
+    const kw = report.keywords || {};
+    const keyness = report.keyness?.list || [];
+    const headers = ["Keyword", "Frequency", "Keyness Score"];
+    const rows = (kw.list || []).map(k => {
+      const score = keyness.find(x => x.token === k.word)?.score || "";
+      return [k.word, k.count, score];
+    });
+    exportToCSV("keywords_analysis.csv", headers, rows);
+  });
+
+  document.getElementById("exportKwJSON")?.addEventListener("click", () => {
+    showExportSuccess("keywords_analysis.json");
+    const data = { ...report.keywords, keyness: report.keyness };
+    exportToJSON("keywords_analysis.json", data);
+  });
+
+  /* ===== THEMES ===== */
+  document.getElementById("exportThCSV")?.addEventListener("click", () => {
+    showExportSuccess("themes_clusters.csv");
+    const th = report.themes || {};
+    const headers = ["Theme", "Size", "Top Keywords"];
+    const rows = (th.clusters || []).map(c => [
+      c.label,
+      c.size || c.count || 0,
+      (c.keywords || []).join(" | ")
+    ]);
+    exportToCSV("themes_clusters.csv", headers, rows);
+  });
+
+  document.getElementById("exportThJSON")?.addEventListener("click", () => {
+    showExportSuccess("themes_clusters.json");
+    exportToJSON("themes_clusters.json", report.themes || {});
+  });
+
+  /* ===== SENTIMENT ===== */
+  document.getElementById("exportSeCSV")?.addEventListener("click", () => {
+    showExportSuccess("sentiment_analysis.csv");
+    const se = report.sentiment || {};
+    const headers = ["Section", "Positive %", "Neutral %", "Negative %"];
+    const rows = (se.timeline || []).map((t, i) => [
+      `Section ${i + 1}`,
+      t.pos,
+      t.neu,
+      t.neg
+    ]);
+    exportToCSV("sentiment_analysis.csv", headers, rows);
+  });
+
+  document.getElementById("exportSeJSON")?.addEventListener("click", () => {
+    showExportSuccess("sentiment_analysis.json");
+    exportToJSON("sentiment_analysis.json", report.sentiment || {});
+  });
+
+  /* ===== EMOTIONS ===== */
+  document.getElementById("exportEmCSV")?.addEventListener("click", () => {
+    showExportSuccess("emotions_analysis.csv");
+    const em = report.emotions || {};
+    const headers = ["Emotion", "Percentage"];
+    const rows = Object.entries(em.breakdown || {});
+    rows.unshift(["Dominant Emotion", em.dominant || "—"]);
+    exportToCSV("emotions_analysis.csv", headers, rows);
+  });
+
+  document.getElementById("exportEmJSON")?.addEventListener("click", () => {
+    showExportSuccess("emotions_analysis.json");
+    exportToJSON("emotions_analysis.json", report.emotions || {});
+  });
+
+  // === Dropdown toggle ===
+  document.querySelectorAll(".export-dropdown").forEach(drop => {
+    const toggle = drop.querySelector(".btn.export");
+    toggle.addEventListener("click", e => {
+      e.stopPropagation();
+      drop.classList.toggle("open");
+    });
+    document.addEventListener("click", e => {
+      if (!drop.contains(e.target)) drop.classList.remove("open");
+    });
+  });
+});
+
+
+function showDeleteOverlay() {
+  // ✅ Only remove previous export modals (don’t touch new overlays)
+  document.querySelectorAll(".export-success, .export-prompt").forEach(el => el.remove());
+
+  // ✅ Create delete overlay with its own background layer
   const box = document.createElement("div");
-  box.className = "export-prompt";
+  box.className = "delete-overlay";
   box.innerHTML = `
-    <div class="prompt-overlay"></div>
-    <div class="prompt-card" role="dialog" aria-modal="true">
-      <h3>What would you like to do next?</h3>
-      <p>Would you like to delete this report or continue exploring your results?</p>
+    <div class="delete-overlay-bg"></div>
+    <div class="prompt-card delete" role="dialog" aria-modal="true">
+      <h3>🗑️ Deleting Report...</h3>
+      <div class="loading-bar"></div>
+    </div>
+  `;
+  document.body.appendChild(box);
+
+  // Small delay to trigger CSS transitions
+  setTimeout(() => box.classList.add("show"), 50);
+
+  // 🕒 Simulate short loading animation, then show success
+  setTimeout(() => {
+    box.classList.remove("show");
+    setTimeout(() => {
+      box.remove();
+      showDeleteSuccess();
+    }, 300);
+  }, 1500);
+}
+
+function showDeleteSuccess() {
+  // ✅ Clean up leftover overlays just in case
+  document.querySelectorAll(".delete-overlay, .delete-overlay-bg").forEach(el => el.remove());
+
+  const box = document.createElement("div");
+  box.className = "delete-success";
+  box.innerHTML = `
+    <div class="delete-overlay-bg"></div>
+    <div class="prompt-card success" role="dialog" aria-modal="true">
+      <h3>✅ Report Deleted</h3>
+      <p>Your analysis report has been successfully removed.</p>
       <div class="prompt-actions">
-        <button id="keepReport" class="btn keep">Continue Exploring</button>
-        <button id="deleteReportNow" class="btn delete">Delete Report</button>
+        <button id="okDelete" class="btn keep">Close</button>
       </div>
     </div>
   `;
   document.body.appendChild(box);
-  setTimeout(() => box.classList.add("show"), 50);
 
-  const keepBtn = box.querySelector("#keepReport");
-  const delBtn = box.querySelector("#deleteReportNow");
-  const overlay = box.querySelector(".prompt-overlay");
+  setTimeout(() => box.classList.add("show"), 50);
 
   const close = () => {
     box.classList.remove("show");
-    setTimeout(() => box.remove(), 400);
+    setTimeout(() => box.remove(), 300);
   };
 
-  keepBtn.addEventListener("click", close);
-  overlay.addEventListener("click", close);
+  box.querySelector("#okDelete").addEventListener("click", close);
+  box.querySelector(".delete-overlay-bg").addEventListener("click", close);
 
-  delBtn.addEventListener("click", () => {
-    box.classList.remove("show");
-    setTimeout(() => {
-      box.remove();
-      if (typeof showDeleteOverlay === "function") {
-        showDeleteOverlay();
-      } else {
-        console.warn("⚠️ showDeleteOverlay() is not defined.");
-      }
-    }, 400);
-  });
+  // Auto-close after 2 s (optional)
+  setTimeout(() => {
+    if (document.body.contains(box)) close();
+  }, 2000);
 }
+
+document.querySelector('.btn.delete').addEventListener('click', () => {
+  // hide export prompt first
+  document.querySelector('.export-prompt').classList.remove('show');
+
+  // show delete overlay
+  const del = document.querySelector('.delete-overlay');
+  del.classList.add('show');
+
+  // simulate loading bar
+  setTimeout(() => {
+    del.classList.remove('show');
+    document.querySelector('.delete-success').classList.add('show');
+  }, 1500);
+});
+
+
 
 
   /* ========== Cleanup visuals once charts load ========== */
