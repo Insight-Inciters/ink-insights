@@ -181,138 +181,144 @@
     <p class="tagline">Brew some tea while we unravel your story…</p>
   </main>
 
-<script>
-  /* ========= STARFIELD ========= */
-  (function() {
-    const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
-    let W, H, stars = [];
+  <script>
+    /* ========= STARFIELD ========= */
+    (function() {
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [];
 
-    function resize() {
-      W = canvas.width = innerWidth;
-      H = canvas.height = innerHeight;
-    }
-
-    window.addEventListener('resize', () => { resize(); makeStars(); });
-
-    function rand(a, b) { return Math.random() * (b - a) + a; }
-
-    function makeStars() {
-      stars = Array.from({ length: 160 }, () => ({
-        x: rand(0, W),
-        y: rand(0, H),
-        r: rand(0.4, 1.5),
-        s: rand(0.5, 1.5)
-      }));
-    }
-
-    function draw(t) {
-      ctx.clearRect(0, 0, W, H);
-      for (const s of stars) {
-        const a = (Math.sin(t * 0.002 * s.s) + 1) / 2 * 0.6 + 0.3;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${a})`;
-        ctx.fill();
+      function resize() {
+        W = canvas.width = innerWidth;
+        H = canvas.height = innerHeight;
       }
-      requestAnimationFrame(draw);
-    }
 
-    resize();
-    makeStars();
-    requestAnimationFrame(draw);
-  })();
+      window.addEventListener('resize', () => { resize(); makeStars(); });
 
-  /* ========= REALTIME PROGRESS SYNC ========= */
-  (async function() {
-    const fill = document.getElementById("fill");
-    const pct = document.getElementById("pct");
-    const msgEl = document.getElementById("loadMsg");
-    const bar = document.querySelector(".bar");
+      function rand(a, b) { return Math.random() * (b - a) + a; }
 
-    const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
-    const text = localStorage.getItem("ink_text") || "";
+      function makeStars() {
+        stars = Array.from({ length: 160 }, () => ({
+          x: rand(0, W),
+          y: rand(0, H),
+          r: rand(0.4, 1.5),
+          s: rand(0.5, 1.5)
+        }));
+      }
 
-    if (!text) {
-      alert("No text found. Please upload your file again.");
-      window.location.href = "upload.html";
-      return;
-    }
-
-    // === Start backend analysis ===
-    fetch("https://ink-insights-backend.onrender.com/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: meta.name })
-    })
-      .then(res => res.json())
-      .then(data => {
-        localStorage.setItem("ink_results", JSON.stringify(data));
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Server error during analysis.");
-        window.location.href = "upload.html";
-      });
-
-    // === Poll progress endpoint ===
-    async function pollProgress() {
-      try {
-        const res = await fetch("https://ink-insights-backend.onrender.com/progress");
-        const data = await res.json();
-
-        if (data && data.percent !== undefined) {
-          const p = Math.min(data.percent, 100);
-          fill.style.width = p + "%";
-          pct.textContent = p + "%";
-          msgEl.textContent = data.message || "Processing...";
-          bar.setAttribute("aria-valuenow", p);
+      function draw(t) {
+        ctx.clearRect(0, 0, W, H);
+        for (const s of stars) {
+          const a = (Math.sin(t * 0.002 * s.s) + 1) / 2 * 0.6 + 0.3;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
+          ctx.fill();
         }
+        requestAnimationFrame(draw);
+      }
 
-        if (data.status === "done") {
-          msgEl.textContent = "Analysis complete!";
-          fill.style.width = "100%";
-          pct.textContent = "100%";
-          setTimeout(() => {
-            window.location.href = "dashboard.html";
-          }, 800);
+      resize();
+      makeStars();
+      requestAnimationFrame(draw);
+    })();
+
+    /* ========= LOADING PROGRESS & API CALL ========= */
+    (async function() {
+      const fill = document.getElementById('fill');
+      const pct = document.getElementById('pct');
+      const bar = document.querySelector('.bar');
+      const duration = 20000;
+      const start = performance.now();
+      let apiDone = false;
+      let progress = 0;
+
+      function easeInOutCubic(x) {
+        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+      }
+
+      function step(ts) {
+        const p = Math.min((ts - start) / duration, 1);
+        const eased = easeInOutCubic(p);
+        progress = Math.floor(eased * 100);
+        fill.style.width = progress + "%";
+        pct.textContent = progress + "%";
+        bar.setAttribute("aria-valuenow", progress);
+
+        if (p < 1) {
+          requestAnimationFrame(step);
+        } else if (apiDone) {
+          finish();
+        }
+      }
+
+      requestAnimationFrame(step);
+
+      // ===== BACKEND CALL =====
+      const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
+      const text = localStorage.getItem("ink_text") || "";
+
+      if (!text) {
+        alert("No text found. Please upload your file again.");
+        window.location.href = "upload.html";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, filename: meta.name })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert("Error: " + (err.error || res.statusText));
+          window.location.href = "upload.html";
           return;
         }
 
-        if (data.status !== "error") {
-          setTimeout(pollProgress, 1000);
-        }
+        const data = await res.json();
+        localStorage.setItem("ink_results", JSON.stringify(data));
+        apiDone = true;
+
+        if (progress >= 100) { finish(); }
 
       } catch (err) {
-        console.warn("Progress check failed", err);
-        setTimeout(pollProgress, 2000);
+        console.error(err);
+        alert("Network or server error — please try again later.");
+        window.location.href = "upload.html";
       }
-    }
 
-    pollProgress();
-  })();
+      function finish() {
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
+      }
+    })();
 
-  /* ========= ROTATING MESSAGES (Backup / Flair) ========= */
-  (function() {
-    const altMessages = [
-      "Analyzing your literary patterns...",
-      "Mapping emotions and tone shifts...",
-      "Extracting key themes and motifs...",
-      "Almost ready — polishing insights..."
-    ];
-    const msgEl = document.getElementById("loadMsg");
-    let i = 0;
-    function cycle() {
-      msgEl.style.opacity = 0;
-      setTimeout(() => {
-        msgEl.textContent = altMessages[i];
-        msgEl.style.opacity = 1;
-        i = (i + 1) % altMessages.length;
-      }, 400);
-    }
-    setInterval(cycle, 5000);
-  })();
-</script>
+    /* ========= ROTATING MESSAGES ========= */
+    (function() {
+      const messages = [
+        "Analyzing your literary patterns...",
+        "Mapping emotions and tone shifts...",
+        "Extracting key themes and motifs...",
+        "Almost ready — polishing insights..."
+      ];
 
+      const msgEl = document.getElementById('loadMsg');
+      let i = 0;
+
+      function cycle() {
+        msgEl.style.opacity = 0;
+        setTimeout(() => {
+          msgEl.textContent = messages[i];
+          msgEl.style.opacity = 1;
+          i = (i + 1) % messages.length;
+        }, 400);
+      }
+
+      cycle();
+      setInterval(cycle, 4000);
+    })();
+  </script>
 </body>
 </html>
