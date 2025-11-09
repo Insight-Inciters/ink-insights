@@ -181,144 +181,157 @@
     <p class="tagline">Brew some tea while we unravel your story…</p>
   </main>
 
-  <script>
-    /* ========= STARFIELD ========= */
-    (function() {
-      const canvas = document.getElementById('stars');
-      const ctx = canvas.getContext('2d');
-      let W, H, stars = [];
+ <script>
+/* ========= STARFIELD ========= */
+(function() {
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
 
-      function resize() {
-        W = canvas.width = innerWidth;
-        H = canvas.height = innerHeight;
-      }
+  function resize() {
+    W = canvas.width = innerWidth;
+    H = canvas.height = innerHeight;
+  }
 
-      window.addEventListener('resize', () => { resize(); makeStars(); });
+  window.addEventListener('resize', () => { resize(); makeStars(); });
 
-      function rand(a, b) { return Math.random() * (b - a) + a; }
+  function rand(a, b) { return Math.random() * (b - a) + a; }
 
-      function makeStars() {
-        stars = Array.from({ length: 160 }, () => ({
-          x: rand(0, W),
-          y: rand(0, H),
-          r: rand(0.4, 1.5),
-          s: rand(0.5, 1.5)
-        }));
-      }
+  function makeStars() {
+    stars = Array.from({ length: 160 }, () => ({
+      x: rand(0, W),
+      y: rand(0, H),
+      r: rand(0.4, 1.5),
+      s: rand(0.5, 1.5)
+    }));
+  }
 
-      function draw(t) {
-        ctx.clearRect(0, 0, W, H);
-        for (const s of stars) {
-          const a = (Math.sin(t * 0.002 * s.s) + 1) / 2 * 0.6 + 0.3;
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${a})`;
-          ctx.fill();
-        }
-        requestAnimationFrame(draw);
-      }
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      const a = (Math.sin(t * 0.002 * s.s) + 1) / 2 * 0.6 + 0.3;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
 
-      resize();
-      makeStars();
-      requestAnimationFrame(draw);
-    })();
+  resize();
+  makeStars();
+  requestAnimationFrame(draw);
+})();
 
-    /* ========= LOADING PROGRESS & API CALL ========= */
-    (async function() {
-      const fill = document.getElementById('fill');
-      const pct = document.getElementById('pct');
-      const bar = document.querySelector('.bar');
-      const duration = 20000;
-      const start = performance.now();
-      let apiDone = false;
-      let progress = 0;
+/* ========= LOADING PROGRESS & SMART API HANDLING ========= */
+(async function() {
+  const fill = document.getElementById('fill');
+  const pct = document.getElementById('pct');
+  const bar = document.querySelector('.bar');
+  const duration = 18000; // 18s for visual pacing
+  const start = performance.now();
+  let apiDone = false;
+  let progress = 0;
 
-      function easeInOutCubic(x) {
-        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-      }
+  function easeInOutCubic(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  }
 
-      function step(ts) {
-        const p = Math.min((ts - start) / duration, 1);
-        const eased = easeInOutCubic(p);
-        progress = Math.floor(eased * 100);
-        fill.style.width = progress + "%";
-        pct.textContent = progress + "%";
-        bar.setAttribute("aria-valuenow", progress);
+  function step(ts) {
+    const p = Math.min((ts - start) / duration, 1);
+    const eased = easeInOutCubic(p);
+    progress = Math.floor(eased * 100);
+    fill.style.width = progress + "%";
+    pct.textContent = progress + "%";
+    bar.setAttribute("aria-valuenow", progress);
 
-        if (p < 1) {
-          requestAnimationFrame(step);
-        } else if (apiDone) {
-          finish();
-        }
-      }
-
+    if (p < 1) {
       requestAnimationFrame(step);
+    } else if (apiDone) {
+      finish();
+    }
+  }
 
-      // ===== BACKEND CALL =====
-      const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
-      const text = localStorage.getItem("ink_text") || "";
+  requestAnimationFrame(step);
 
-      if (!text) {
-        alert("No text found. Please upload your file again.");
-        window.location.href = "upload.html";
-        return;
-      }
+  // ===== SMART BACKEND CALL =====
+  const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
+  const text = localStorage.getItem("ink_text") || "";
+  let data = JSON.parse(localStorage.getItem("ink_results") || "null");
 
-      try {
-        const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, filename: meta.name })
-        });
+  if (!text) {
+    alert("No text found. Please upload your file again.");
+    window.location.href = "upload.html";
+    return;
+  }
 
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          alert("Error: " + (err.error || res.statusText));
-          window.location.href = "upload.html";
-          return;
-        }
+  // If data already exists, skip API call
+  if (data) {
+    console.log("✅ Using preloaded analysis from upload page.");
+    apiDone = true;
+    if (progress >= 100) finish();
+    else setTimeout(finish, 1200);
+    return;
+  }
 
-        const data = await res.json();
-        localStorage.setItem("ink_results", JSON.stringify(data));
-        apiDone = true;
+  // Otherwise, call backend
+  try {
+    console.log("🚀 Starting backend analysis...");
+    const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, filename: meta.name })
+    });
 
-        if (progress >= 100) { finish(); }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert("Error: " + (err.error || res.statusText));
+      window.location.href = "upload.html";
+      return;
+    }
 
-      } catch (err) {
-        console.error(err);
-        alert("Network or server error — please try again later.");
-        window.location.href = "upload.html";
-      }
+    data = await res.json();
+    localStorage.setItem("ink_results", JSON.stringify(data));
+    apiDone = true;
 
-      function finish() {
-        setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
-      }
-    })();
+    if (progress >= 100) finish();
 
-    /* ========= ROTATING MESSAGES ========= */
-    (function() {
-      const messages = [
-        "Analyzing your literary patterns...",
-        "Mapping emotions and tone shifts...",
-        "Extracting key themes and motifs...",
-        "Almost ready — polishing insights..."
-      ];
+  } catch (err) {
+    console.error(err);
+    alert("Network or server error — please try again later.");
+    window.location.href = "upload.html";
+  }
 
-      const msgEl = document.getElementById('loadMsg');
-      let i = 0;
+  function finish() {
+    setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
+  }
+})();
 
-      function cycle() {
-        msgEl.style.opacity = 0;
-        setTimeout(() => {
-          msgEl.textContent = messages[i];
-          msgEl.style.opacity = 1;
-          i = (i + 1) % messages.length;
-        }, 400);
-      }
+/* ========= ROTATING MESSAGES ========= */
+(function() {
+  const messages = [
+    "Analyzing your literary patterns...",
+    "Mapping emotions and tone shifts...",
+    "Extracting key themes and motifs...",
+    "Almost ready — polishing insights..."
+  ];
 
-      cycle();
-      setInterval(cycle, 4000);
-    })();
-  </script>
+  const msgEl = document.getElementById('loadMsg');
+  let i = 0;
+
+  function cycle() {
+    msgEl.style.opacity = 0;
+    setTimeout(() => {
+      msgEl.textContent = messages[i];
+      msgEl.style.opacity = 1;
+      i = (i + 1) % messages.length;
+    }, 400);
+  }
+
+  cycle();
+  setInterval(cycle, 4000);
+})();
+</script>
+
 </body>
 </html>
