@@ -191,13 +191,6 @@ function getKeywordDescription(topKeyword, uniqueCount) {
   `;
 }
 
-function getKeynessDescription() {
-  return `
-    <strong>About Keyness Analysis:</strong><br>
-    Keyness identifies words that are statistically distinctive in your text when compared to a reference corpus.
-    These words often represent unique stylistic choices, key topics, or unusual phrasing that stand out from common language.
-  `;
-}
 
 // Insert Keyword description
 const kwDesc = document.getElementById("kw-description");
@@ -343,49 +336,267 @@ if (ok) {
   setChartStateByCanvas(canvasSelector, { loading: true, hasData: false });
 }
 
-// === Description Box for Themes ===
+// === Expandable Popup Chart ===
+const expandBtn = document.getElementById("expandThemesBtn");
+if (expandBtn) {
+  expandBtn.onclick = () => showThemesPopup(clusters, points);
+}
 
-// Helper: generate dynamic descriptive summary for themes
-function getThemesDescription(clusterCount, topTheme, dominantThemes) {
-  const clusterLabel = clusterCount === 1 ? "one theme cluster" : `${clusterCount} theme clusters`;
+function showThemesPopup(clusters, points) {
+  document.querySelector(".popup-overlay")?.remove();
+
+  const overlay = document.createElement("div");
+  overlay.className = "popup-overlay";
+  overlay.innerHTML = `
+    <div class="popup-card">
+      <div class="popup-header">
+        <button class="download-icon" title="Download Chart">⭳</button>
+        <h2 id="clusterTitle">Cluster 1</h2>
+        <button class="popup-close">&times;</button>
+      </div>
+      <div class="popup-content">
+        <div class="chart-section">
+          <h3>Chart</h3>
+          <canvas id="popupThemeChart"></canvas>
+          <div class="cluster-description"></div>
+        </div>
+        <div class="table-section">
+          <h3>Table</h3>
+          <table class="cluster-table">
+            <thead><tr><th>Top Themes</th><th>Weight</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="cluster-selectors"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.classList.add("blurred-bg");
+  setTimeout(() => overlay.classList.add("show"), 50);
+
+  // === Close Button ===
+  overlay.querySelector(".popup-close").onclick = () => {
+    overlay.classList.remove("show");
+    setTimeout(() => {
+      overlay.remove();
+      document.body.classList.remove("blurred-bg");
+    }, 250);
+  };
+
+  const ctx = overlay.querySelector("#popupThemeChart").getContext("2d");
+  let chart;
+
+  /** === Smart Cluster Description === **/
+function getClusterDescription(cluster, idx, clusterPoints) {
+  if (!clusterPoints?.length) return "No clear semantic grouping detected.";
+
+  // Sort by frequency
+  const sorted = [...clusterPoints].sort((a, b) => (b.count || 0) - (a.count || 0));
+
+  // Extract key words
+  const topWords = sorted.slice(0, 6).map(p => p.label).filter(Boolean);
+  const main = topWords[0];
+  const related = topWords.slice(1, 3).join(", ");
+  const extras = topWords.slice(3, 6).join(", ");
+
+  // Combine top words for interpretation
+  const allWords = topWords.join(" ").toLowerCase();
+
+  // Identify semantic tone
+  let category = "general ideas and expressions";
+  if (allWords.match(/emotion|love|feel|happy|sad|anger|joy|fear/))
+    category = "emotional and expressive language";
+  else if (allWords.match(/character|story|theme|narrative|plot|poem|fiction/))
+    category = "storytelling and creative writing";
+  else if (allWords.match(/goal|progress|growth|achievement|motivation/))
+    category = "personal growth and ambition";
+  else if (allWords.match(/data|analysis|system|logic|method/))
+    category = "analytical or technical reasoning";
+  else if (allWords.match(/nature|world|environment|sky|space|earth/))
+    category = "natural and environmental imagery";
+  else if (allWords.match(/art|color|music|style|paint/))
+    category = "artistic and aesthetic language";
+
+  // Create a richer, narrative-style explanation
+  const description = `
+    <strong>Cluster ${idx + 1}</strong> reflects <b>${category}</b> found throughout your writing.<br><br>
+    This cluster is primarily centered around the word <b>${main}</b>${
+      related ? `, and connects with related ideas such as <b>${related}</b>` : ""
+    }.
+    Together, these words suggest that your text frequently touches on ${
+      category.includes("emotional")
+        ? "feelings and inner expression"
+        : category.includes("story")
+        ? "imaginative scenes and narrative flow"
+        : category.includes("growth")
+        ? "themes of progress and self-reflection"
+        : category.includes("nature")
+        ? "imagery tied to the natural world"
+        : category.includes("art")
+        ? "aesthetic choices and visual concepts"
+        : "a recurring conceptual focus"
+    }.
+    ${extras ? `<br><br>Other related terms like <b>${extras}</b> further strengthen this theme.` : ""}
+  `;
+
+  return description.trim();
+}
+
+  /** === Render One Cluster === **/
+function renderCluster(idx = 0) {
+  const cluster = clusters[idx];
+  const color = `hsl(${(idx * 70) % 360}, 70%, 60%)`;
+  document.documentElement.style.setProperty("--cluster-color", color);
+
+  overlay.querySelector("#clusterTitle").textContent = `Cluster ${idx + 1}`;
+
+  // ✅ Filter points only for this cluster & sort
+  const clusterPoints = points
+    .filter(p => String(p.cluster) === String(cluster.id))
+    .sort((a, b) => (b.count || 0) - (a.count || 0))
+    .slice(0, 10) // ✅ Only top 10 themes
+    .map(p => ({
+      x: Number(p.x),
+      y: Number(p.y),
+      r: Math.max(10, Math.min(30, (p.count || 1) * 2.5)), // bigger bubbles
+      label: p.label,
+      count: p.count,
+    }));
+
+  // === Chart ===
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: "bubble",
+    data: {
+      datasets: [
+        {
+          label: `Cluster ${idx + 1}`,
+          data: clusterPoints,
+          backgroundColor: color,
+          borderColor: color.replace("60%", "45%"),
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            // ✅ Tooltip shows one theme only
+            label: ctx => `${ctx.raw.label || "—"} (Weight: ${ctx.raw.count || 0})`,
+          },
+        },
+      },
+      scales: {
+        x: { min: 0, max: 1 },
+        y: { min: 0, max: 1 },
+      },
+    },
+  });
+
+  // === Table ===
+  const tbody = overlay.querySelector(".cluster-table tbody");
+  tbody.innerHTML = clusterPoints
+    .map(p => `<tr><td>${p.label}</td><td>${p.count}</td></tr>`)
+    .join("");
+
+  // === Description ===
+  overlay.querySelector(".cluster-description").innerHTML =
+    getClusterDescription(cluster, idx, clusterPoints);
+}
+
+  /** === Cluster Selector Buttons === **/
+  const selector = overlay.querySelector(".cluster-selectors");
+  selector.innerHTML = "";
+  clusters.forEach((c, i) => {
+    const color = `hsl(${(i * 70) % 360}, 70%, 60%)`;
+    const btn = document.createElement("button");
+    btn.className = "cluster-btn" + (i === 0 ? " active" : "");
+    btn.textContent = `Cluster ${i + 1}`;
+    btn.style.setProperty("--btn-color", color);
+    btn.onclick = () => {
+      selector.querySelectorAll(".cluster-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderCluster(i);
+    };
+    selector.appendChild(btn);
+  });
+
+  renderCluster(0);
+
+  /** === Download Chart === **/
+  overlay.querySelector(".download-icon").onclick = async () => {
+    const canvas = await html2canvas(overlay.querySelector("#popupThemeChart"), {
+      backgroundColor: "#fff",
+      scale: 2,
+    });
+    const link = document.createElement("a");
+    link.download = "cluster_chart.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+}
+
+// === Description Box for Themes (Improved Accuracy) ===
+
+// Helper: compute top theme & generate descriptive summary
+function getThemesDescription(clusters = [], points = []) {
+  const clusterCount = clusters?.length || 0;
+  if (!clusterCount) return getEmptyThemesDescription();
+
+  // --- Find the top theme accurately ---
+  // Combine word frequency + cluster prominence
+  const themeFrequency = {};
+  points.forEach(p => {
+    const w = p.label?.toLowerCase();
+    if (!w || w.length <= 2) return;
+    themeFrequency[w] = (themeFrequency[w] || 0) + (p.count || 1);
+  });
+
+  // Pick top frequent tokens
+  const sortedThemes = Object.entries(themeFrequency)
+    .sort((a, b) => b[1] - a[1])
+    .map(([w]) => w);
+
+  const topTheme = sortedThemes[0] || "—";
+  const dominantThemes = sortedThemes.slice(1, 4).join(", ") || "—";
+
+  // --- Description body ---
+  const clusterLabel =
+    clusterCount === 1 ? "one theme cluster" : `${clusterCount} theme clusters`;
+
   return `
-    <strong>Understanding Your Theme Results:</strong><br>
-    Your text reveals <b>${clusterLabel}</b>, showing how ideas and motifs group together semantically.
-    The most prominent recurring concept is <b>"${topTheme}"</b>, 
-    appearing frequently as a central idea. 
-    Other dominant themes include <b>${dominantThemes}</b>, 
-    which contribute to the emotional and conceptual depth of your writing.
+    <div class="sentiment-summary-box">
+      <strong>Understanding Your Theme Results:</strong><br>
+      Your text reveals <b>${clusterLabel}</b>, showing how ideas and motifs group together semantically.
+      The most prominent recurring concept is <b>"${topTheme}"</b>, 
+      appearing frequently as a central idea. 
+      Other dominant themes include <b>${dominantThemes}</b>, 
+      which contribute to the emotional and conceptual depth of your writing.
+    </div>
   `;
 }
 
-// Helper: fallback text if no data
+// --- Fallback helper ---
 function getEmptyThemesDescription() {
   return `
-    <strong>About Theme Analysis:</strong><br>
-    Theme clustering identifies recurring ideas, symbols, or topics in your text 
-    by measuring how often and closely they co-occur semantically.
-    No clear clusters were detected, which may occur when the text is very short 
-    or covers a single focused topic.
+    <div class="sentiment-summary-box">
+      <strong>About Theme Analysis:</strong><br>
+      Theme clustering identifies recurring ideas, symbols, or topics in your text 
+      by measuring how often and closely they co-occur semantically.
+      No clear clusters were detected, which may occur when the text is very short 
+      or covers a single focused topic.
+    </div>
   `;
 }
 
-// Insert Themes description
 const thDesc = document.getElementById("th-description");
 if (thDesc) {
-  if (ok && clusters.length > 0) {
-    // Find top theme and next few key ones
-    const topTheme = points[0]?.label || "—";
-    const topThemes = points
-      .slice(1, 4)
-      .map(p => p.label)
-      .filter(Boolean)
-      .join(", ");
-
-    thDesc.innerHTML = getThemesDescription(clusters.length, topTheme, topThemes);
-  } else {
-    thDesc.innerHTML = getEmptyThemesDescription();
-  }
+  thDesc.innerHTML = getThemesDescription(clusters, points);
 }
+
 
 
 /* ---------- CLUSTER TABLES (Top 10 per cluster with Cluster N header + old headings) ---------- */
@@ -475,6 +686,49 @@ if (clusters && clusters.length > 0) {
 } else {
   clustersGrid.innerHTML = `<p>No clusters found.</p>`;
 }
+
+function getThemesInterpretation(clusters, points) {
+  if (!clusters?.length) {
+    return `
+      <div class="sentiment-summary-box">
+        <strong>About Theme Interpretation:</strong><br>
+        Theme clustering identifies recurring ideas or motifs within your writing. 
+        It visualizes how related words group together conceptually.
+      </div>
+    `;
+  }
+
+  const examples = clusters
+    .map((c, i) => {
+      const words = c.label.split(", ").slice(0, 4).join(", ");
+      return `Cluster ${i + 1} (<i>${words}</i>)`;
+    })
+    .join("; ");
+
+  const mainThemes = points
+    .slice(0, 5)
+    .map(p => p.label)
+    .filter(Boolean)
+    .join(", ");
+
+  return `
+    <div class="sentiment-summary-box">
+      <strong>Thematic Interpretation:</strong><br>
+      Example clusters of semantically related words from your writing were identified using PCA on word embeddings.
+      These <b>${clusters.length}</b> clusters reveal conceptual groupings such as ${examples}.
+      <br><br>
+      Overall, your text appears to emphasize <b>${mainThemes}</b> — 
+      indicating recurring ideas or emotional motifs that characterize your writing voice.
+    </div>
+  `;
+}
+
+const interpretationBox = document.getElementById("themesInterpretation");
+if (interpretationBox) {
+  interpretationBox.innerHTML = getThemesInterpretation(clusters, points);
+}
+
+
 
 /* Suggestions always visible */
 renderSuggestions("#th-suggestions", th.suggestions || DEFAULT_SUGGESTIONS.themes);
@@ -764,13 +1018,29 @@ if (sentimentDescBox) {
   const dominantEl = document.getElementById("em-dominant");
   if (dominantEl) dominantEl.textContent = em.dominant || "—";
 
-  // === Emotion Radar Chart ===
-  if (ok) {
-    setChartStateByCanvas("#emotionsChart", { loading: false, hasData: true });
-    renderRadar("#emotionsChart", labels, data, "Emotion Mix");
-  } else {
-    setChartStateByCanvas("#emotionsChart", { loading: true, hasData: false });
+// === Emotion Radar Chart ===
+if (ok && labels.length >= 3) {
+  setChartStateByCanvas("#emotionsChart", { loading: false, hasData: true });
+  renderRadar("#emotionsChart", labels, data, "Emotion Mix");
+} else {
+  setChartStateByCanvas("#emotionsChart", { loading: true, hasData: false });
+
+  const chartBox = document.querySelector("#emotionsChart")?.closest(".chartbox");
+  if (chartBox) {
+    let msg = chartBox.querySelector(".empty-note");
+    if (!msg) {
+      msg = document.createElement("p");
+      msg.className = "empty-note";
+      chartBox.appendChild(msg);
+    }
+    msg.textContent = "No radar chart available — text sample is too short for emotional analysis.";
+    msg.style.display = "block";
+    msg.style.textAlign = "center";
+    msg.style.color = "#666";
+    msg.style.fontStyle = "italic";
+    msg.style.padding = "10px";
   }
+}
 
   // === Infer Dominant Emotion if missing ===
   if (!em.dominant && ok) {
@@ -780,6 +1050,7 @@ if (sentimentDescBox) {
       dominantEl.textContent =
         inferred.charAt(0).toUpperCase() + inferred.slice(1);
   }
+
 
   // === Emotion Explanation Cards (like Sentiment) ===
   const grid = document.getElementById("emotionsExplanationGrid");
@@ -960,15 +1231,14 @@ if (summary) {
   renderSuggestions("#em-suggestions", em.suggestions || DEFAULT_SUGGESTIONS.emotions);
 })();
 
-
 /* ========== KEYNESS ========== */
 (function fillKeyness() {
   const keyness = report.keyness || {};
   const list = Array.isArray(keyness.list) ? keyness.list : [];
-
   const ok = list.length > 0;
   const canvasSelector = "#keynessChart";
 
+  // === Chart Rendering ===
   if (ok) {
     setChartStateByCanvas(canvasSelector, { loading: false, hasData: true });
 
@@ -976,16 +1246,59 @@ if (summary) {
     renderBar(
       canvasSelector,
       top10.map(x => x.token),
-      top10.map(x => x.score || x.count || 0),
-      "Top 10 Distinctive Words" 
+      top10.map(x => x.score || x.keyness || x.count || 0),
+      "Top 10 Distinctive Words"
     );
   } else {
     setChartStateByCanvas(canvasSelector, { loading: true, hasData: false });
   }
+
+  // === Description Rendering ===
+  const keynessBox = document.getElementById("keynessDescription");
+  if (keynessBox) {
+    keynessBox.innerHTML = getKeynessDescription(list);
+    keynessBox.style.opacity = 0;
+    keynessBox.style.transition = "opacity 0.6s ease";
+    requestAnimationFrame(() => (keynessBox.style.opacity = 1));
+  } else {
+    console.warn("⚠️ Missing #keynessDescription element in DOM.");
+  }
 })();
+
+/* ---------- DESCRIPTION: Keyness Analysis ---------- */
+function getKeynessDescription(keywords = []) {
+  if (!keywords || !keywords.length) {
+    return `
+      <div class="sentiment-summary-box">
+        <strong>About Keyness Analysis:</strong><br>
+        Keyness identifies the words that make your writing statistically distinctive 
+        when compared with general language use. These distinctive words highlight 
+        what makes your text unique — stylistically, thematically, or emotionally.
+      </div>
+    `;
+  }
+
+  const topWords = keywords.slice(0, 5).map(w => `<b>${w.token}</b>`).join(", ");
+  return `
+    <div class="sentiment-summary-box">
+      <strong>Understanding Your Keyness Results:</strong><br>
+      The analysis found several words that stand out as unusually frequent in your text 
+      compared to common English usage.  
+      These include ${topWords}, among others.<br><br>
+      Such words often reveal your personal focus or distinctive tone — 
+      for example, emotional emphasis, recurring imagery, or preferred expressions 
+      that characterize your unique writing style.
+    </div>
+  `;
+}
+
+
+
 
 
 document.querySelectorAll(".export-success, .export-prompt").forEach(el => el.remove());
+
+
 
 
 
@@ -1219,6 +1532,7 @@ document.querySelector('.btn.delete').addEventListener('click', () => {
     document.querySelector('.delete-success').classList.add('show');
   }, 1500);
 });
+
 
 
 
