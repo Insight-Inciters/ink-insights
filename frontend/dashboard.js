@@ -68,7 +68,12 @@ function sentimentFromBackend(sentiment = {}) {
 
 
 (async function () {
-  const API = "https://ink-insights-backend.onrender.com/analyze";
+// 🕒 Let DOM paint before running all chart render logic
+await new Promise(r => requestAnimationFrame(() => r()));
+console.log("✅ Dashboard DOM ready — rendering charts...");
+
+
+  const API = "http://127.0.0.1:8000/analyze";
   const text = localStorage.getItem("ink_text") || "";
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
 
@@ -98,72 +103,60 @@ if (!text) {
 
 
 let resp;
-  
+
+// ⚡ Try load cached report instantly
 const cached = localStorage.getItem("ink_report");
 if (cached) {
   try {
     const cachedData = JSON.parse(cached);
-    // Load cached report immediately while new one is fetched
-    console.log("⚡ Loaded from cache while fetching new analysis...");
-    resp = cachedData; // ✅ reuses same rendering logic below
+    console.log("⚡ Loaded from cache instantly:", cachedData);
+    resp = cachedData; // use cached first for fast render
   } catch (e) {
-    console.warn("Cached report invalid, ignoring.");
+    console.warn("Invalid cached report, ignoring.");
   }
 }
 
+// 🌀 In background, try refreshing backend (non-blocking)
+(async () => {
   try {
-    const r = await fetch(API, {
+    console.log("🔄 Checking backend for fresher analysis...");
+    const r = await fetch("http://127.0.0.1:8000/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: meta.name || "document.txt" }),
+      body: JSON.stringify({
+        text: localStorage.getItem("ink_text") || "",
+        filename: (JSON.parse(localStorage.getItem("ink_report_meta") || "{}").name) || "document.txt"
+      })
     });
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      throw new Error(e.error || `Request failed (${r.status})`);
+    if (r.ok) {
+      const newData = await r.json();
+      console.log("✅ Updated backend analysis received:", newData);
+      localStorage.setItem("ink_report", JSON.stringify(newData));
     }
-    
-    resp = await r.json();
-// ✅ Normalize keywords (always as { list: [{token, count}] })
-if (Array.isArray(resp.keywords)) {
-  resp.keywords = { list: resp.keywords.map(k => {
-    if (typeof k === "string") return { token: k, count: 1 };
-    if (k?.word) return { token: k.word, count: k.count || 1 };
-    return { token: k?.token || "(unknown)", count: Number(k?.count) || 0 };
-  }) };
-} else if (resp.keywords?.list) {
-  resp.keywords.list = resp.keywords.list.map(k => ({
-    token: k?.token || "(unknown)",
-    count: Number(k?.count) || 0
-  }));
-} else {
-  resp.keywords = { list: [] };
+  } catch (err) {
+    console.log("⚠️ Backend not reachable, using cached report only.");
+  }
+})();
+
+
+// ✅ Safe cluster regeneration
+if (!resp) {
+  console.warn("⚠️ No report data found, skipping cluster generation.");
+  return;
 }
 
-// ✅ Normalize themes (backend always sends { points: [...], clusters: [...] })
-if (!resp.themes) resp.themes = { points: [], clusters: [] };
+if (!resp.themes) resp.themes = { clusters: [], points: [] };
+if (!Array.isArray(resp.themes.points)) resp.themes.points = [];
+if (!Array.isArray(resp.themes.clusters)) resp.themes.clusters = [];
 
-// Ensure both arrays exist
-resp.themes.points = Array.isArray(resp.themes.points) ? resp.themes.points : [];
-resp.themes.clusters = Array.isArray(resp.themes.clusters) ? resp.themes.clusters : [];
-
-// Fill in missing data safely
-resp.themes.points = resp.themes.points.map((t, i) => ({
-  label: t?.label || t?.theme || `Theme ${i + 1}`,
-  cluster: t?.cluster ?? 0,
-  x: Number(t?.x) || Math.random(),
-  y: Number(t?.y) || Math.random(),
-  count: Number(t?.count) || 1
-}));
-
-// Generate clusters if empty
-if (resp.themes.clusters.length === 0) {
+if (resp.themes.clusters.length === 0 && resp.themes.points.length > 0) {
   const uniqueClusters = [...new Set(resp.themes.points.map(p => p.cluster))];
   resp.themes.clusters = uniqueClusters.map((id, i) => ({
     id,
     label: `Cluster ${i + 1}`
   }));
+  console.log("🌀 Regenerated missing theme clusters:", resp.themes.clusters);
 }
-
 
 
 // ✅ Normalize emotions
@@ -171,17 +164,7 @@ resp.emotions = resp.emotions?.breakdown
   ? resp.emotions
   : { breakdown: resp.emotions || {} };
 
-
-console.log("✅ Backend response normalized:", resp);
-
-console.log("🧩 Theme Points:", resp?.themes?.points);
-
-
-  } catch (err) {
-    console.error(err);
-    alert("Analysis failed. Please try again.");
-    return;
-  }
+console.log("✅ Loaded & normalized cached report:", resp);
 
 
   
@@ -740,6 +723,8 @@ document.querySelector("#exportPDF")?.addEventListener("click", async (e) => {
 
 
 
+
+
 // --- Post Export Prompt ---
 function postExportPrompt() {
   const box = document.createElement("div");
@@ -778,13 +763,7 @@ function postExportPrompt() {
 
 
 
-
-  
-
 })();
-
-
-
 
 
 
