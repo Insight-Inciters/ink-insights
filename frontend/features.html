@@ -69,8 +69,8 @@
 <div class="export-dropdown">
   <button class="btn export" id="exportKw" type="button">EXPORT▾</button>
   <div class="dropdown-menu">
-    <button id="exportCSV" type="button">Export as CSV</button>
-    <button id="exportJSON" type="button">Export as JSON</button>
+<button id="exportKwCSV">Export as CSV</button>
+<button id="exportKwJSON">Export as JSON</button>
   </div>
 </div>
   </div>
@@ -97,16 +97,17 @@
   <div id="kw-description" class="sentiment-summary-box"></div>
 </div>
 
-  <!-- ====== NEW: KEYNESS CHART SECTION ====== -->
-  <h2 class="suggestion-heading">Distinctive Words (Keyness)</h2>
-  <div class="panel green">
-    <div class="chartbox pink">
-      <canvas id="keynessChart"></canvas>
-    </div>
+<!-- ====== NEW: KEYNESS CHART SECTION ====== -->
+<h2 class="suggestion-heading">Distinctive Words (Keyness)</h2>
+<div class="panel green">
+  <div class="chartbox pink">
+    <canvas id="keynessChart"></canvas>
   </div>
-
-    <div id="keyness-description" class="sentiment-summary-box"></div>
 </div>
+
+<!-- ✅ Keyness interpretation box -->
+<div id="keynessDescription"></div>
+
 
   <!-- ====== HIGHLIGHTED WORDS SECTION ====== -->
 <section class="highlighted-section">
@@ -150,8 +151,8 @@
 <div class="export-dropdown">
   <button class="btn export" id="exportTh" type="button">EXPORT▾</button>
   <div class="dropdown-menu">
-    <button id="exportCSV" type="button">Export as CSV</button>
-    <button id="exportJSON" type="button">Export as JSON</button>
+<button id="exportThCSV">Export as CSV</button>
+<button id="exportThJSON">Export as JSON</button>
   </div>
 </div>
   </div>
@@ -170,19 +171,24 @@ Your writing is grouped into meaningful topics, helping you visualize the main i
     </div>
 
     <div class="chartbox pink">
+            <button id="expandThemesBtn" class="chart-expand">?</button>
         <canvas id="themesChart"></canvas>
           <div class="empty-note">No theme data available.</div>
     </div>
+    <div class="tagline">Explore cluster details and full chart view by clicking “?”.</div>
   </div>
 
-      <div id="th-description"  class="sentiment-summary-box"></div>
+      <div id="th-description"></div>
 
   <!-- THEME CLUSTERS BOXES -->
   <h2 class="suggestion-heading" style="margin-top: 2rem;">Theme Clusters</h2>
 
   <div class="cluster-container" id="clustersBox">
     <div id="clustersGrid" class="cluster-grid"></div>
+      <div id="themesInterpretation"></div>
+
   </div>
+
 
   <div>
     <h2 class="suggestion-heading">Suggestions</h2>
@@ -208,8 +214,8 @@ Your writing is grouped into meaningful topics, helping you visualize the main i
 <div class="export-dropdown">
   <button class="btn export" id="exportSe" type="button">EXPORT▾</button>
   <div class="dropdown-menu">
-    <button id="exportCSV" type="button">Export as CSV</button>
-    <button id="exportJSON" type="button">Export as JSON</button>
+<button id="exportSeCSV">Export as CSV</button>
+<button id="exportSeJSON">Export as JSON</button>
   </div>
 </div>
   </div>
@@ -290,8 +296,8 @@ View the ratio of positive, neutral, and negative tones to reflect on mood consi
 <div class="export-dropdown">
   <button class="btn export" id="exportEm" type="button">EXPORT▾</button>
   <div class="dropdown-menu">
-    <button id="exportCSV" type="button">Export as CSV</button>
-    <button id="exportJSON" type="button">Export as JSON</button>
+<button id="exportEmCSV">Export as CSV</button>
+<button id="exportEmJSON">Export as JSON</button>
   </div>
 </div>
 
@@ -309,7 +315,7 @@ Analyze how your words evoke the five core emotions and senses, giving you insig
 <h2 class="suggestion-heading">Overview</h2>
 <div class="panel green" id="emotionsOverview">
   <div class="m-badges">
-    <span class="m-badge">Dominant Emotion: <span class="value" id="em-dominant">—</span></span>
+    <span class="m-badge">Dominant Emotion: <span class="value" id="em-dominant"></span></span>
   </div>
 
   <!-- Chart + Highlights side-by-side -->
