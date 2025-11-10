@@ -1016,8 +1016,8 @@ document.querySelector("#fileSuccess .prompt-overlay").addEventListener("click",
       return;
     }
 
-    store(text, file.name);
     showSuccessPrompt(); // show the fancy success popup
+    store(text, file.name);
   };
   reader.readAsText(file);
   els.fileInput.value = '';
@@ -1035,29 +1035,6 @@ document.querySelector("#fileSuccess .prompt-overlay").addEventListener("click",
       const ok = (words && words<=5000);
       setBtnEnabled(ok);
     }
-
-
-// Start backend analysis in background to save time
-(async () => {
-  try {
-    const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: file.name })
-    });
-
-    if (!res.ok) {
-      console.error("Backend analysis failed:", res.statusText);
-      return;
-    }
-
-    const data = await res.json();
-    localStorage.setItem("ink_results", JSON.stringify(data));
-    console.log("✅ Analysis preloaded successfully.");
-  } catch (err) {
-    console.error("⚠️ Preload error:", err);
-  }
-})();
 
 
     /* Dropzone interactions */
@@ -1178,6 +1155,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   </script>
-
 </body>
 </html>
