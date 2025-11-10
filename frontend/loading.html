@@ -181,7 +181,7 @@
     <p class="tagline">Brew some tea while we unravel your story…</p>
   </main>
 
- <script>
+<script>
 /* ========= STARFIELD ========= */
 (function() {
   const canvas = document.getElementById('stars');
@@ -223,12 +223,12 @@
   requestAnimationFrame(draw);
 })();
 
-/* ========= LOADING PROGRESS & SMART API HANDLING ========= */
+/* ========= LOADING PROGRESS & BACKEND HANDLER ========= */
 (async function() {
   const fill = document.getElementById('fill');
   const pct = document.getElementById('pct');
   const bar = document.querySelector('.bar');
-  const duration = 18000; // 18s for visual pacing
+  const duration = 18000;
   const start = performance.now();
   let apiDone = false;
   let progress = 0;
@@ -245,19 +245,15 @@
     pct.textContent = progress + "%";
     bar.setAttribute("aria-valuenow", progress);
 
-    if (p < 1) {
-      requestAnimationFrame(step);
-    } else if (apiDone) {
-      finish();
-    }
+    if (p < 1) requestAnimationFrame(step);
+    else if (apiDone) finish();
   }
-
   requestAnimationFrame(step);
 
-  // ===== SMART BACKEND CALL =====
+  // === Retrieve stored text/meta ===
   const meta = JSON.parse(localStorage.getItem("ink_report_meta") || "{}");
   const text = localStorage.getItem("ink_text") || "";
-  let data = JSON.parse(localStorage.getItem("ink_results") || "null");
+  let data = JSON.parse(localStorage.getItem("ink_report") || "null");
 
   if (!text) {
     alert("No text found. Please upload your file again.");
@@ -265,45 +261,39 @@
     return;
   }
 
-  // If data already exists, skip API call
+  // === Skip API if cached ===
   if (data) {
-    console.log("✅ Using preloaded analysis from upload page.");
+    console.log("✅ Using cached analysis (ink_report).");
     apiDone = true;
     if (progress >= 100) finish();
     else setTimeout(finish, 1200);
     return;
   }
 
-  // Otherwise, call backend
+  // === Otherwise, fetch backend ===
   try {
-    console.log("🚀 Starting backend analysis...");
-    const res = await fetch("https://ink-insights-backend.onrender.com/analyze", {
+    console.log("🚀 Sending text to backend...");
+    const res = await fetch("http://127.0.0.1:8000/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, filename: meta.name })
+      body: JSON.stringify({ text, filename: meta.name || "document.txt" })
     });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert("Error: " + (err.error || res.statusText));
-      window.location.href = "upload.html";
-      return;
-    }
+    if (!res.ok) throw new Error("Backend returned " + res.status);
 
     data = await res.json();
-    localStorage.setItem("ink_results", JSON.stringify(data));
+    localStorage.setItem("ink_report", JSON.stringify(data));
     apiDone = true;
 
     if (progress >= 100) finish();
-
   } catch (err) {
     console.error(err);
-    alert("Network or server error — please try again later.");
+    alert("⚠️ Could not connect to analysis engine. Please try again.");
     window.location.href = "upload.html";
   }
 
   function finish() {
-    setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
+    setTimeout(() => window.location.href = "dashboard.html", 800);
   }
 })();
 
@@ -315,7 +305,6 @@
     "Extracting key themes and motifs...",
     "Almost ready — polishing insights..."
   ];
-
   const msgEl = document.getElementById('loadMsg');
   let i = 0;
 
@@ -332,6 +321,7 @@
   setInterval(cycle, 4000);
 })();
 </script>
+
 
 </body>
 </html>
