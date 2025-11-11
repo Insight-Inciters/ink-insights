@@ -350,7 +350,6 @@ function showThemesPopup(clusters, points) {
   overlay.innerHTML = `
     <div class="popup-card">
       <div class="popup-header">
-        <button class="download-icon" title="Download Chart">⭳</button>
         <h2 id="clusterTitle">Cluster 1</h2>
         <button class="popup-close">&times;</button>
       </div>
